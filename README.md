@@ -1,36 +1,21 @@
-# UOR project template
+# UOR Foundry
 
-Shared repository policy for projects consuming PrismPM as an SDK. No
-application or organizational model is included.
+The UOR Foundation modeled with PrismPM: a non-profit dedicated to the
+democratization of technology.
 
-## Create a repository
+The model will be defined and validated against explicitly adopted standards.
+Its outputs will be the views, artifacts, and deployed service describing how
+the Foundation is implemented, governed, operated, sustained, and improved.
 
-1. Create a GitHub repository from this template and clone it.
-2. Set `workspace.package.repository` and `homepage` in `Cargo.toml`.
-3. Replace this README with the project's name, purpose, and current status.
-4. Keep the claim and authority registers empty until capabilities are defined.
-   Follow [AGENTS.md](AGENTS.md) when adding them.
+## Status
 
-## SDK status
+Repository bootstrap only, from [UOR template](https://github.com/UOR-Foundation/template/tree/e0e11ecb1b38e202116d9806887363848629d439).
+No organizational model, standards bindings, views, or deployment
+configuration are defined here yet.
 
-This template is not yet bound to a public SDK release. `prismpm.lock` and
-`template.lock` are absent; the devcontainer and complete `just vv` gate require
-those immutable bindings. Creating and naming a repository does
-not require selecting its model, standards, views, or deployment targets.
+PrismPM will be consumed as an SDK, following [Calculator](https://github.com/UOR-Foundation/calculator-example).
+Required generic extensions belong upstream in PrismPM, not in a local copy.
 
-Once bound, open the repository in its digest-pinned devcontainer and run
-`just vv`. The host needs only Git, Docker with Buildx, and a devcontainer
-client. Do not substitute a vendored PrismPM checkout or host toolchain.
-
-## Repository boundary
-
-- `model/`, `features/suites/`, and generated `CONFORMANCE.md` describe project
-  claims. They begin empty; repository tooling is not a product implementation.
-- [TEMPLATE-CONTRACT.md](TEMPLATE-CONTRACT.md) defines inherited policy and the
-  immutable SDK/template update process.
-- [VERIFICATION.md](VERIFICATION.md) defines the full acceptance boundary;
-  [TEMPLATE-VERIFICATION.md](TEMPLATE-VERIFICATION.md) maps the scaffold's gates.
-- Reusable workflows are infrastructure. Do not enable publication or
-  deployment before the project model and its acceptance criteria exist.
-
-Licensed under [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE).
+The inherited SDK release bindings are not configured; the devcontainer and
+`just vv` remain blocked. Repository policy is in [AGENTS.md](AGENTS.md) and
+[TEMPLATE-CONTRACT.md](TEMPLATE-CONTRACT.md).
