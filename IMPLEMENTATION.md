@@ -108,6 +108,12 @@ Their retained bytes match the lock, but PrismPM records them as
 attribution review, digest-bound distribution of the complete acquired-input
 closure, and fresh-cache acquisition tests on both architectures. Replacing
 the archived facts with current downloads is a different authority update.
+The mixed [OSV sources](https://google.github.io/osv.dev/data/) carry
+source-specific licenses and exceptions; an OSV tooling license is not a
+blanket data grant. Coverage for the converted
+[Debian tracker](https://security-tracker.debian.org/tracker), bug-report, and
+historical-advisory data remains unresolved, as does the complete pinned
+attribution bundle. No redistribution classification was changed by the review.
 
 Both the unchanged application and an isolated, normally locked mutation
 changing only the dispatch bound from 4,096 to 4,095 failed before native
@@ -213,8 +219,9 @@ and last-replica-loss evidence against its modeled recovery obligations.
   failed with a publishing-permission error; later successful dry runs do not
   demonstrate publication. The upstream owner must establish authorized
   publication before the SDK dependency closure can be accepted.
-- Full `just vv` at PrismPM
-  [`d0174e1`](https://github.com/UOR-Foundation/PrismPM/commit/d0174e1d64339f73091fe4c59d5d6bf532a37d1f)
-  passed gates 1–14, including 319 workspace tests and two-root reproduction,
-  then failed gate 15 on that missing public package. No passing release receipt
-  was produced; portable-View browser execution remains additional required work.
+- Full source-devcontainer `just vv` at PrismPM
+  [`d1b8506`](https://github.com/UOR-Foundation/PrismPM/commit/d1b8506876c28baf8277ad7e179f92edd31fe3a0)
+  passed gates 1–14, including 327 workspace tests, real Calculator/Text portable
+  browser execution, and two-root reproduction, then failed gate 15 on that
+  missing public package. No passing release receipt was produced. These
+  source results do not upgrade the draft SDK binding or accept Foundry.
