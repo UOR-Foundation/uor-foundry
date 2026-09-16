@@ -37,7 +37,13 @@ policy.
 
 ## Locks and updates
 
-`prismpm.lock` selects one multi-platform SDK manifest by digest. `template.lock`
+`prismpm.lock` uses `prismpm/sdk-lock/2`: one exact multi-platform SDK index by
+digest and bytes, plus both `linux/amd64` and `linux/arm64` child manifests and
+their actual platform-specific artifact inventories. The SDK owns validation
+and generation; the template only extracts files from digest-selected images.
+It does not run foreign-architecture binaries or substitute host tools for
+the SDK. Legacy `/1` locks retain their strict native inventory comparison and
+are not treated as cross-platform inventories. `template.lock`
 binds that SDK identity, this contract's content digest, the template repository,
 and the full commit revision of the policy input from which the lock-bearing
 release was rendered. The policy-input revision is intentionally the preceding
@@ -49,17 +55,31 @@ check` is read-only. `prismpm template update`
 emits a patch for review; automation may open a pull request
 containing that patch but may not write a downstream default branch directly.
 
+Initial rendering writes `standards.lock` from the selected SDK's exact,
+platform-validated bytes only when the project has no standards lock. An
+identical existing lock is retained; different project bytes stop rendering
+for explicit standards-change review. Bootstrap does not silently choose or
+overwrite project standards.
+
 Publishing a template release passes three explicit arguments to
 `bootstrap/render.sh`: the SDK manifest-list digest, the shared action's
 independently published commit, and the preceding policy-input commit. No
 placeholder or mutable discovery file is committed. The renderer refuses
 anything except an OCI name with a lowercase SHA-256 manifest digest and a
 complete 40-character PrismPM action and policy commit, reads the inventory
-from that digest-selected SDK image, and regenerates the SDK-derived locks,
+from both exact children of that digest-selected SDK image index, and regenerates the SDK-derived locks,
 devcontainer, and workflow pins. The release renderer additionally requires
 the policy commit to be the checked-out `HEAD` and its policy inputs to be
 clean; downstream update automation uses the same renderer module on the
 explicit policy snapshot that it checked out separately.
+The update workflow verifies that snapshot's `HEAD` equals the requested
+template commit and executes its renderer through a read-only mount against
+the downstream `/workspace`. It never labels the downstream repository's own
+`HEAD` as a template revision or executes its older project-owned renderer to
+implement a new template contract. Project-owned sources and conformance
+documents remain intact. A needed update to the downstream native bootstrap
+audit is a separately reviewed source patch, not an automatic overwrite of
+repository-specific acceptance gates.
 The rendered files are committed and checked, so opening a repository never
 depends on mutable discovery.
 
