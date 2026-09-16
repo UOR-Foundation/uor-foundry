@@ -102,6 +102,12 @@ confirmed this at `75cd64f3d208d9eaec1db0e71918e505af238caf`: both AMD64 and
 ARM64 passed Buildx, native bootstrap, and template/SDK lock checks, then
 failed `PP5401` fetching the pinned crates.io OSV archive after four HTTP 404
 responses. No source or application acceptance gate was reached.
+Independent follow-up found all five locked OSV generation URLs unavailable.
+Their retained bytes match the lock, but PrismPM records them as
+`citation-only`. Durable SDK delivery requires an evidence-backed rights and
+attribution review, digest-bound distribution of the complete acquired-input
+closure, and fresh-cache acquisition tests on both architectures. Replacing
+the archived facts with current downloads is a different authority update.
 
 Both the unchanged application and an isolated, normally locked mutation
 changing only the dispatch bound from 4,096 to 4,095 failed before native
