@@ -15,9 +15,10 @@
 # state: a capability that is not built does not get a row, and every row in this
 # file is built.
 #
-# The register is empty. This repository has no claims yet; adding one starts
-# with a row here, in the order `AGENTS.md` sets out.
-
 spec = "template/1"
 
-id = []
+[[id]]
+id = "FW-01"
+level = "build"
+suite = "draft-preview"
+statement = "The LexLean-defined draft preview bounds and validates UTF-8 input and renders an explicitly unpublished response through generated Core-Wasm and portable/browser Views."

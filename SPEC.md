@@ -192,10 +192,10 @@ artifact digest does not establish the complete product.
 
 Publication promotes unchanged artifacts authorized for that release state;
 the publisher must reject missing, substituted, stale, partial, or
-state-inappropriate evidence. Target
-changes requiring different generated assets return to `uor-foundry` for
-modeling and acceptance. Live verification checks the actual deployment
-identity, approved URL, artifact bytes, and complete stakeholder journeys.
+state-inappropriate evidence. Target changes requiring different generated
+assets return to `uor-foundry` for modeling and acceptance. Live verification
+checks the actual deployment identity, approved URL, artifact bytes, and
+complete stakeholder journeys.
 
 Development and verification use repository devcontainers; consumer acceptance
 uses the immutable SDK lock. Preserve template policy, keep build/cache output

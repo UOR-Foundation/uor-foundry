@@ -1,0 +1,6 @@
+name = "PrismFoundry"
+version = "0.1.0"
+defaultTargets = ["PrismFoundry"]
+
+[[lean_lib]]
+name = "PrismFoundry"

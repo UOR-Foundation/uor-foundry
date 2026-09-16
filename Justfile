@@ -3,8 +3,12 @@
 default: vv
 
 # The whole gate.
-vv: template-check fmt-check model lint test features bdd deny
+vv: template-check prepare fmt-check model lint test features bdd deny
     @echo "vv: the acceptance gate passed"
+
+# Acquire only the inputs selected by the committed SDK and package locks.
+prepare: template-check
+    prismpm fetch --locked
 
 # R1, R4, R5 --- the repository gates, each falsifiable.
 model:
@@ -31,7 +35,7 @@ fmt-check:
 lint:
     cargo clippy --workspace --all-targets -- -D warnings
 
-test:
+test: prepare
     cargo test --workspace
 
 # A feature only its author has built is a feature that does not work: nothing
@@ -45,7 +49,7 @@ features:
 
 # R3: every capability begins as a Gherkin scenario, and every scenario has a
 # test whose name ends in its ID.
-bdd:
+bdd: prepare
     cargo test -p repo-conformance
 
 # R6: nothing shipped depends on a dev-only crate, no wildcard version
