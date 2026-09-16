@@ -116,8 +116,15 @@ execution: `PP5001`, generated `PrismFoundry/Foundry.lean:11:21`, deterministic
 contains the complete generated application declaration and its unchanged
 vectors. This is a baseline compiler-resource failure, not evidence that the
 intended behavioral defect was caught. No generated Lean was edited, no
-vector was removed, and no runtime/browser result was accepted. Upstream
-correction and a newly bound SDK must precede those remaining checks.
+vector was removed, and no runtime/browser result was accepted.
+LexLean [ee18ad9](https://github.com/afflom/LexLean/commit/ee18ad907039a82ff5b11ff2117d6dfe95d80365)
+adds fixed finite semantic-backend budgets. Its complete nested-byte regression,
+exact generated-byte comparisons, `LN-01`, and Clippy passed; removing the
+budget settings reproduces the actual compiler failure. Complete repository
+acceptance is not yet evidenced. This correction is not in the bound SDK and
+does not establish Foundry application acceptance. Complete upstream
+verification, a newly bound SDK, and the actual unmodified/mutated application
+checks remain required.
 
 Raw diagnostics and results are retained under ignored `target/` as
 `sdk-canonical-model-check.log`, `sdk-final-helper-checks.log`,
