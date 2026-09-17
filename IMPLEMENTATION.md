@@ -67,3 +67,24 @@ Upstream release approval and publishing authority remain external inputs.
 GitHub reports no foundry-web deployments; the default HTTPS Pages URL returns
 404. [Publisher status](https://github.com/UOR-Foundation/foundry-web/blob/main/IMPLEMENTATION.md)
 owns target routing and publication evidence. No partial portal is authorized.
+
+## Draft branch synchronization
+
+PR #3 incorporates main `2c04f6056cfd49f7b81611d56e3f581171225679` without
+changing its application model, language/npm locks, scenarios, tests, or
+complete gate. Reviewed build-policy dependencies and maintenance checks come
+from main. The synchronized branch contains the unaccepted `FW-01` draft;
+the empty-register observation above applies only to the audited main snapshot.
+[Prior application verification](APPLICATION-VERIFICATION.md) preserves the
+source, model and log identities, unsuccessful application/mutation evidence,
+authority-input limitations, and upstream network witness scope.
+
+On 17 September 2026, the unchanged full `just vv` was attempted in the locked
+SDK's native AMD64 child
+`sha256:c2e0e50437e13d9b2e382d3af4ae7a962b469721b9b80f14f215d9254e8ed78f`.
+Locked Cargo retrieval, model, bootstrap, template and SDK-lock checks passed.
+`prepare` then failed with `PP5401` after four HTTP 404 responses for the pinned
+crates.io OSV generation `1788555739396732`. Application acceptance was not
+reached; no authority pin, gate, or model was changed to bypass this failure.
+Log: `target/pr3-main-sync-vv.log`, SHA-256
+`e13242154c2a48a1eb46e95ddfddc6287f099a19542265bc2dec513ba4d3672c`.

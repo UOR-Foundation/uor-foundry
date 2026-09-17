@@ -1,7 +1,9 @@
 # Repository infrastructure verification
 
-This repository's `just vv` applies the universal verification policy in
-`VERIFICATION.md` to its current scaffold, not the complete Foundry application.
+This record covers the main `278ee0a` development scaffold. Its `just vv`
+applied the universal policy in `VERIFICATION.md`, not complete Foundry
+application acceptance. PR #3 also retains its full application gate;
+[IMPLEMENTATION.md](IMPLEMENTATION.md) records the synchronized branch status.
 
 | `just` recipe | Enforces | ID classes |
 | --- | --- | --- |
@@ -14,9 +16,9 @@ This repository's `just vv` applies the universal verification policy in
 | `just deny` | R6 over the dependency graph | --- |
 | `just template-check` | immutable SDK selection, template drift, and bootstrap least privilege | --- |
 
-The register is empty, so its anti-vacuity check is armed rather than claiming
-that features exist. It becomes an error as soon as an ID, scenario, or test is
-added without the other two.
+At that main snapshot the register was empty, so its anti-vacuity check was
+armed rather than claiming product behavior. This branch registers `FW-01`
+and retains its scenario and application test; those must pass together.
 
 ## Planted defects
 

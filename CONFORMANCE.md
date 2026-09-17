@@ -18,6 +18,12 @@ The three honesty levels (R2):
 `cargo xtask audit-limits` fails if any code path returns an error the
 model does not sanction.
 
+## draft-preview
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `FW-01` | `build` | The LexLean-defined draft preview bounds and validates UTF-8 input and renders an explicitly unpublished response through generated Core-Wasm and portable/browser Views. |
+
 ## Cited authorities
 
 Never re-derived, vendored, or gated on.
