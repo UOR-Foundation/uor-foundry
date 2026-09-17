@@ -25,12 +25,22 @@ UTF-8 draft preview, without identity, persistence, publication, or networking.
 | Browser object space | Implement browser Kappa storage, queries, inbound dispatch and verified blob transfer; model authenticated membership, confidentiality, conflicts, revocation, retention, replication, repair and recovery. |
 | Network acceptance | Exercise independent participants under real discovery/connectivity constraints, suspension, eviction, partitions, hostile inputs and replica loss. Measure approved availability and recovery targets; local two-browser tests are not internet-scale evidence. |
 | Producer release | Generate all artifacts twice reproducibly; verify complete service/control/dependency/assessment coverage. Bind exact producer identity, artifact tree and pre-publication evidence, with only the exact deployment-dependent checks outstanding. |
-| Publication SDK | Implement source-free acquisition, readiness and authorization verification, confined atomic artifact export, live verification and accepted-release rollback. Preserve unchanged bytes; reject partial, stale, substituted or unauthorized evidence. |
+| Publication SDK | Complete source-free acquisition, readiness and authorization verification; integrate confined atomic artifact export, live verification and accepted-release rollback. Preserve unchanged bytes; reject partial, stale, substituted or unauthorized evidence. |
 | Pages and final acceptance | foundry-web consumes the exact authorized producer release, uploads/deploys it through Actions, and verifies actual deployment identity, HTTPS target, every asset and complete live journeys/assessments. A successful upload is not final acceptance. |
 
 Every row remains required. Missing owner inputs block production acceptance,
 not independent generic implementation. The workspace's 5 September SDK and
 Calculator task list does not replace the later Foundry scope in SPEC.md.
+
+PrismPM source now provides `export-browser`: integrity-checked export of the
+six generated browser files from a local immutable OCI release, without
+application source or rebuilding. The locked SDK does not include this API.
+A reviewed SDK update and consumer verification remain required; export does
+not establish producer readiness, target authorization or deployed acceptance.
+
+Full native AMD64 `just vv` for this status update passed in the locked SDK;
+log: `target/source-export-status-full-vv.log`. This is scaffold verification,
+not product acceptance.
 
 ## Owner-controlled acceptance inputs
 
@@ -63,6 +73,11 @@ All 19 Hologram 0.13.1 public crate index entries remain absent. The
 [last real publication](https://github.com/Hologram-Technologies/hologram/actions/runs/34018837931)
 failed with HTTP 403; a successful dry run is not publication.
 Upstream release approval and publishing authority remain external inputs.
+The current PrismPM dependency couples its `.holo` archive/codec implementation
+to `uor-hologram`; this does not require hosting the Hologram platform.
+Any upstream separation must preserve the modeled format and authoritative
+compatibility checks. The required Foundry browser services remain unimplemented
+independently of this package-publication boundary.
 
 GitHub reports no foundry-web deployments; the default HTTPS Pages URL returns
 404. [Publisher status](https://github.com/UOR-Foundation/foundry-web/blob/main/IMPLEMENTATION.md)
