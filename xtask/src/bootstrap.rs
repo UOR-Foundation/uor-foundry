@@ -52,7 +52,12 @@ fn sdk_image(lock: &str) -> Option<&str> {
 }
 
 fn sha256(bytes: &[u8]) -> String {
-    format!("sha256:{:x}", Sha256::digest(bytes))
+    let digest = Sha256::digest(bytes);
+    let hex = digest
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect::<String>();
+    format!("sha256:{hex}")
 }
 
 fn content_matches(bytes: &[u8], expected: &str) -> bool {
@@ -551,6 +556,18 @@ mod tests {
         update_preserves_project_content, workflow_history_is_complete, PROJECT_CONTENT_PATHS,
         UNIVERSAL_POLICY_PATHS,
     };
+
+    #[test]
+    fn sha256_identity_retains_canonical_lowercase_bytes() {
+        assert_eq!(
+            sha256(b""),
+            "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        );
+        assert_eq!(
+            sha256(b"abc"),
+            "sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        );
+    }
 
     #[test]
     fn initial_standards_binding_refuses_project_drift() {
