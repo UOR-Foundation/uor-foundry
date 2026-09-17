@@ -23,6 +23,17 @@ are not implemented or accepted. Requirements are not implementation evidence.
 PrismPM is consumed as an SDK, following
 [Calculator](https://github.com/UOR-Foundation/calculator-example).
 
-The inherited SDK release bindings are not configured; the devcontainer and
-`just vv` remain blocked. Repository policy is in [AGENTS.md](AGENTS.md) and
+The SDK/template binding selects an authenticated development candidate.
+Reviewed development infrastructure belongs on `main` after the complete
+repository gate passes. Main-branch integration does not qualify the SDK or
+portal for production release; publication retains its separate acceptance
+requirements. Source checkouts and host tools are not substitutes for the
+locked SDK.
+
+Application work and its additional acceptance gates remain in
+[PR #3](https://github.com/UOR-Foundation/uor-foundry/pull/3), without narrowing
+the product requirements in [SPEC.md](SPEC.md). Passing this empty scaffold's
+gate is not application or production acceptance.
+
+Repository policy is in [AGENTS.md](AGENTS.md) and
 [TEMPLATE-CONTRACT.md](TEMPLATE-CONTRACT.md).
