@@ -14,7 +14,16 @@ The documentation update passed full `just vv` in the locked AMD64 SDK;
 `8bbb60b482eb0061beeaaf1533f39a9d7a836949`, contains only an unaccepted bounded
 UTF-8 draft preview, without identity, persistence, publication, or networking.
 
-## Required completion
+## Authorized first release
+
+Implement identity, roles, shared workspaces, persistence, and messaging as one
+functional core under SPEC.md's staged acceptance contract. None is implemented
+or accepted on main. Require actual independent-user interaction, permission
+enforcement, persisted state, message delivery and fault/recovery evidence.
+Workspace identities and roles must not imply verified Foundation authority.
+The draft text preview does not meet this release scope.
+
+## Complete product requirements
 
 | Boundary | Remaining work and acceptance |
 | --- | --- |
@@ -28,9 +37,11 @@ UTF-8 draft preview, without identity, persistence, publication, or networking.
 | Publication SDK | Complete source-free acquisition, readiness and authorization verification; integrate confined atomic artifact export, live verification and accepted-release rollback. Preserve unchanged bytes; reject partial, stale, substituted or unauthorized evidence. |
 | Pages and final acceptance | foundry-web consumes the exact authorized producer release, uploads/deploys it through Actions, and verifies actual deployment identity, HTTPS target, every asset and complete live journeys/assessments. A successful upload is not final acceptance. |
 
-Every row remains required. Missing owner inputs block production acceptance,
-not independent generic implementation. The workspace's 5 September SDK and
-Calculator task list does not replace the later Foundry scope in SPEC.md.
+Every row remains required for full Foundation acceptance. The authorized core
+may be published after its complete stage gates pass; other facets remain
+explicitly unaccepted. Missing owner inputs block dependent claims and
+operations, not unrelated core implementation. The workspace's 5 September SDK
+and Calculator task list does not replace the later Foundry scope in SPEC.md.
 
 PrismPM source now provides `export-browser`: integrity-checked export of the
 six generated browser files from a local immutable OCI release, without
@@ -38,9 +49,9 @@ application source or rebuilding. The locked SDK does not include this API.
 A reviewed SDK update and consumer verification remain required; export does
 not establish producer readiness, target authorization or deployed acceptance.
 
-Full native AMD64 `just vv` for this status update passed in the locked SDK;
-log: `target/source-export-status-full-vv.log`. This is scaffold verification,
-not product acceptance.
+The preceding source-export status update passed full native AMD64 `just vv`
+in the locked SDK; log: `target/source-export-status-full-vv.log`.
+This is scaffold verification, not product acceptance.
 
 ## Owner-controlled acceptance inputs
 
@@ -81,4 +92,5 @@ independently of this package-publication boundary.
 
 GitHub reports no foundry-web deployments; the default HTTPS Pages URL returns
 404. [Publisher status](https://github.com/UOR-Foundation/foundry-web/blob/main/IMPLEMENTATION.md)
-owns target routing and publication evidence. No partial portal is authorized.
+owns target routing and publication evidence. The functional core is authorized
+for staged publication only after its release gates pass; a preview is not.

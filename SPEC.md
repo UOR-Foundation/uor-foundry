@@ -24,10 +24,11 @@ Deployment configuration cannot add or change product behavior. Generic
 compilation, release transport, and validation belong in PrismPM and its
 upstream packages.
 
-The requested initial Pages address is `https://uor.foundation/foundry-web/`;
-its routing is not yet established. `app.uor.foundation` remains a future
-address, not a bootstrap dependency. Both publication targets must consume
-the same modeled product, not separately authored portals.
+The default `https://uor-foundation.github.io/foundry-web/` is allowed for
+initial publication. Routing for `https://uor.foundation/foundry-web/` is not
+established. `app.uor.foundation` remains a future address, not a bootstrap
+dependency. All publication targets must consume the same modeled product,
+not separately authored portals.
 Reusable capabilities belong upstream, not in a vendored SDK or handwritten
 application fallback. All implementation semantics flow through LexLean,
 generated Lean, and lean4-prod, including the Holo profile and browser Views.
@@ -56,6 +57,37 @@ An interface, mock, third-party link, or generated document is not a service
 implementation. AI output is a proposal until the applicable workflow
 authorizes and verifies its effects. Recording a payment or assessment is
 not evidence of settlement or certification by an independent authority.
+
+## Initial functional release
+
+The owner authorizes staged publication of a functional core containing all
+five capabilities below; full Foundation implementation need not be published
+at once. This is not authorization to publish a mock or draft preview.
+
+- Identity: authenticate a workspace identity and its actions across sessions.
+- Roles: enforce modeled membership, permissions, delegation and revocation.
+- Shared workspaces: independent participants access and change shared state
+  under those permissions, not separate local copies presented as collaboration.
+- Persistence: retain and recover authorized workspace state across reloads
+  and restarts; distinguish local writes from confirmed replication.
+- Messaging: deliver and retain authorized messages between workspace members,
+  with explicit delivery, failure and recovery states.
+
+Workspace authentication and role assignment do not verify civil identity,
+Foundation employment, faculty appointment, or organizational authority.
+Such claims require separately approved Foundation records and authorization.
+The release must expose this distinction and enforce it outside the View too.
+
+The model and release evidence identify this exact stage and its complete
+runtime, control, dependency and artifact closure. All five capabilities need
+real multi-user journeys, persistence/recovery and adversarial acceptance.
+The mandatory base profile and every applicable adopted control remain binding.
+No broader compliance, certification, internet-grade availability or independent
+browser-network claim follows from core acceptance.
+
+Every other facet in Complete scope remains required and explicitly unaccepted,
+not deleted, satisfied, or declared inapplicable. Release notes and Views must
+distinguish accepted core behavior from these unimplemented obligations.
 
 ## Controls and standards
 
@@ -93,8 +125,8 @@ Kappa provides the modeled decentralized object space, queries, references,
 and service artifacts; a browser runtime executes the artifacts.
 
 GitHub Pages initially distributes the generated portal through `foundry-web`
-and bootstraps the browser network. The requested address is
-`https://uor.foundation/foundry-web/`, pending confirmed routing. Assets,
+and bootstraps the browser network. The default Pages URL is an allowed initial
+target; `https://uor.foundation/foundry-web/` awaits confirmed routing. Assets,
 links, and browser acceptance must work under `/foundry-web/`, without a
 repository custom domain or an `app.uor.foundation` redirect. GitHub remains
 a modeled publication target after the network becomes independent.
@@ -145,34 +177,41 @@ measurements. No claim permits execution without an available executor or
 recovery after every recoverable copy is destroyed.
 
 Targets and operating policies not supplied by the owner remain explicit
-acceptance inputs, not invented defaults. Their absence blocks production
-acceptance, not implementation of independent generic prerequisites.
+acceptance inputs, not invented defaults. Their absence blocks the claims and
+operations that depend on them, not unrelated functional-core implementation.
 
 ## Release acceptance
 
-The complete locked Prism model must generate every declared artifact through
-the accepted SDK, including the `.holo` runtime closure and browser projection.
+Acceptance is scoped to the explicitly authorized release stage. Full
+Foundation acceptance still requires the complete product scope; core
+acceptance does not imply it. No capability within the core may be omitted.
+
+The complete locked Prism model for that stage must generate every declared
+artifact through the accepted SDK, including the `.holo` runtime closure and
+browser projection.
 No independent handwritten UI, service, compiler, or policy implementation may
 substitute for the model. Bootstrap trust is explicit and non-circular.
 
-Acceptance requires complete control/oracle coverage, human assessment where
-required, all service journeys, negative/mutation tests, two clean reproducible
-builds, actual browser execution, recovery and fault tests, and verification
-of deployed bytes at the approved deployment address. All evidence binds
+Acceptance requires complete applicable control/oracle coverage, human assessment
+where required, all stage service journeys, negative/mutation tests, two clean
+reproducible builds, actual browser execution, recovery and fault tests, and
+verification of deployed bytes at the approved deployment address. All evidence binds
 exact inputs, subjects, tools, policies, and results. Empty registers cannot
 establish this.
 
 Release evidence has three explicit states:
 
-1. **Producer-ready:** the complete product and dependency closure pass every
-   pre-publication gate, including all applicable controls, assessments,
+1. **Producer-ready:** the complete declared stage and dependency closure pass
+   every pre-publication gate, including all applicable controls, assessments,
    reproducible builds, service journeys, and browser/fault/recovery tests.
    Only checks that require the actual target deployment remain outstanding;
    their exact required set is recorded. This is not final product acceptance.
 2. **Deployment-authorized:** an authorized decision binds that immutable
    producer-ready release to its target. The publisher verifies both the
    complete readiness evidence and authorization before deploying unchanged
-   bytes. A partial service or draft-preview release cannot enter this state.
+   bytes. An incomplete core capability or draft-preview release cannot enter
+   this state. Authorization names the stage; it cannot imply full Foundation
+   acceptance.
 3. **Accepted:** post-deployment identity, bytes, live journeys, operational
    measurements, and every remaining applicable control/assessment pass for
    that exact release. Failed or missing checks prevent final acceptance;
@@ -183,19 +222,19 @@ before deployment or bypassing a gate. Changes invalidate affected evidence
 and repeat the required checks. A deployable candidate is not a completed or
 production-accepted Foundation portal.
 
-The producer release binds its source revision, model digest, complete
-service and dependency closure, controls, assessments, browser artifacts,
+The producer release binds its stage, source revision, model digest, complete
+stage service and dependency closure, controls, assessments, browser artifacts,
 and reproducible-build evidence. `foundry-web` independently verifies that
 binding and the authorized target before publication. Its delivery checks
 cannot replace producer acceptance. A signed SDK, a draft preview, or a valid
-artifact digest does not establish the complete product.
+artifact digest does not establish the core or complete product.
 
 Publication promotes unchanged artifacts authorized for that release state;
-the publisher must reject missing, substituted, stale, partial, or
+the publisher must reject missing, substituted, stale, stage-incomplete, or
 state-inappropriate evidence. Target
 changes requiring different generated assets return to `uor-foundry` for
 modeling and acceptance. Live verification checks the actual deployment
-identity, approved URL, artifact bytes, and complete stakeholder journeys.
+identity, approved URL, artifact bytes, and complete stage stakeholder journeys.
 
 Development and verification use repository devcontainers; consumer acceptance
 uses the immutable SDK lock. Preserve template policy, keep build/cache output

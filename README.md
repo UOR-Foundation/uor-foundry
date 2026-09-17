@@ -17,8 +17,13 @@ Foundation or its services. Generic SDK capabilities belong upstream.
 ## Status
 
 Repository bootstrap only, from [UOR template](https://github.com/UOR-Foundation/template/tree/e0e11ecb1b38e202116d9806887363848629d439).
+The authorized first functional release comprises identity, roles, shared
+workspaces, persistence, and messaging. Workspace identities and roles do not
+assert verified Foundation appointments or organizational authority.
+This core is not implemented or accepted yet; a draft preview does not satisfy it.
 The complete organizational model, standards bindings, services, and portal
-are not implemented or accepted. Requirements are not implementation evidence.
+remain required and explicitly unaccepted. Core acceptance will not establish
+complete Foundation implementation or standards compliance.
 The audited remaining work and owner inputs are in [IMPLEMENTATION.md](IMPLEMENTATION.md).
 
 PrismPM is consumed as an SDK, following
