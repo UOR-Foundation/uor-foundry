@@ -27,7 +27,7 @@ The draft text preview does not meet this release scope.
 
 | Boundary | Remaining work and acceptance |
 | --- | --- |
-| SDK and dependencies | Publish and verify the complete production dependency closure; deliver lawful, digest-bound oracle inputs from a fresh cache; accept the corrected compiler/runtime in the immutable SDK on both architectures. Source integration is not consumer acceptance. |
+| SDK and dependencies | Publish and verify the self-contained immutable OCI SDK on both architectures, including the complete offline dependency closure and digest-bound oracle inputs from a fresh cache. Source integration is not consumer acceptance. Public Cargo publication follows Foundry publication and verification. |
 | Standards | Implement OSCAL catalogs, profile resolution, component/system records, inheritance and authenticated assessments. Bind every adopted edition to its complete applicable authoritative coverage. Existing structural control records are not OSCAL implementation. |
 | Organization and sites | Model the approved Foundation, HQ and Foundry records, policies, responsibilities and physical/human obligations; validate their applicable assessments. |
 | Services and Views | Implement every service and stakeholder journey in SPEC.md through Prism/LexLean and prism-stdlib, including state, permissions, effects, resource bounds and failures. No handwritten application substitute or draft-preview release. |
@@ -80,15 +80,13 @@ tests do not establish production discovery, private-key possession, private
 replication or approved durability. Its threat-model assumptions must be
 revalidated against participant/faculty sessions only.
 
-All 19 Hologram 0.13.1 public crate index entries remain absent. The
-[last real publication](https://github.com/Hologram-Technologies/hologram/actions/runs/34018837931)
-failed with HTTP 403; a successful dry run is not publication.
-Upstream release approval and publishing authority remain external inputs.
-The current PrismPM dependency couples its `.holo` archive/codec implementation
-to `uor-hologram`; this does not require hosting the Hologram platform.
-Any upstream separation must preserve the modeled format and authoritative
-compatibility checks. The required Foundry browser services remain unimplemented
-independently of this package-publication boundary.
+PrismPM source replaces its production Hologram dependency with the
+LexLean-generated `prism-stdlib` Holo/1 codec. Pinned upstream implementations
+remain independent compatibility oracles, not Foundry services. A fully
+verified immutable SDK containing this change is still required; the current
+consumer lock has not changed. The owner requires Foundry publication and
+verification before first-party crates.io publication. Registry publication
+does not block the OCI SDK path or waive package and oracle verification.
 
 GitHub reports no foundry-web deployments; the default HTTPS Pages URL returns
 404. [Publisher status](https://github.com/UOR-Foundation/foundry-web/blob/main/IMPLEMENTATION.md)
