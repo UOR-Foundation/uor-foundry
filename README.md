@@ -1,36 +1,39 @@
-# UOR project template
+# UOR Foundry
 
-Shared repository policy for projects consuming PrismPM as an SDK. No
-application or organizational model is included.
+The UOR Foundation is dedicated to the democratization of technology for the
+well-being of humanity. It operates under the Citizen Gardens model through
+a network of Foundries; the first Foundry also houses Foundation HQ.
 
-## Create a repository
+This repository owns the complete PrismPM model: the organization, sites,
+services, workflows, stakeholder roles, and portal Views. PrismPM and
+prism-stdlib generate and validate its artifacts against adopted standards.
+The required product contract is [SPEC.md](SPEC.md).
 
-1. Create a GitHub repository from this template and clone it.
-2. Set `workspace.package.repository` and `homepage` in `Cargo.toml`.
-3. Replace this README with the project's name, purpose, and current status.
-4. Keep the claim and authority registers empty until capabilities are defined.
-   Follow [AGENTS.md](AGENTS.md) when adding them.
+[foundry-web](https://github.com/UOR-Foundation/foundry-web) publishes the exact
+verified and authorized portal release, then verifies its live deployment.
+It does not maintain another implementation of the
+Foundation or its services. Generic SDK capabilities belong upstream.
 
-## SDK status
+## Status
 
-This template is not yet bound to a public SDK release. `prismpm.lock` and
-`template.lock` are absent; the devcontainer and complete `just vv` gate require
-those immutable bindings. Creating and naming a repository does
-not require selecting its model, standards, views, or deployment targets.
+Repository bootstrap only, from [UOR template](https://github.com/UOR-Foundation/template/tree/e0e11ecb1b38e202116d9806887363848629d439).
+The complete organizational model, standards bindings, services, and portal
+are not implemented or accepted. Requirements are not implementation evidence.
 
-Once bound, open the repository in its digest-pinned devcontainer and run
-`just vv`. The host needs only Git, Docker with Buildx, and a devcontainer
-client. Do not substitute a vendored PrismPM checkout or host toolchain.
+PrismPM is consumed as an SDK, following
+[Calculator](https://github.com/UOR-Foundation/calculator-example).
 
-## Repository boundary
+The SDK/template binding selects an authenticated development candidate.
+Reviewed development infrastructure belongs on `main` after the complete
+repository gate passes. Main-branch integration does not qualify the SDK or
+portal for production release; publication retains its separate acceptance
+requirements. Source checkouts and host tools are not substitutes for the
+locked SDK.
 
-- `model/`, `features/suites/`, and generated `CONFORMANCE.md` describe project
-  claims. They begin empty; repository tooling is not a product implementation.
-- [TEMPLATE-CONTRACT.md](TEMPLATE-CONTRACT.md) defines inherited policy and the
-  immutable SDK/template update process.
-- [VERIFICATION.md](VERIFICATION.md) defines the full acceptance boundary;
-  [TEMPLATE-VERIFICATION.md](TEMPLATE-VERIFICATION.md) maps the scaffold's gates.
-- Reusable workflows are infrastructure. Do not enable publication or
-  deployment before the project model and its acceptance criteria exist.
+Application work and its additional acceptance gates remain in
+[PR #3](https://github.com/UOR-Foundation/uor-foundry/pull/3), without narrowing
+the product requirements in [SPEC.md](SPEC.md). Passing this empty scaffold's
+gate is not application or production acceptance.
 
-Licensed under [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE).
+Repository policy is in [AGENTS.md](AGENTS.md) and
+[TEMPLATE-CONTRACT.md](TEMPLATE-CONTRACT.md).
