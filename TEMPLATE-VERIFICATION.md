@@ -1,7 +1,7 @@
-# Template repository verification
+# Repository infrastructure verification
 
-This repository's `just vv` instantiates the universal verification policy in
-`VERIFICATION.md` for the empty template itself.
+This repository's `just vv` applies the universal verification policy in
+`VERIFICATION.md` to its current scaffold, not the complete Foundry application.
 
 | `just` recipe | Enforces | ID classes |
 | --- | --- | --- |
@@ -30,3 +30,23 @@ added without the other two.
 `audit-deferral` reads every crate and `xtask`, including itself. Its token
 construction therefore cannot exempt the very gate in which a deferral could
 otherwise be hidden.
+
+## Reviewed dependency-maintenance policy
+
+The Dependabot configuration and native audit files are byte-identical to
+[template `1bea460`](https://github.com/UOR-Foundation/template/commit/1bea460bac6ea50bae53a7eeb674589d7900e6cb).
+SDK-managed Action and byte-bound bootstrap updates retain their reviewed
+release flow; ordinary Actions and Cargo updates remain weekly.
+Universal policy, SDK/template locks, model and complete `just vv` are unchanged.
+
+Native AMD64 `just vv` passed in the locked SDK: 22 Rust tests, two Node tests,
+formatting, template/model/inventory checks, Clippy, all-feature compilation,
+BDD and dependency checks. The owning tests reject missing/wrong/broad
+exclusions, disabled maintenance and duplicate keys. Pre-commit log SHA-256:
+`278fe48b16614d2f027f585fbeb0460196e7dabec802304087e2e60c02070ce1`.
+This is scaffold evidence, not application or production acceptance.
+
+Action references are independently pinned. The current audit and runtime do
+not compare the fetched Action tree with the SDK's `action` inventory digest.
+Ownership exclusions do not close that execution-binding gap; an independent
+Action commit need not equal the SDK build commit.
