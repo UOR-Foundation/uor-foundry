@@ -78,6 +78,18 @@ Foundation employment, faculty appointment, or organizational authority.
 Such claims require separately approved Foundation records and authorization.
 The release must expose this distinction and enforce it outside the View too.
 
+The owner designates `trinity@uor.foundation` as the initial Foundation
+administrator mailbox. Bootstrap must verify control of that exact mailbox
+and bind the verified challenge to the enrolling administrator key and the
+Foundation authority record. Entering the address, creating a workspace,
+possessing a self-signed key, or discovering mail-routing records is not
+mailbox verification. Public assets must contain no verification secrets.
+Any external verification dependency must be disclosed and approved before
+use. Expired, replayed, wrong-mailbox and substituted-key challenges must
+fail without granting authority. Recovery, further administrator enrollment
+and faculty approval require their own approved authorization policies;
+the mailbox designation alone does not supply them.
+
 The model and release evidence identify this exact stage and its complete
 runtime, control, dependency and artifact closure. All five capabilities need
 real multi-user journeys, persistence/recovery and adversarial acceptance.

@@ -23,6 +23,18 @@ enforcement, persisted state, message delivery and fault/recovery evidence.
 Workspace identities and roles must not imply verified Foundation authority.
 The draft text preview does not meet this release scope.
 
+The owner designates `trinity@uor.foundation` as the initial Foundation
+administrator mailbox. Its owner has not been authenticated by this
+implementation; no administrator key is enrolled. Implement and verify
+the challenge/key binding and negative cases required by SPEC.md before
+granting Foundation authority. A verification mechanism and any external
+dependency still require approval; no mailbox or provider credentials belong
+in repository files, public artifacts, or chat.
+This requirements update passed full `just vv` in the locked AMD64 SDK;
+`target/initial-admin-requirement-full-vv.log` has SHA-256
+`6d8e0433c5f121490fd45e722a67d197082dfd8f3728a7349c1aa6b9e7f4dd2b`.
+That verifies the scaffold, not administrator authentication or portal behavior.
+
 ## Complete product requirements
 
 | Boundary | Remaining work and acceptance |
@@ -58,7 +70,8 @@ This is scaffold verification, not product acceptance.
 No approved records for the following were found in the audited main or draft:
 
 - legal entity, HQ/site locations, jurisdictions and site assessments;
-- governance, authorized people/keys, admission, delegation and recovery policies;
+- governance, authenticated administrator keys, admission, delegation and
+  recovery policies beyond the designated initial administrator mailbox;
 - adopted standards/editions, normative-source rights and assessment authorities;
 - business plan, operating procedures, brand assets and publication approvals;
 - payment scope/counterparties and certification issuer/recognition rules;
