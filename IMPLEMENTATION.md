@@ -32,6 +32,9 @@ The draft text preview does not meet this release scope.
 The generic platform must start without seeded accounts, organizations or
 administrator mailboxes. Model provisional organization creation, explicit
 creator grants and policy-compliant activation without name-based privileges.
+Enrollment and organization creation are open; names may repeat, including UOR
+Foundation. Neither registrant nor name ownership needs Foundation approval.
+Use distinct UOR-referenced organization identities for isolation and authority.
 Activation and subsequent changes require complete scoped ownership by distinct
 users, at least two retained administrators per affected part or a stronger
 modeled minimum, and the applicable approval quorum. Founding-grant retirement
@@ -39,12 +42,16 @@ requires coverage by other users, not an all-powerful successor. No universal
 quorum of three is inferred. Test cross-organization raw requests, shared-user
 membership, concurrent changes, lost approvers and denied activation.
 
-Every user requires the option of verified email login/recovery, implemented
-with PrismPM and executed in browsers without a hosted platform or organization
-backend. Recovery cannot bypass scoped approval, restore revoked grants or
-create authority. No mailbox-proof authority is approved or implemented; any
-external dependency still needs disclosure and approval. No verification secrets
-belong in public artifacts. These are requirements, not implemented capabilities.
+Every user requires verified email enrollment/login/recovery as an available
+capability, modeled in PrismPM and implemented through the UOR Framework-native
+approach in browsers, without a hosted platform or organization backend.
+The native delivery, mailbox-proof and recovery protocol is not implemented;
+this is implementation work, not a requirement to choose an authentication
+vendor. Bind its account/credential/recovery records, effects, trust boundaries
+and complete acceptance evidence. Recovery cannot bypass scoped approval,
+restore revoked grants or create authority. External dependencies still need
+disclosure and approval; no verification secrets belong in public artifacts.
+Key possession or a UOR reference alone does not establish mailbox control.
 PrismPM's current Workspace/V1 single-owner operations do not implement the
 required scoped multi-administrator policy. Its authority, protocol and recovery
 boundaries need a modeled implementation, not merely additional View roles.
@@ -61,7 +68,7 @@ scaffold verification, not acceptance of organization creation or isolation.
 | Standards | Implement OSCAL catalogs, profile resolution, component/system records, inheritance and authenticated assessments. Bind every adopted edition to its complete applicable authoritative coverage. Existing structural control records are not OSCAL implementation. |
 | Organization lifecycle and sites | Model normal creation, provisional setup, activation, isolated records and site lifecycles. UOR's Foundation, HQ, Foundry and Citizen Gardens records use these same workflows; validate authorized policies and applicable physical/human assessments without seeded privileges. |
 | Services and Views | Implement every service and stakeholder journey in SPEC.md through Prism/LexLean and prism-stdlib, including state, permissions, effects, resource bounds and failures. No handwritten application substitute or draft-preview release. |
-| Account and authority continuity | Implement verified optional email login/recovery, scoped grants, distinct-user approval quorums and atomic post-change ownership coverage. Reject concurrent lockout, replay, revoked-grant recovery and premature bootstrap retirement; a self-selected role or repeated key is not another administrator. |
+| Account and authority continuity | Implement UOR-native verified email enrollment/login/recovery through PrismPM, scoped grants, distinct-user approval quorums and atomic post-change ownership coverage. Reject concurrent lockout, replay, revoked-grant recovery and premature bootstrap retirement; a self-selected role or repeated key is not another administrator. |
 | Browser object space | Implement browser Kappa storage, queries, inbound dispatch and verified blob transfer; model authenticated membership, confidentiality, conflicts, revocation, retention, replication, repair and recovery. |
 | Network acceptance | Exercise independent participants under real discovery/connectivity constraints, suspension, eviction, partitions, hostile inputs and replica loss. Measure approved availability and recovery targets; local two-browser tests are not internet-scale evidence. |
 | Producer release | Generate all artifacts twice reproducibly; verify complete service/control/dependency/assessment coverage. Bind exact producer identity, artifact tree and pre-publication evidence, with only the exact deployment-dependent checks outstanding. |
@@ -90,8 +97,8 @@ This is scaffold verification, not product acceptance.
 No approved records for the following were found in the audited main or draft:
 
 - organization identity, legal entity, HQ/site locations, jurisdictions and assessments;
-- authenticated administrator keys, admission records, verification authority,
-  creation/activation policies, exact scope quorums and recovery rules beyond
+- authenticated administrator keys, membership admission records,
+  activation policies, exact scope quorums and recovery rules beyond
   the required isolation and access-continuity constraints;
 - adopted standards/editions, normative-source rights and assessment authorities;
 - business plan, operating procedures, brand assets and publication approvals;
@@ -102,6 +109,7 @@ These are per-organization inputs, except for explicitly modeled platform policy
 UOR's mission does not supply them; they must not be invented or preinstalled.
 Missing organization records block dependent claims and operations, not unrelated
 generic workflows or publication of an otherwise accepted empty platform.
+Approval of registrants or organization names is not an acceptance input.
 
 ## External boundaries
 

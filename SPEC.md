@@ -81,8 +81,14 @@ at once. This is not authorization to publish a mock or draft preview.
   with explicit delivery, failure and recovery states.
 
 Normal account and organization creation are required core journeys, including
-creating UOR through the same workflow as any other organization. Creation is
-an authenticated operation under a modeled creation policy. It establishes only
+creating UOR through the same workflow as any other organization. Enrollment is
+open to anyone; any enrolled user may create an organization with any display
+name, including a name already used by another organization. Creation requires
+neither Foundation approval nor proof of name, domain or legal-entity ownership.
+Names are display data, not reserved or globally unique identifiers; apply the
+same modeled encoding, resource and safe-rendering rules to every name.
+Distinct UOR-referenced organization identities bind records and permissions.
+Creation is authenticated to establish the creator's grants. It establishes only
 the new organization's provisional scope and explicit creator grants, never
 authority over another organization or the platform. Names, domains, mailbox
 strings, repository ownership and self-selected roles confer no privileges.
@@ -102,10 +108,19 @@ assessments. Role admission, including UOR faculty membership, requires recorded
 approval by the organization's currently authorized administrators, enforced at
 every applicable boundary rather than only in the View.
 
-Every user must have the option of verified email login and account recovery.
-The Foundry implementation of these flows must be PrismPM-defined and execute
-in browsers; a hosted platform or organization authentication/recovery backend
-is not authorized.
+Verified email enrollment, login and account recovery are required capabilities
+available to every user. Implement them through the UOR Framework-native
+approach: PrismPM models the account, credential, mailbox-binding, challenge,
+proof and recovery records, their UOR references and authorized transitions;
+prism-stdlib owns reusable protocol bindings. Foundry execution remains in
+browsers; a hosted platform or organization authentication/recovery backend
+is not authorized. Selecting a third-party authentication vendor is not a
+prerequisite for defining or implementing these capabilities.
+Mailbox delivery and proof validation are explicit modeled effects and trust
+boundaries, requiring standards bindings and actual acceptance evidence. UOR
+references and signatures identify and authenticate records; they do not by
+themselves prove access to an external mailbox. Protect mailbox data, challenges
+and recovery material from unauthorized peers, public artifacts and discovery.
 Recovery restores only that user's currently authorized access; it cannot
 resurrect revoked grants, bypass an approval quorum, or grant new authority.
 Verification binds the mailbox, account, operation, challenge, expiry and
@@ -144,8 +159,10 @@ parts; email recovery and direct protocol requests obey the same policy.
 Acceptance must exercise partial and complete bootstrap handover, scoped
 multi-party grants, duplicate approvers, concurrent removals, revoked-account
 recovery, lost access and inherited-scope changes without an implicit root bypass.
-It must also exercise empty-platform onboarding, normal UOR creation, denied
-activation, organization-name impersonation and cross-organization raw requests.
+It must also exercise empty-platform onboarding, normal UOR creation, independent
+organizations with identical names, denied activation, safe label rendering and
+cross-organization raw requests. Reusing a name must neither block creation nor
+grant access to the other organization.
 
 The model and release evidence identify this exact stage and its complete
 runtime, control, dependency and artifact closure. All five capabilities need
