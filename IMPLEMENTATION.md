@@ -88,6 +88,10 @@ tags/digests without referenced blob bytes. It is not an accepted browser
 service. The locked Veilid browser path requires reachable transport peers;
 Pages distribution alone does not provide them.
 
+The owner authorizes disclosed public Veilid bootstrap/relay peers for bootstrap.
+Their modeled bindings, transport integration, trust/failure tests and actual
+network acceptance remain required; no such dependency is configured yet.
+
 Holospaces `96769f16be454ab1572fddff4613704ccfbebf5e` provides browser storage
 and execution primitives. Its local WebRTC witness and public-key/address
 tests do not establish production discovery, private-key possession, private

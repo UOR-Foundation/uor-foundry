@@ -148,6 +148,12 @@ a modeled publication target after the network becomes independent.
 Bootstrap hosting does not authorize undisclosed external inference,
 identity, signing, agent, storage, or application-service dependencies.
 
+The owner authorizes disclosed public Veilid bootstrap and relay peers during
+bootstrap. Model their exact transport, identities, trust boundaries, effects,
+failure behavior and acceptance evidence before use. This does not authorize
+dedicated Foundation nodes, hosted application services, undisclosed peers,
+or a claim that the browser network is independent of those peers.
+
 The migration lifecycle has three distinct states:
 
 1. **Bootstrap:** the accepted Pages release distributes the exact application
