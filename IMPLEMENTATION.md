@@ -29,8 +29,14 @@ implementation; no administrator key is enrolled. Implement and verify
 the challenge/key binding and negative cases required by SPEC.md before
 granting Foundation authority, including faculty-membership approval.
 A verification mechanism and any external dependency still require approval;
-no mailbox or provider credentials belong
-in repository files, public artifacts, or chat.
+no mailbox or provider credentials belong in repository files, public artifacts,
+or chat. The owner additionally requires optional email login/recovery for every
+user, scoped administration, policy-defined approval quorums and retained
+multi-user ownership. Bootstrap retirement requires complete model coverage by
+other users; every affected part must retain at least two administrators or its
+stronger modeled minimum. These requirements are specified in SPEC.md but are
+not implemented or verified. No permanent root account or universal quorum of
+three is inferred.
 This requirements update passed full `just vv` in the locked AMD64 SDK;
 `target/initial-admin-faculty-authority-full-vv.log` has SHA-256
 `b0235c523e15bf04c2da5db8dd3b4b09fd84d1cdfe72d69262df9ba3b72fdfd9`.
@@ -44,6 +50,7 @@ That verifies the scaffold, not administrator authentication or portal behavior.
 | Standards | Implement OSCAL catalogs, profile resolution, component/system records, inheritance and authenticated assessments. Bind every adopted edition to its complete applicable authoritative coverage. Existing structural control records are not OSCAL implementation. |
 | Organization and sites | Model the approved Foundation, HQ and Foundry records, policies, responsibilities and physical/human obligations; validate their applicable assessments. |
 | Services and Views | Implement every service and stakeholder journey in SPEC.md through Prism/LexLean and prism-stdlib, including state, permissions, effects, resource bounds and failures. No handwritten application substitute or draft-preview release. |
+| Account and authority continuity | Implement verified optional email login/recovery, scoped grants, distinct-user approval quorums and atomic post-change ownership coverage. Reject concurrent lockout, replay, revoked-grant recovery and premature bootstrap retirement; a self-selected role or repeated key is not another administrator. |
 | Browser object space | Implement browser Kappa storage, queries, inbound dispatch and verified blob transfer; model authenticated membership, confidentiality, conflicts, revocation, retention, replication, repair and recovery. |
 | Network acceptance | Exercise independent participants under real discovery/connectivity constraints, suspension, eviction, partitions, hostile inputs and replica loss. Measure approved availability and recovery targets; local two-browser tests are not internet-scale evidence. |
 | Producer release | Generate all artifacts twice reproducibly; verify complete service/control/dependency/assessment coverage. Bind exact producer identity, artifact tree and pre-publication evidence, with only the exact deployment-dependent checks outstanding. |
@@ -71,8 +78,9 @@ This is scaffold verification, not product acceptance.
 No approved records for the following were found in the audited main or draft:
 
 - legal entity, HQ/site locations, jurisdictions and site assessments;
-- governance, authenticated administrator keys, admission, delegation and
-  recovery policies beyond the designated initial administrator mailbox;
+- authenticated administrator keys, admission records, verification authority,
+  exact scope policies/quorums and recovery rules beyond the owner-defined
+  mailbox designation and access-continuity requirements;
 - adopted standards/editions, normative-source rights and assessment authorities;
 - business plan, operating procedures, brand assets and publication approvals;
 - payment scope/counterparties and certification issuer/recognition rules;

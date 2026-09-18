@@ -86,12 +86,42 @@ possessing a self-signed key, or discovering mail-routing records is not
 mailbox verification. Public assets must contain no verification secrets.
 Any external verification dependency must be disclosed and approved before
 use. Expired, replayed, wrong-mailbox and substituted-key challenges must
-fail without granting authority. Recovery, further administrator enrollment
-and delegation require their own approved authorization policies; the mailbox
-designation alone does not supply them. Once verified and enrolled, this
+fail without granting authority. Once verified and enrolled, this
 initial administrator is authorized to approve faculty membership. Approval
 must be an authenticated, recorded administrator action enforced at every
 applicable authorization boundary, not a participant-selected role.
+
+Every user must have the option of verified email login and account recovery.
+Recovery restores only that user's currently authorized access; it cannot
+resurrect revoked grants, bypass an approval quorum, or grant new authority.
+Verification binds the mailbox, account, operation, challenge, expiry and
+replacement key/session. Changing a recovery address requires authenticated
+authorization and proof of the new mailbox. External verification dependencies
+still require disclosure and approval; no provider is selected by this contract.
+
+Administration is delegated over explicit parts of any modeled system, including
+the Foundation and each Foundry. No permanent all-powerful user is required.
+The authoritative policy defines scope, inheritance, administrator membership,
+minimum retained administrators and the distinct eligible approvers required
+for each grant or policy change. Quorums may require multiple administrators;
+the example of three administrators is not a universal threshold.
+
+Disabling/removing an account, revoking/demoting a grant or changing scope,
+inheritance or policy must leave every affected part with at least two active
+authorized users and satisfy any stronger modeled minimum and approval quorum.
+Aliases, additional keys and duplicate approvals do not count as extra users.
+The initial sole administrator is an explicit bootstrap condition, not accepted
+redundancy. `trinity@uor.foundation` may be disabled or removed only after other
+users collectively cover the entire Foundry model under these rules. Retirement
+is not contingent on any one successor receiving access to every part.
+
+Evaluate approval and post-change coverage atomically against the current model
+and authority revision, including concurrent changes and newly added parts.
+Reject stale, replayed, out-of-scope or insufficient approvals and uncovered
+parts; email recovery and direct protocol requests obey the same policy.
+Acceptance must exercise partial and complete bootstrap handover, scoped
+multi-party grants, duplicate approvers, concurrent removals, revoked-account
+recovery, lost access and inherited-scope changes without an implicit root bypass.
 
 The model and release evidence identify this exact stage and its complete
 runtime, control, dependency and artifact closure. All five capabilities need
