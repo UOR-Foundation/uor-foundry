@@ -87,8 +87,11 @@ mailbox verification. Public assets must contain no verification secrets.
 Any external verification dependency must be disclosed and approved before
 use. Expired, replayed, wrong-mailbox and substituted-key challenges must
 fail without granting authority. Recovery, further administrator enrollment
-and faculty approval require their own approved authorization policies;
-the mailbox designation alone does not supply them.
+and delegation require their own approved authorization policies; the mailbox
+designation alone does not supply them. Once verified and enrolled, this
+initial administrator is authorized to approve faculty membership. Approval
+must be an authenticated, recorded administrator action enforced at every
+applicable authorization boundary, not a participant-selected role.
 
 The model and release evidence identify this exact stage and its complete
 runtime, control, dependency and artifact closure. All five capabilities need

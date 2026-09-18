@@ -27,12 +27,13 @@ The owner designates `trinity@uor.foundation` as the initial Foundation
 administrator mailbox. Its owner has not been authenticated by this
 implementation; no administrator key is enrolled. Implement and verify
 the challenge/key binding and negative cases required by SPEC.md before
-granting Foundation authority. A verification mechanism and any external
-dependency still require approval; no mailbox or provider credentials belong
+granting Foundation authority, including faculty-membership approval.
+A verification mechanism and any external dependency still require approval;
+no mailbox or provider credentials belong
 in repository files, public artifacts, or chat.
 This requirements update passed full `just vv` in the locked AMD64 SDK;
-`target/initial-admin-requirement-full-vv.log` has SHA-256
-`6d8e0433c5f121490fd45e722a67d197082dfd8f3728a7349c1aa6b9e7f4dd2b`.
+`target/initial-admin-faculty-authority-full-vv.log` has SHA-256
+`b0235c523e15bf04c2da5db8dd3b4b09fd84d1cdfe72d69262df9ba3b72fdfd9`.
 That verifies the scaffold, not administrator authentication or portal behavior.
 
 ## Complete product requirements
