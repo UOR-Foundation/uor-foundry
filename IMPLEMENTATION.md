@@ -91,12 +91,26 @@ Pages distribution alone does not provide them.
 The owner authorizes disclosed public Veilid bootstrap/relay peers for bootstrap.
 Their modeled bindings, transport integration, trust/failure tests and actual
 network acceptance remain required; no such dependency is configured yet.
+On 18 September 2026, four bounded discovery requests to the official default
+and its two DNS-advertised bootstrap hosts returned UDP/TCP/WS peers but no WSS
+endpoint. This is a discovery limit, not a census of the public network.
+[Veilid 0.5.7](https://gitlab.com/veilid/veilid/-/raw/v0.5.7/veilid-wasm/README.md)
+documents the HTTPS/outbound-relay limitation; its
+[relay selector](https://gitlab.com/veilid/veilid/-/raw/v0.5.7/veilid-core/src/routing_table/mod.rs)
+returns no outbound relay. Require an authenticated secure bootstrap route,
+implemented browser routing, and real HTTPS-origin acceptance before claiming
+shared operation. Enabling the WSS build feature alone does not satisfy these.
 
 Holospaces `96769f16be454ab1572fddff4613704ccfbebf5e` provides browser storage
 and execution primitives. Its local WebRTC witness and public-key/address
 tests do not establish production discovery, private-key possession, private
 replication or approved durability. Its threat-model assumptions must be
 revalidated against participant/faculty sessions only.
+Its threat model assumes native relay peers alongside browser tabs; its local
+WebRTC witness uses out-of-band signaling. Neither establishes automatic public
+discovery or availability under participant-only session churn. A browser-only
+replacement cannot be accepted until these dependencies and loss cases are
+modeled and exercised; an all-offline participant network cannot execute services.
 
 PrismPM source replaces its production Hologram dependency with the
 LexLean-generated `prism-stdlib` Holo/1 codec. Pinned upstream implementations
