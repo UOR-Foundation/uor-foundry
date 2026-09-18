@@ -1,18 +1,22 @@
 # Implementation status
 
-Audit: 17 September 2026 UTC, main `278ee0a29fc8d7262daf52791e24a845ac35a6f7`.
+Audit: 18 September 2026 UTC, main `e501aabf6274855ca45c79706ed85a7b6d4db646`.
 [SPEC.md](SPEC.md) remains the complete product contract. This record is not
 an implementation claim or a reduced release plan.
 
 Main is a development scaffold: capability, authority, and claim registers
-are empty. [Bootstrap verification](https://github.com/UOR-Foundation/uor-foundry/actions/runs/35178652915)
+are empty. [Bootstrap verification](https://github.com/UOR-Foundation/uor-foundry/actions/runs/35378439872)
 passed on AMD64 and ARM64; it does not verify product behavior.
 The documentation update passed full `just vv` in the locked AMD64 SDK;
 `target/producer-status-full-vv.log` has SHA-256
 `63f702d792c8eb6bc545811b8c5f4a647b3cc53b47846e0cb847ff910ea5db0b`.
 [Draft PR #3](https://github.com/UOR-Foundation/uor-foundry/pull/3), audited at
-`8bbb60b482eb0061beeaaf1533f39a9d7a836949`, contains only an unaccepted bounded
+`525e95b8a234aac448d926b9bd10cdd82e6f6796`, contains only an unaccepted bounded
 UTF-8 draft preview, without identity, persistence, publication, or networking.
+Its [complete CI gate](https://github.com/UOR-Foundation/uor-foundry/actions/runs/35184689066)
+fails on both architectures fetching a locked OSV input (`PP5401`, HTTP 404),
+before application acceptance. Its contract predates the staged core and current
+ownership requirements; synchronization must preserve those requirements.
 
 ## Authorized first release
 
@@ -20,35 +24,34 @@ Implement identity, roles, shared workspaces, persistence, and messaging as one
 functional core under SPEC.md's staged acceptance contract. None is implemented
 or accepted on main. Require actual independent-user interaction, permission
 enforcement, persisted state, message delivery and fault/recovery evidence.
-Workspace identities and roles must not imply verified Foundation authority.
+Normal account/organization creation and isolation are required, including UOR
+creation through the same workflow as any other organization. Workspace identity
+does not establish legal-entity identity, appointments or real-world authority.
 The draft text preview does not meet this release scope.
 
-The owner designates `trinity@uor.foundation` as the initial Foundation
-administrator mailbox. Its owner has not been authenticated by this
-implementation; no administrator key is enrolled. Implement and verify
-the challenge/key binding and negative cases required by SPEC.md before
-granting Foundation authority, including faculty-membership approval.
-A verification mechanism and any external dependency still require approval;
-no mailbox or provider credentials belong in repository files, public artifacts,
-or chat. The owner additionally requires optional email login/recovery for every
-user, scoped administration, policy-defined approval quorums and retained
-multi-user ownership. Bootstrap retirement requires complete model coverage by
-other users; every affected part must retain at least two administrators or its
-stronger modeled minimum. These requirements are specified in SPEC.md but are
-not implemented or verified. No permanent root account or universal quorum of
-three is inferred.
-The initial mailbox/faculty requirements update passed full `just vv` in the locked AMD64 SDK;
-`target/initial-admin-faculty-authority-full-vv.log` has SHA-256
-`b0235c523e15bf04c2da5db8dd3b4b09fd84d1cdfe72d69262df9ba3b72fdfd9`.
-That verifies the scaffold, not administrator authentication or portal behavior.
-The later scoped-authority requirements passed the complete locked-SDK gate
-and [both native CI architectures](https://github.com/UOR-Foundation/uor-foundry/actions/runs/35375509288)
-at `12f74b78d33f03c33cf5bec9cf6f352f7ef7b728`; this is also scaffold evidence.
-The owner requires browser-executed, PrismPM-defined login/recovery, not a hosted
-Foundation backend. No mailbox-proof authority is approved or implemented.
+The generic platform must start without seeded accounts, organizations or
+administrator mailboxes. Model provisional organization creation, explicit
+creator grants and policy-compliant activation without name-based privileges.
+Activation and subsequent changes require complete scoped ownership by distinct
+users, at least two retained administrators per affected part or a stronger
+modeled minimum, and the applicable approval quorum. Founding-grant retirement
+requires coverage by other users, not an all-powerful successor. No universal
+quorum of three is inferred. Test cross-organization raw requests, shared-user
+membership, concurrent changes, lost approvers and denied activation.
+
+Every user requires the option of verified email login/recovery, implemented
+with PrismPM and executed in browsers without a hosted platform or organization
+backend. Recovery cannot bypass scoped approval, restore revoked grants or
+create authority. No mailbox-proof authority is approved or implemented; any
+external dependency still needs disclosure and approval. No verification secrets
+belong in public artifacts. These are requirements, not implemented capabilities.
 PrismPM's current Workspace/V1 single-owner operations do not implement the
 required scoped multi-administrator policy. Its authority, protocol and recovery
 boundaries need a modeled implementation, not merely additional View roles.
+
+The generic-organization contract update passed full `just vv` in the locked
+AMD64 SDK; log: `target/generic-organization-contract-full-vv.log`. This is
+scaffold verification, not acceptance of organization creation or isolation.
 
 ## Complete product requirements
 
@@ -56,7 +59,7 @@ boundaries need a modeled implementation, not merely additional View roles.
 | --- | --- |
 | SDK and dependencies | Publish and verify the self-contained immutable OCI SDK on both architectures, including the complete offline dependency closure and digest-bound oracle inputs from a fresh cache. Source integration is not consumer acceptance. Public Cargo publication follows Foundry publication and verification. |
 | Standards | Implement OSCAL catalogs, profile resolution, component/system records, inheritance and authenticated assessments. Bind every adopted edition to its complete applicable authoritative coverage. Existing structural control records are not OSCAL implementation. |
-| Organization and sites | Model the approved Foundation, HQ and Foundry records, policies, responsibilities and physical/human obligations; validate their applicable assessments. |
+| Organization lifecycle and sites | Model normal creation, provisional setup, activation, isolated records and site lifecycles. UOR's Foundation, HQ, Foundry and Citizen Gardens records use these same workflows; validate authorized policies and applicable physical/human assessments without seeded privileges. |
 | Services and Views | Implement every service and stakeholder journey in SPEC.md through Prism/LexLean and prism-stdlib, including state, permissions, effects, resource bounds and failures. No handwritten application substitute or draft-preview release. |
 | Account and authority continuity | Implement verified optional email login/recovery, scoped grants, distinct-user approval quorums and atomic post-change ownership coverage. Reject concurrent lockout, replay, revoked-grant recovery and premature bootstrap retirement; a self-selected role or repeated key is not another administrator. |
 | Browser object space | Implement browser Kappa storage, queries, inbound dispatch and verified blob transfer; model authenticated membership, confidentiality, conflicts, revocation, retention, replication, repair and recovery. |
@@ -65,7 +68,8 @@ boundaries need a modeled implementation, not merely additional View roles.
 | Publication SDK | Complete source-free acquisition, readiness and authorization verification; integrate confined atomic artifact export, live verification and accepted-release rollback. Preserve unchanged bytes; reject partial, stale, substituted or unauthorized evidence. |
 | Pages and final acceptance | foundry-web consumes the exact authorized producer release, uploads/deploys it through Actions, and verifies actual deployment identity, HTTPS target, every asset and complete live journeys/assessments. A successful upload is not final acceptance. |
 
-Every row remains required for full Foundation acceptance. The authorized core
+Every row remains required for full platform acceptance. Organizational identity
+and compliance additionally require that organization's bound evidence. The core
 may be published after its complete stage gates pass; other facets remain
 explicitly unaccepted. Missing owner inputs block dependent claims and
 operations, not unrelated core implementation. The workspace's 5 September SDK
@@ -85,16 +89,19 @@ This is scaffold verification, not product acceptance.
 
 No approved records for the following were found in the audited main or draft:
 
-- legal entity, HQ/site locations, jurisdictions and site assessments;
+- organization identity, legal entity, HQ/site locations, jurisdictions and assessments;
 - authenticated administrator keys, admission records, verification authority,
-  exact scope policies/quorums and recovery rules beyond the owner-defined
-  mailbox designation and access-continuity requirements;
+  creation/activation policies, exact scope quorums and recovery rules beyond
+  the required isolation and access-continuity constraints;
 - adopted standards/editions, normative-source rights and assessment authorities;
 - business plan, operating procedures, brand assets and publication approvals;
 - payment scope/counterparties and certification issuer/recognition rules;
 - availability/workload/fault bounds, RPO/RTO, retention and replica obligations.
 
-The mission statement does not supply these values. They must not be invented.
+These are per-organization inputs, except for explicitly modeled platform policy.
+UOR's mission does not supply them; they must not be invented or preinstalled.
+Missing organization records block dependent claims and operations, not unrelated
+generic workflows or publication of an otherwise accepted empty platform.
 
 ## External boundaries
 
