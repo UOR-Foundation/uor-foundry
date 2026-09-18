@@ -37,10 +37,18 @@ other users; every affected part must retain at least two administrators or its
 stronger modeled minimum. These requirements are specified in SPEC.md but are
 not implemented or verified. No permanent root account or universal quorum of
 three is inferred.
-This requirements update passed full `just vv` in the locked AMD64 SDK;
+The initial mailbox/faculty requirements update passed full `just vv` in the locked AMD64 SDK;
 `target/initial-admin-faculty-authority-full-vv.log` has SHA-256
 `b0235c523e15bf04c2da5db8dd3b4b09fd84d1cdfe72d69262df9ba3b72fdfd9`.
 That verifies the scaffold, not administrator authentication or portal behavior.
+The later scoped-authority requirements passed the complete locked-SDK gate
+and [both native CI architectures](https://github.com/UOR-Foundation/uor-foundry/actions/runs/35375509288)
+at `12f74b78d33f03c33cf5bec9cf6f352f7ef7b728`; this is also scaffold evidence.
+The owner requires browser-executed, PrismPM-defined login/recovery, not a hosted
+Foundation backend. No mailbox-proof authority is approved or implemented.
+PrismPM's current Workspace/V1 single-owner operations do not implement the
+required scoped multi-administrator policy. Its authority, protocol and recovery
+boundaries need a modeled implementation, not merely additional View roles.
 
 ## Complete product requirements
 

@@ -92,6 +92,8 @@ must be an authenticated, recorded administrator action enforced at every
 applicable authorization boundary, not a participant-selected role.
 
 Every user must have the option of verified email login and account recovery.
+The Foundry implementation of these flows must be PrismPM-defined and execute
+in browsers; a hosted Foundation authentication/recovery backend is not authorized.
 Recovery restores only that user's currently authorized access; it cannot
 resurrect revoked grants, bypass an approval quorum, or grant new authority.
 Verification binds the mailbox, account, operation, challenge, expiry and
@@ -105,6 +107,9 @@ The authoritative policy defines scope, inheritance, administrator membership,
 minimum retained administrators and the distinct eligible approvers required
 for each grant or policy change. Quorums may require multiple administrators;
 the example of three administrators is not a universal threshold.
+Administrator count alone does not establish quorum availability: a two-of-two
+policy still depends on both users. Approval, succession and recovery acceptance
+must exercise unavailability without an implicit root or quorum bypass.
 
 Disabling/removing an account, revoking/demoting a grant or changing scope,
 inheritance or policy must leave every affected part with at least two active
