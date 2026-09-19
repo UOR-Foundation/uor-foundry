@@ -112,7 +112,10 @@ Verified email enrollment, login and account recovery are required capabilities
 available to every user. Implement them through the UOR Framework-native
 approach: PrismPM models the account, credential, mailbox-binding, challenge,
 proof and recovery records, their UOR references and authorized transitions;
-prism-stdlib owns reusable protocol bindings. Foundry execution remains in
+prism-stdlib owns reusable protocol bindings. Existing mail infrastructure may
+provide authenticated submission and mailbox access; this does not outsource
+Foundry accounts, permissions or recovery decisions. Sending mail alone does
+not establish mailbox control. Foundry execution remains in
 browsers; a hosted platform or organization authentication/recovery backend
 is not authorized. Selecting a third-party authentication vendor is not a
 prerequisite for defining or implementing these capabilities.
@@ -130,6 +133,28 @@ still require disclosure and approval; no provider is selected by this contract.
 Entering an address, a self-signed key or mail-routing records is not mailbox
 proof. Expired, replayed, wrong-mailbox and substituted-key challenges must fail
 without granting authority; public assets contain no verification secrets.
+
+Saved backup codes are an additional required recovery method. Model issuance,
+secure random generation, protected verification records, offline user custody,
+redemption, replacement and revocation using established recovery guidance,
+including [NIST SP 800-63B-4 section 4.2.1.1](https://pages.nist.gov/800-63-4/sp800-63b/events/#saved-recovery-codes).
+Bind each code to its account and
+recovery revision; never publish plaintext codes or treat a UOR reference as a
+secret. Verification, one-time consumption and credential replacement must be
+one authorized transition against current state. Reject replay, concurrent
+redemption, revoked code sets, disabled accounts and replacement-key
+substitution. Recovery assurance and any additional factors are explicit policy;
+a backup code is not automatically sufficient for every assurance level.
+
+Recovery replaces lost authenticators without restoring revoked grants or
+bypassing scoped approvals. Model affected-session invalidation, replacement
+code issuance and user notification. Credential recovery and restoration of
+encrypted content are separate operations with separate evidence. Exercise
+lost devices, stale replicas, partitions, state rollback and interrupted commits;
+local acceptance alone cannot establish globally consumed recovery authority.
+Bind applicable normative requirements to OSCAL controls and complete positive,
+negative and fault-injection evidence; these requirements are not a claim of
+implemented recovery or NIST conformance.
 
 Administration is delegated over explicit parts of any modeled system, including
 each organization and its sites. No permanent all-powerful user is required.

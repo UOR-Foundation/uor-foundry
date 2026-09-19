@@ -52,6 +52,13 @@ and complete acceptance evidence. Recovery cannot bypass scoped approval,
 restore revoked grants or create authority. External dependencies still need
 disclosure and approval; no verification secrets belong in public artifacts.
 Key possession or a UOR reference alone does not establish mailbox control.
+Existing mail infrastructure may supply authenticated submission/mailbox access,
+without owning Foundry accounts or recovery decisions. Saved backup codes are
+also required: protected issuance, account/revision binding, one-time redemption,
+rotation, credential replacement, session invalidation and notification. Neither
+mail submission nor a backup code substitutes for the other's acceptance;
+distributed replay/rollback rejection and encrypted-data recovery need their
+own evidence. These capabilities remain unimplemented on main.
 PrismPM's current Workspace/V1 single-owner operations do not implement the
 required scoped multi-administrator policy. Its authority, protocol and recovery
 boundaries need a modeled implementation, not merely additional View roles.
