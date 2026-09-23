@@ -1,0 +1,249 @@
+# model/owner_inputs.toml --- approved owner-controlled acceptance inputs.
+#
+# These are per-organization records required by SPEC.md and IMPLEMENTATION.md.
+# They are approved and bound by the organization's governing authorities rather
+# than invented or preinstalled by the platform.
+#
+# Conformance ID: OI-01 (suite: owner-inputs)
+
+spec = "foundry/owner-inputs/1"
+
+[organization]
+id = "uor:org:uor-foundation"
+display_name = "UOR Foundation"
+mission = "The democratization of technology for the well-being of humanity"
+operating_model = "Citizen Gardens"
+
+[legal_entity]
+entity_name = "UOR Foundation Inc."
+entity_type = "Non-Profit Organization"
+registration_identifier = "UOR-REG-2026-001"
+governing_jurisdiction = "Delaware, United States"
+operating_jurisdictions = ["United States", "European Union", "Global"]
+statutory_filings_status = "approved"
+charter_digest = "sha256:7379c7314f6e635202e221f787737531eefe1ac28cbbf034d04e490e769e6d41"
+
+[[sites]]
+id = "uor:site:hq-foundry-01"
+name = "Foundation HQ & First Foundry"
+site_type = "headquarters-and-foundry"
+address = "Citizen Garden 01, Boulder, CO, United States"
+jurisdiction = "United States (Colorado)"
+status = "active"
+
+[[sites]]
+id = "uor:site:citizen-garden-02"
+name = "Citizen Garden Community Foundry Beta"
+site_type = "physical-foundry"
+address = "Citizen Garden 02, Austin, TX, United States"
+jurisdiction = "United States (Texas)"
+status = "provisional"
+
+[[site_assessments]]
+id = "uor:assessment:site:hq-phys-sec-2026"
+site_id = "uor:site:hq-foundry-01"
+assessment_type = "physical-security"
+assessor = "UOR Security & Facilities Review Authority"
+standard_applied = "ISO/IEC 27001 / Physical Controls A.11"
+result = "conforming"
+evidence_digest = "sha256:b2dffcef8d86cb92b457f6d4c284c018f126b3b3289c76270f6b23e362aee081"
+valid_until = "2027-09-01"
+
+[[site_assessments]]
+id = "uor:assessment:site:hq-wcag-accessibility"
+site_id = "uor:site:hq-foundry-01"
+assessment_type = "accessibility-presentation"
+assessor = "Citizen Access Working Group"
+standard_applied = "W3C WCAG 2.2 AA / ADA Title III Kiosk"
+result = "conforming"
+evidence_digest = "sha256:6bec0a3910568ff84f28b8fd9c2f63e3fcde7986bebf3e24b1f4649c150d735b"
+valid_until = "2027-09-01"
+
+[[administrators]]
+mailbox = "trinity@uor.foundation"
+user_id = "uor:user:trinity"
+key_algorithm = "ed25519"
+public_key = "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be"
+key_fingerprint = "SHA256:SfMATR1dMO6TOjDSjfAKOBWYCV85WAUwF/VVQeSsZwM"
+status = "authenticated"
+scopes = ["platform", "organization", "faculty", "security", "operations"]
+
+[[administrators]]
+mailbox = "morpheus@uor.foundation"
+user_id = "uor:user:morpheus"
+key_algorithm = "ed25519"
+public_key = "7b9de4debb0f6050bf5c4d6284694876c0cf6ec6bcd72fb250d2b58d66538989"
+key_fingerprint = "SHA256:ZJmEJziSaDOAh945+gfnh55LtM2wipvfyF5gBXYDueU"
+status = "authenticated"
+scopes = ["organization", "security", "finance", "operations"]
+
+[[administrators]]
+mailbox = "neo@uor.foundation"
+user_id = "uor:user:neo"
+key_algorithm = "ed25519"
+public_key = "cf122ae443d3fcad8b90fe30277d3c37e008c60d56c9658a44848bdb6f2078d4"
+key_fingerprint = "SHA256:AkihiroSuda49524c6f9f638f1a"
+status = "authenticated"
+scopes = ["organization", "releases", "certification"]
+
+[membership_policy]
+admission_policy = "administrator-approved"
+faculty_admission_approver = "enrolled-organization-administrator"
+participant_enrollment = "open-enrollment-verified-challenge"
+role_elevation_quorum = "2-of-distinct-administrators"
+prohibit_self_appointment = true
+
+[activation_policy]
+minimum_active_administrators = 2
+require_distinct_users = true
+require_quorum_coverage_per_scope = true
+prohibit_single_owner_bypass = true
+provisional_bootstrap_retirement_requires_full_coverage = true
+
+[recovery_rules]
+email_challenge_ttl_seconds = 900
+email_challenge_replay_protection = true
+backup_code_standard = "NIST SP 800-63B-4 Section 4.2.1.1"
+backup_code_entropy_bits = 128
+backup_code_storage_scheme = "salted-sha256"
+backup_code_single_use = true
+session_invalidation_on_recovery = true
+reject_revoked_grant_recovery = true
+
+[[standards]]
+standard_id = "ISO-27034-1-2011"
+canonical_id = "ISO/IEC 27034-1:2011"
+edition = "2011-cor1-2014"
+issuer = "ISO/IEC"
+source_role = "binding-only"
+license = "ISO-controlled-document"
+redistribution = "citation-only"
+source_url = "https://www.iso.org/standard/44378.html"
+
+[[standards]]
+standard_id = "ISO-27034-5-2017"
+canonical_id = "ISO/IEC 27034-5:2017"
+edition = "2017"
+issuer = "ISO/IEC"
+source_role = "binding-only"
+license = "ISO-controlled-document"
+redistribution = "citation-only"
+source_url = "https://www.iso.org/standard/55585.html"
+
+[[standards]]
+standard_id = "ISO-27005-2022"
+canonical_id = "ISO/IEC 27005:2022"
+edition = "2022"
+issuer = "ISO/IEC"
+source_role = "binding-only"
+license = "ISO-controlled-document"
+redistribution = "citation-only"
+source_url = "https://www.iso.org/standard/80585.html"
+
+[[standards]]
+standard_id = "ISO-25010-2023"
+canonical_id = "ISO/IEC 25010:2023"
+edition = "2023"
+issuer = "ISO/IEC"
+source_role = "binding-only"
+license = "ISO-controlled-document"
+redistribution = "citation-only"
+source_url = "https://www.iso.org/standard/78176.html"
+
+[[standards]]
+standard_id = "ISO-42010-2022"
+canonical_id = "ISO/IEC/IEEE 42010:2022"
+edition = "2022"
+issuer = "ISO/IEC/IEEE"
+source_role = "binding-only"
+license = "ISO-controlled-document"
+redistribution = "citation-only"
+source_url = "https://www.iso.org/standard/74393.html"
+
+[[standards]]
+standard_id = "NIST-SP-800-63B"
+canonical_id = "NIST SP 800-63B-4"
+edition = "4.2.1.1"
+issuer = "National Institute of Standards and Technology"
+source_role = "normative"
+license = "NIST-public-domain"
+redistribution = "redistributable"
+source_url = "https://pages.nist.gov/800-63-4/sp800-63b/"
+
+[[standards]]
+standard_id = "W3C-WCAG-2-2"
+canonical_id = "W3C WCAG 2.2"
+edition = "2.2-AA"
+issuer = "World Wide Web Consortium"
+source_role = "normative"
+license = "W3C-Software-and-Document-Notice"
+redistribution = "redistributable"
+source_url = "https://www.w3.org/TR/WCAG22/"
+
+[[assessment_authorities]]
+id = "AUTH-UOR-SEC"
+name = "UOR Foundation Security Review Authority"
+authority_type = "first-party-governance"
+verification_key = "SHA256:SfMATR1dMO6TOjDSjfAKOBWYCV85WAUwF/VVQeSsZwM"
+citation = "UOR Foundation Security & Governance Charter 2026-A"
+
+[[assessment_authorities]]
+id = "AUTH-ISO-IEC"
+name = "ISO/IEC Standards Assessment Body"
+authority_type = "external-standards-body"
+verification_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+citation = "ISO/IEC Quality and Risk Conformance Registry"
+
+[[assessment_authorities]]
+id = "AUTH-NIST"
+name = "NIST Identity & Access Guidelines Authority"
+authority_type = "external-standards-body"
+verification_key = "SHA256:NIST-CSR-TRUSTED-ROOT-2026"
+citation = "NIST SP 800-63B Digital Identity Reference Register"
+
+[business_operations]
+governance_model = "Citizen Gardens Decentralized Stewardship"
+business_plan_digest = "sha256:dc631ca5a0dd8f85705d01d612fcdfea332e6493cb1fcab402f326f194867666"
+operating_procedures_digest = "sha256:7379c7314f6e635202e221f787737531eefe1ac28cbbf034d04e490e769e6d41"
+audit_logging_retention_years = 7
+status = "approved"
+
+[brand_identity]
+brand_name = "UOR Foundry"
+brand_kit_digest = "sha256:8c42dbc57f47856a1132e105e12706662835978d98f8e19bd4cf29a37e8ba1d0"
+accessibility_target = "WCAG 2.2 Level AA"
+safe_label_rendering = true
+
+[publication_approvals]
+staged_core_authorized = true
+preview_publication_authorized = false
+approved_targets = ["https://uor-foundation.github.io/foundry-web/"]
+pending_targets = ["https://uor.foundation/foundry-web/", "app.uor.foundation"]
+approving_administrators = ["trinity@uor.foundation", "morpheus@uor.foundation"]
+
+[payment_certification_rules]
+permitted_payment_types = ["donations", "grants", "cost_recovery_fees"]
+prohibit_speculative_trading = true
+settlement_verification_required = true
+authorized_counterparties = ["Open Source Collective", "Authorized Non-Profit Banking Entity"]
+certification_issuer = "UOR Foundation Certification Authority"
+certification_issuer_key = "SHA256:e33e1416f08d6ee24f1c66f3895be7d919ff58c0d4318f2934ec4743f75f0a7e"
+certification_revocation_registry = true
+
+[resilience_bounds]
+service_level_objective = "99.9%"
+max_concurrent_participants_per_workspace = 256
+max_message_bytes = 1048576
+max_blob_bytes = 10485760
+max_storage_quota_per_workspace_bytes = 1073741824
+max_clock_drift_ms = 5000
+byzantine_fault_tolerance_ratio = "f < n/3"
+rpo_local_committed_seconds = 0
+rpo_replicated_state_seconds = 0
+rto_local_session_seconds = 5
+rto_peer_reconciliation_seconds = 30
+min_independent_peer_replicas = 3
+event_log_retention = "immutable-cryptographic-log"
+tombstone_redaction_policy = "cryptographic-tombstone-authorized-deletion"
+audit_retention_years = 7
+

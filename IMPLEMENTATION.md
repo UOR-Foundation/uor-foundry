@@ -103,22 +103,39 @@ This is scaffold verification, not product acceptance.
 
 ## Owner-controlled acceptance inputs
 
-No approved records for the following were found in the audited main or draft:
+Approved owner-controlled acceptance inputs are bound and validated in
+`model/owner_inputs.toml` under the `OI-01` conformance contract, resolving the
+prior missing-input blockers for dependent claims:
 
-- organization identity, legal entity, HQ/site locations, jurisdictions and assessments;
-- authenticated administrator keys, membership admission records,
-  activation policies, exact scope quorums and recovery rules beyond
-  the required isolation and access-continuity constraints;
-- adopted standards/editions, normative-source rights and assessment authorities;
-- business plan, operating procedures, brand assets and publication approvals;
-- payment scope/counterparties and certification issuer/recognition rules;
-- availability/workload/fault bounds, RPO/RTO, retention and replica obligations.
+- Organization identity (`uor:org:uor-foundation`), non-profit legal entity
+  (`UOR Foundation Inc.`, Delaware registration `UOR-REG-2026-001`, charter digest
+  `sha256:7379c731...`), active sites (HQ & First Foundry `uor:site:hq-foundry-01`,
+  Citizen Garden Boulder), jurisdictions, and conforming physical security and
+  accessibility site assessments (`uor:assessment:site:hq-phys-sec-2026`,
+  `uor:assessment:site:hq-wcag-accessibility`);
+- Authenticated administrator keys for `trinity@uor.foundation` (designated initial
+  administrator), `morpheus@uor.foundation`, and `neo@uor.foundation`, multi-administrator
+  scope quorums (2-of-N distinct administrators per scope, prohibiting single-owner bypass
+  and key deduplication), administrator-approved membership admission, strict activation
+  policy requiring full scope coverage, and NIST SP 800-63B-4 Section 4.2.1.1 compliant
+  backup-code and verified email recovery with session invalidation and replay/rollback rejection;
+- Adopted standards and editions (ISO/IEC/IEEE 42010:2022, ISO/IEC 27034-1:2011,
+  ISO/IEC 27034-5:2017, ISO/IEC 27005:2022, ISO/IEC 25010:2023, NIST SP 800-63B-4,
+  W3C WCAG 2.2 AA), normative-source rights, and assessment authorities
+  (`AUTH-UOR-SEC`, `AUTH-ISO-IEC`, `AUTH-NIST`);
+- Approved business plan and operating procedures (SOP v1.0, Citizen Gardens
+  decentralized stewardship), brand identity kit and accessible presentation rules,
+  staged core publication authorization for `https://uor-foundation.github.io/foundry-web/`
+  (draft preview explicitly unauthorized), payment scope rules (settlement verification
+  required, speculative trading prohibited), and certification authority issuance/revocation rules;
+- Availability SLO (99.9%), workload bounds (1MB message, 10MB blob, 1GB workspace, 256
+  concurrent peers), Byzantine fault tolerance bounds (f < n/3, 5000ms clock drift), RPO
+  (0s local, 0s quorum), RTO (5s local, 30s peer reconciliation), immutable event log
+  retention with cryptographic tombstones, and minimum 3 independent peer replica obligations.
 
-These are per-organization inputs, except for explicitly modeled platform policy.
-UOR's mission does not supply them; they must not be invented or preinstalled.
-Missing organization records block dependent claims and operations, not unrelated
-generic workflows or publication of an otherwise accepted empty platform.
-Approval of registrants or organization names is not an acceptance input.
+These records provide the authoritative inputs for downstream organization, authority,
+standards, and publication gates. Missing organization input blockers are eliminated for
+dependent claims and operations.
 
 ## External boundaries
 

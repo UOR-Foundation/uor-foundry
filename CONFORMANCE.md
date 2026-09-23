@@ -24,6 +24,12 @@ model does not sanction.
 | --- | --- | --- |
 | `FW-01` | `build` | The LexLean-defined draft preview bounds and validates UTF-8 input and renders an explicitly unpublished response through generated Core-Wasm and portable/browser Views. |
 
+## owner-inputs
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `OI-01` | `build` | Owner-controlled acceptance inputs are approved, bound to cryptographic evidence, and validated across identity, authority quorums, standards, operational approvals, and availability bounds. |
+
 ## Cited authorities
 
 Never re-derived, vendored, or gated on.

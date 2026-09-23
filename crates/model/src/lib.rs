@@ -12,8 +12,10 @@
 #![deny(missing_docs)]
 
 pub mod codegen;
+pub mod owner_inputs;
 pub mod registry;
 
+pub use owner_inputs::OwnerInputs;
 pub use registry::{Authorities, AuthorityRow, Claim, IdRow, Ids, Ledger, Level};
 
 use std::path::{Path, PathBuf};
@@ -27,6 +29,8 @@ pub struct Model {
     pub ids: Ids,
     /// `model/authorities.toml`: what this repository cites rather than proves.
     pub authorities: Authorities,
+    /// `model/owner_inputs.toml`: approved owner-controlled acceptance inputs.
+    pub owner_inputs: OwnerInputs,
 }
 
 /// A failure to load or to cross-check the model.
@@ -59,6 +63,7 @@ impl Model {
             ledger: read(dir, "ledger.toml")?,
             ids: read(dir, "ids.toml")?,
             authorities: read(dir, "authorities.toml")?,
+            owner_inputs: read(dir, "owner_inputs.toml")?,
         })
     }
 
@@ -69,12 +74,14 @@ impl Model {
     }
 
     /// Cross-check the model against itself: every ID well formed, every claim
-    /// well formed for its level, and every `some-true` claim bound to an
-    /// authority that exists (`CM-01` .. `CM-03`, R2).
+    /// well formed for its level, every `some-true` claim bound to an
+    /// authority that exists (`CM-01` .. `CM-03`, R2), and every owner-controlled
+    /// input record valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
         self.check_authorities()?;
+        self.owner_inputs.check()?;
         Ok(())
     }
 
