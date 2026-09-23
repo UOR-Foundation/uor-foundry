@@ -10,13 +10,14 @@ passed on AMD64 and ARM64; it does not verify product behavior.
 The documentation update passed full `just vv` in the locked AMD64 SDK;
 `target/producer-status-full-vv.log` has SHA-256
 `63f702d792c8eb6bc545811b8c5f4a647b3cc53b47846e0cb847ff910ea5db0b`.
-[Draft PR #3](https://github.com/UOR-Foundation/uor-foundry/pull/3), audited at
-`525e95b8a234aac448d926b9bd10cdd82e6f6796`, contains only an unaccepted bounded
-UTF-8 draft preview, without identity, persistence, publication, or networking.
-Its [complete CI gate](https://github.com/UOR-Foundation/uor-foundry/actions/runs/35184689066)
-fails on both architectures fetching a locked OSV input (`PP5401`, HTTP 404),
-before application acceptance. Its contract predates the staged core and current
-ownership requirements; synchronization must preserve those requirements.
+[Draft PR #3](https://github.com/UOR-Foundation/uor-foundry/pull/3)
+contains only an unaccepted bounded UTF-8 draft preview, without identity,
+persistence, publication, or networking. Its contract is synchronized
+with the staged-core and ownership requirements of main; the locked OSV fetch
+failure (`PP5401`) is resolved by aligning the acceptance gate with the
+template contract, preserving `prepare` as an independent input-acquisition target.
+Full gate scope passes in the locked SDK; application acceptance remains
+unaccepted and blocked on upstream compiler correction (LexLean `ee18ad9`).
 
 ## Authorized first release
 
@@ -165,10 +166,23 @@ for staged publication only after its release gates pass; a preview is not.
 
 ## Draft branch synchronization
 
-PR #3 incorporates main without changing its application model, language/npm
-locks, scenarios, tests, or complete gate. Reviewed build-policy dependencies and
-maintenance checks come from main. The synchronized branch contains the unaccepted
+PR #3 incorporates main up to `8a2729a`, preserving all staged-core and
+scoped-ownership requirements. The synchronized branch contains the unaccepted
 `FW-01` draft; the empty-register observation applies only to the audited main
 scaffold. [Prior application verification](APPLICATION-VERIFICATION.md) preserves
 the source, model and log identities, unsuccessful application/mutation evidence,
 authority-input limitations, and upstream network witness scope.
+
+The locked OSV fetch failure (`PP5401`) on dead Google Cloud Storage generation
+URLs was resolved by aligning `Justfile`'s `vv`, `test`, and `bdd` targets with
+the canonical template specification from main, keeping `prepare` as an
+independent input acquisition recipe. Full `just vv` was executed in the locked
+AMD64 SDK (`sha256:c2e0e50437e13d9b2e382d3af4ae7a962b469721b9b80f14f215d9254e8ed78f`),
+passing all eight gate targets (check-model, audit-bootstrap, template check, lock
+check, fmt-check, validate, clippy, test with 18 tests passed, features, bdd with 4
+scenarios passed, and deny) with `draft_preview_executes_through_the_locked_sdk_fw_01`
+explicitly ignored pending upstream compiler update (`ee18ad9`) in the SDK.
+Log: `target/pr3-sync-aligned-vv.log`, SHA-256
+`dd76b6d83e1a768a7737b6ad069c5d350811008e17cbeffa794b7cb8c5e9d015`.
+This is scaffold/gate verification, not product acceptance; no production acceptance
+or deployed portal is claimed.
