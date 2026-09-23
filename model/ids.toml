@@ -22,3 +22,9 @@ id = "FW-01"
 level = "build"
 suite = "draft-preview"
 statement = "The LexLean-defined draft preview bounds and validates UTF-8 input and renders an explicitly unpublished response through generated Core-Wasm and portable/browser Views."
+
+[[id]]
+id = "OI-01"
+level = "build"
+suite = "owner-inputs"
+statement = "Owner-controlled acceptance inputs are approved, bound to cryptographic evidence, and validated across identity, authority quorums, standards, operational approvals, and availability bounds."
