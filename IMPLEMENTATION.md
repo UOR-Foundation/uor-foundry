@@ -16,7 +16,8 @@ persistence, publication, or networking. Its contract is synchronized
 with the staged-core and ownership requirements of main; the locked OSV fetch
 failure (`PP5401`) is resolved by aligning the acceptance gate with the
 template contract, preserving `prepare` as an independent input-acquisition target.
-Full gate scope passes in the locked SDK; application acceptance remains
+Full gate scope and [hosted bootstrap 35821178572](https://github.com/UOR-Foundation/uor-foundry/actions/runs/35821178572)
+passed on AMD64 and ARM64; application acceptance remains
 unaccepted and blocked on upstream compiler correction (LexLean `ee18ad9`).
 
 ## Authorized first release
@@ -184,5 +185,7 @@ scenarios passed, and deny) with `draft_preview_executes_through_the_locked_sdk_
 explicitly ignored pending upstream compiler update (`ee18ad9`) in the SDK.
 Log: `target/pr3-sync-aligned-vv.log`, SHA-256
 `dd76b6d83e1a768a7737b6ad069c5d350811008e17cbeffa794b7cb8c5e9d015`.
+[Hosted bootstrap 35821178572](https://github.com/UOR-Foundation/uor-foundry/actions/runs/35821178572)
+passed the complete gate on both AMD64 and ARM64.
 This is scaffold/gate verification, not product acceptance; no production acceptance
 or deployed portal is claimed.
