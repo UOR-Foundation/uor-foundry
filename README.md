@@ -28,6 +28,11 @@ remain required and explicitly unaccepted. Core acceptance will not establish
 complete platform implementation or any organization's standards compliance.
 The audited remaining work and owner inputs are in [IMPLEMENTATION.md](IMPLEMENTATION.md).
 
+`src/Foundry.lex.tex` is an unaccepted local draft-preview increment. Its
+native, Holo, Core-Wasm, browser, and reproducibility gates must pass before
+that capability is claimed. It is not a deployable substitute for the full
+portal.
+
 PrismPM is consumed as an SDK, following
 [Calculator](https://github.com/UOR-Foundation/calculator-example).
 
@@ -38,10 +43,10 @@ portal for production release; publication retains its separate acceptance
 requirements. Source checkouts and host tools are not substitutes for the
 locked SDK.
 
-Application work and its additional acceptance gates remain in
+This branch preserves the application work and complete acceptance gates of
 [PR #3](https://github.com/UOR-Foundation/uor-foundry/pull/3), without narrowing
-the product requirements in [SPEC.md](SPEC.md). Passing this empty scaffold's
-gate is not application or production acceptance.
+the product requirements in [SPEC.md](SPEC.md). Passing development
+infrastructure checks is not application or production acceptance.
 
 Repository policy is in [AGENTS.md](AGENTS.md) and
 [TEMPLATE-CONTRACT.md](TEMPLATE-CONTRACT.md).

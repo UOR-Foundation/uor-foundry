@@ -6,6 +6,10 @@ default: vv
 vv: template-check fmt-check model lint test features bdd deny
     @echo "vv: the acceptance gate passed"
 
+# Acquire only the inputs selected by the committed SDK and package locks.
+prepare: template-check
+    prismpm fetch --locked
+
 # R1, R4, R5 --- the repository gates, each falsifiable.
 model:
     cargo run -q -p xtask -- validate
