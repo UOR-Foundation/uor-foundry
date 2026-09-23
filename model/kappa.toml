@@ -1,0 +1,38 @@
+# model/kappa.toml --- the Kappa browser-service boundary and reconciliation specification.
+#
+# Defines the browser object-space contract closing the upstream Kappa baseline gap
+# (2af86560), where Veilid startup discarded the inbound receiver and reconciliation
+# copied tags without referenced blob bytes.
+#
+# Invariants here are validated against owner-controlled bounds (OI-01) by `repo-model`.
+
+spec = "template/1"
+
+[service]
+namespace = "uor-foundry"
+inbound_channel_capacity = 256
+max_message_bytes = 1048576
+max_blob_bytes = 10485760
+require_inbound_servicing = true
+
+[reconciliation]
+require_blob_content_verification = true
+hash_algorithm = "sha256"
+reject_partial_reconciliation = true
+atomic_tag_update = true
+
+[protocols]
+supported = [
+    "diff_pull",
+    "diff_push",
+    "blob_pull",
+    "blob_push",
+    "inbound_event",
+]
+
+[fault_rules]
+reject_dropped_receiver = true
+reject_missing_blob = true
+reject_corrupted_blob_digest = true
+reject_truncated_blob = true
+reject_oversized_payload = true

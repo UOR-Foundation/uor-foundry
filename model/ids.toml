@@ -28,3 +28,10 @@ id = "OI-01"
 level = "build"
 suite = "owner-inputs"
 statement = "Owner-controlled acceptance inputs are approved, bound to cryptographic evidence, and validated across identity, authority quorums, standards, operational approvals, and availability bounds."
+
+[[id]]
+id = "KB-01"
+level = "build"
+suite = "kappa-service"
+statement = "The browser object-space service retains inbound transport receiver semantics and executes verified blob reconciliation, rejecting partial, unverified, or disconnected state updates."
+
