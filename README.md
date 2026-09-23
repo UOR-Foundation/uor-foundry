@@ -1,24 +1,31 @@
 # UOR Foundry
 
-The UOR Foundation is dedicated to the democratization of technology for the
-well-being of humanity. It operates under the Citizen Gardens model through
-a network of Foundries; the first Foundry also houses Foundation HQ.
+Foundry is a generic organization-management platform modeled with PrismPM.
+Organizations and their physical sites are created through normal workflows;
+no account, organization or administrator mailbox is pre-seeded. UOR Foundation
+is one such organization, with its Citizen Gardens operating model and Foundry
+sites, not a privileged platform identity.
 
-This repository owns the complete PrismPM model: the organization, sites,
-services, workflows, stakeholder roles, and portal Views. PrismPM and
-prism-stdlib generate and validate its artifacts against adopted standards.
-The required product contract is [SPEC.md](SPEC.md).
+This repository owns the platform's services, organization lifecycle, workflows,
+scoped authority and portal Views. PrismPM and prism-stdlib generate and validate
+its artifacts against adopted standards. The required contract is [SPEC.md](SPEC.md).
 
 [foundry-web](https://github.com/UOR-Foundation/foundry-web) publishes the exact
 verified and authorized portal release, then verifies its live deployment.
-It does not maintain another implementation of the
-Foundation or its services. Generic SDK capabilities belong upstream.
+It does not maintain another implementation of the platform or its services.
+Generic SDK capabilities belong upstream.
 
 ## Status
 
-Created from [UOR template](https://github.com/UOR-Foundation/template/tree/e0e11ecb1b38e202116d9806887363848629d439).
+Repository bootstrap only, from [UOR template](https://github.com/UOR-Foundation/template/tree/e0e11ecb1b38e202116d9806887363848629d439).
+The authorized first functional release comprises identity, roles, shared
+workspaces, persistence, and messaging, including normal organization creation
+and isolation. Workspace identities and roles do not assert verified real-world
+organization identities, appointments or authority.
+This core is not implemented or accepted yet; a draft preview does not satisfy it.
 The complete organizational model, standards bindings, services, and portal
-are not implemented or accepted. Requirements are not implementation evidence.
+remain required and explicitly unaccepted. Core acceptance will not establish
+complete platform implementation or any organization's standards compliance.
 The audited remaining work and owner inputs are in [IMPLEMENTATION.md](IMPLEMENTATION.md).
 
 `src/Foundry.lex.tex` is an unaccepted local draft-preview increment. Its

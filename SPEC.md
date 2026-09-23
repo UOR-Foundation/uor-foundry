@@ -1,4 +1,4 @@
-# UOR Foundry product requirements
+# Foundry platform requirements
 
 This is the required product contract, not evidence of implementation.
 Application semantics must be authored in Prism/LexLean; generated outputs
@@ -6,16 +6,23 @@ and this requirements document cannot substitute for the accepted model.
 
 ## Purpose and ownership
 
-The UOR Foundation is dedicated to the democratization of technology for
-the well-being of humanity. It operates under the Citizen Gardens model
-through a network of physical Foundries; the first also houses Foundation HQ.
-No location, legal structure, financial policy, or additional authority is
-inferred from that mission.
+Foundry is a generic organization-management platform defined with PrismPM.
+It starts without seeded accounts, organizations, administrator mailboxes or
+memberships. Organizations are modeled instances created through ordinary
+Foundry workflows; physical sites are parts of those organizations, not
+separate platform implementations.
 
-`uor-foundry` owns the complete Foundation and Foundry product model,
-including its services, workflows, stakeholder roles, permissions, Views,
-and acceptance. It uses the PrismPM SDK and prism-stdlib to generate and
-verify the portal and its complete runtime closure.
+`uor-foundry` owns the complete platform model: services, organization lifecycle,
+workflows, stakeholder roles, permissions, Views and acceptance. It uses the
+PrismPM SDK and prism-stdlib to generate and verify the portal and its complete
+runtime closure. Each organization owns its authorized records and policies.
+
+The UOR Foundation is one organization created through those same workflows.
+Its mission is the democratization of technology for the well-being of humanity;
+it operates under the Citizen Gardens model through physical Foundries, the
+first also housing Foundation HQ. These are organization-specific requirements,
+not seeded data or special privileges. No location, legal structure, financial
+policy or additional authority is inferred from the mission.
 
 `foundry-web` is the thin publication and deployment repository. It consumes
 an immutable verified `uor-foundry` release through the SDK, without copying
@@ -24,19 +31,20 @@ Deployment configuration cannot add or change product behavior. Generic
 compilation, release transport, and validation belong in PrismPM and its
 upstream packages.
 
-The requested initial Pages address is `https://uor.foundation/foundry-web/`;
-its routing is not yet established. `app.uor.foundation` remains a future
-address, not a bootstrap dependency. Both publication targets must consume
-the same modeled product, not separately authored portals.
+The default `https://uor-foundation.github.io/foundry-web/` is allowed for
+initial publication. Routing for `https://uor.foundation/foundry-web/` is not
+established. `app.uor.foundation` remains a future address, not a bootstrap
+dependency. All publication targets must consume the same modeled product,
+not separately authored portals.
 Reusable capabilities belong upstream, not in a vendored SDK or handwritten
 application fallback. All implementation semantics flow through LexLean,
 generated Lean, and lean4-prod, including the Holo profile and browser Views.
 
 ## Complete scope
 
-The portal is the authoritative interaction point for faculty, participants,
-and all other modeled stakeholder roles. It must provide the Foundation's
-digital presence and operations, including:
+The portal is the authoritative interaction point for each organization's
+modeled stakeholders, including UOR faculty and participants. It must support
+the complete organizational digital presence and operations, including:
 
 - concept-to-production Prism workflows, Git, CI, hosting, and scheduling;
 - AI inference, agentic execution, notebooks, and knowledge management;
@@ -57,10 +65,145 @@ implementation. AI output is a proposal until the applicable workflow
 authorizes and verifies its effects. Recording a payment or assessment is
 not evidence of settlement or certification by an independent authority.
 
+## Initial functional release
+
+The owner authorizes staged publication of a functional core containing all
+five capabilities below; full platform implementation need not be published
+at once. This is not authorization to publish a mock or draft preview.
+
+- Identity: authenticate a workspace identity and its actions across sessions.
+- Roles: enforce modeled membership, permissions, delegation and revocation.
+- Shared workspaces: independent participants access and change shared state
+  under those permissions, not separate local copies presented as collaboration.
+- Persistence: retain and recover authorized workspace state across reloads
+  and restarts; distinguish local writes from confirmed replication.
+- Messaging: deliver and retain authorized messages between workspace members,
+  with explicit delivery, failure and recovery states.
+
+Normal account and organization creation are required core journeys, including
+creating UOR through the same workflow as any other organization. Enrollment is
+open to anyone; any enrolled user may create an organization with any display
+name, including a name already used by another organization. Creation requires
+neither Foundation approval nor proof of name, domain or legal-entity ownership.
+Names are display data, not reserved or globally unique identifiers; apply the
+same modeled encoding, resource and safe-rendering rules to every name.
+Distinct UOR-referenced organization identities bind records and permissions.
+Creation is authenticated to establish the creator's grants. It establishes only
+the new organization's provisional scope and explicit creator grants, never
+authority over another organization or the platform. Names, domains, mailbox
+strings, repository ownership and self-selected roles confer no privileges.
+
+Provisional setup is distinct from policy-compliant activation. It may collect
+authorized records and enroll administrators, but cannot claim accepted
+ownership redundancy or perform operations whose approval/coverage conditions
+are unmet. Activation requires the modeled policy, distinct-user approvals and
+complete administrative coverage of that organization's parts. Every transition
+must preserve isolation of data, queries, keys, grants and effects across
+organizations, including when one user belongs to several organizations.
+
+Workspace authentication and organization creation do not verify civil identity,
+legal-entity identity, employment, faculty appointment or real-world authority.
+These claims require separately authenticated organizational records and
+assessments. Role admission, including UOR faculty membership, requires recorded
+approval by the organization's currently authorized administrators, enforced at
+every applicable boundary rather than only in the View.
+
+Verified email enrollment, login and account recovery are required capabilities
+available to every user. Implement them through the UOR Framework-native
+approach: PrismPM models the account, credential, mailbox-binding, challenge,
+proof and recovery records, their UOR references and authorized transitions;
+prism-stdlib owns reusable protocol bindings. Existing mail infrastructure may
+provide authenticated submission and mailbox access; this does not outsource
+Foundry accounts, permissions or recovery decisions. Sending mail alone does
+not establish mailbox control. Foundry execution remains in
+browsers; a hosted platform or organization authentication/recovery backend
+is not authorized. Selecting a third-party authentication vendor is not a
+prerequisite for defining or implementing these capabilities.
+Mailbox delivery and proof validation are explicit modeled effects and trust
+boundaries, requiring standards bindings and actual acceptance evidence. UOR
+references and signatures identify and authenticate records; they do not by
+themselves prove access to an external mailbox. Protect mailbox data, challenges
+and recovery material from unauthorized peers, public artifacts and discovery.
+Recovery restores only that user's currently authorized access; it cannot
+resurrect revoked grants, bypass an approval quorum, or grant new authority.
+Verification binds the mailbox, account, operation, challenge, expiry and
+replacement key/session. Changing a recovery address requires authenticated
+authorization and proof of the new mailbox. External verification dependencies
+still require disclosure and approval; no provider is selected by this contract.
+Entering an address, a self-signed key or mail-routing records is not mailbox
+proof. Expired, replayed, wrong-mailbox and substituted-key challenges must fail
+without granting authority; public assets contain no verification secrets.
+
+Saved backup codes are an additional required recovery method. Model issuance,
+secure random generation, protected verification records, offline user custody,
+redemption, replacement and revocation using established recovery guidance,
+including [NIST SP 800-63B-4 section 4.2.1.1](https://pages.nist.gov/800-63-4/sp800-63b/events/#saved-recovery-codes).
+Bind each code to its account and
+recovery revision; never publish plaintext codes or treat a UOR reference as a
+secret. Verification, one-time consumption and credential replacement must be
+one authorized transition against current state. Reject replay, concurrent
+redemption, revoked code sets, disabled accounts and replacement-key
+substitution. Recovery assurance and any additional factors are explicit policy;
+a backup code is not automatically sufficient for every assurance level.
+
+Recovery replaces lost authenticators without restoring revoked grants or
+bypassing scoped approvals. Model affected-session invalidation, replacement
+code issuance and user notification. Credential recovery and restoration of
+encrypted content are separate operations with separate evidence. Exercise
+lost devices, stale replicas, partitions, state rollback and interrupted commits;
+local acceptance alone cannot establish globally consumed recovery authority.
+Bind applicable normative requirements to OSCAL controls and complete positive,
+negative and fault-injection evidence; these requirements are not a claim of
+implemented recovery or NIST conformance.
+
+Administration is delegated over explicit parts of any modeled system, including
+each organization and its sites. No permanent all-powerful user is required.
+The authoritative policy defines scope, inheritance, administrator membership,
+minimum retained administrators and the distinct eligible approvers required
+for each grant or policy change. Quorums may require multiple administrators;
+the example of three administrators is not a universal threshold.
+Administrator count alone does not establish quorum availability: a two-of-two
+policy still depends on both users. Approval, succession and recovery acceptance
+must exercise unavailability without an implicit root or quorum bypass.
+
+Disabling/removing an account, revoking/demoting a grant or changing scope,
+inheritance or policy must leave every affected part with at least two active
+authorized users and satisfy any stronger modeled minimum and approval quorum.
+Aliases, additional keys and duplicate approvals do not count as extra users.
+A sole founding administrator is an explicit provisional bootstrap condition,
+not accepted redundancy. Activation must satisfy the same retained-ownership
+requirements; it cannot carry this exception into active operation. A founding
+grant may be retired only after other users collectively cover every affected
+part under these rules. Retirement does not require one successor to control
+every part, and gives no authority over another organization's bootstrap.
+
+Evaluate approval and post-change coverage atomically against the current model
+and authority revision, including concurrent changes and newly added parts.
+Reject stale, replayed, out-of-scope or insufficient approvals and uncovered
+parts; email recovery and direct protocol requests obey the same policy.
+Acceptance must exercise partial and complete bootstrap handover, scoped
+multi-party grants, duplicate approvers, concurrent removals, revoked-account
+recovery, lost access and inherited-scope changes without an implicit root bypass.
+It must also exercise empty-platform onboarding, normal UOR creation, independent
+organizations with identical names, denied activation, safe label rendering and
+cross-organization raw requests. Reusing a name must neither block creation nor
+grant access to the other organization.
+
+The model and release evidence identify this exact stage and its complete
+runtime, control, dependency and artifact closure. All five capabilities need
+real multi-user journeys, persistence/recovery and adversarial acceptance.
+The mandatory base profile and every applicable adopted control remain binding.
+No broader compliance, certification, internet-grade availability or independent
+browser-network claim follows from core acceptance.
+
+Every other facet in Complete scope remains required and explicitly unaccepted,
+not deleted, satisfied, or declared inapplicable. Release notes and Views must
+distinguish accepted core behavior from these unimplemented obligations.
+
 ## Controls and standards
 
-All facets are governed through OSCAL catalogs, resolved profiles, component
-and system implementation records, and assessment evidence. Every applicable
+Platform and organization facets are governed through OSCAL catalogs, resolved
+profiles, component/system implementation records and assessment evidence. Every applicable
 control must have a verified local implementation, verified inheritance, or
 both. Inheritance identifies provider scope, exact subjects and revisions,
 evidence, validity conditions, and consumer responsibilities.
@@ -75,6 +218,9 @@ and the complete applicable authoritative oracle/assessment coverage.
 Structural validation, test-corpus agreement, formal proof, human assessment,
 and observed operation remain distinct. Missing coverage blocks acceptance;
 it must not be hidden by narrowing the claimed standard.
+Platform acceptance does not establish any organization's legal identity or
+compliance. Organization-specific standards, policies and assessments bind that
+organization and revision; names or membership cannot transfer those claims.
 
 The model includes human-centred design, complete accessible user journeys,
 brand rules, business planning, and operating procedures. Framework and
@@ -84,22 +230,29 @@ publication and actual outcomes are separate evidence.
 
 ## Browser network and bootstrap
 
-Deployed service execution and peer replication use faculty and participant
-browser sessions only. Dedicated Foundation nodes and hidden service backends
-are not authorized. Development and bootstrap release builds use repository
+Deployed service execution and peer replication use participating user browser
+sessions only, including UOR faculty and participants. Dedicated platform or
+organization nodes and hidden service backends are not authorized. Development
+and bootstrap release builds use repository
 devcontainers and locked SDK CI; this does not authorize server-side substitutes
 for portal functions or establish browser-resident build/CI acceptance.
 Kappa provides the modeled decentralized object space, queries, references,
 and service artifacts; a browser runtime executes the artifacts.
 
 GitHub Pages initially distributes the generated portal through `foundry-web`
-and bootstraps the browser network. The requested address is
-`https://uor.foundation/foundry-web/`, pending confirmed routing. Assets,
+and bootstraps the browser network. The default Pages URL is an allowed initial
+target; `https://uor.foundation/foundry-web/` awaits confirmed routing. Assets,
 links, and browser acceptance must work under `/foundry-web/`, without a
 repository custom domain or an `app.uor.foundation` redirect. GitHub remains
 a modeled publication target after the network becomes independent.
 Bootstrap hosting does not authorize undisclosed external inference,
 identity, signing, agent, storage, or application-service dependencies.
+
+The owner authorizes disclosed public Veilid bootstrap and relay peers during
+bootstrap. Model their exact transport, identities, trust boundaries, effects,
+failure behavior and acceptance evidence before use. This does not authorize
+dedicated platform or organization nodes, hosted application services,
+undisclosed peers, or a claim of browser-network independence from those peers.
 
 The migration lifecycle has three distinct states:
 
@@ -145,34 +298,41 @@ measurements. No claim permits execution without an available executor or
 recovery after every recoverable copy is destroyed.
 
 Targets and operating policies not supplied by the owner remain explicit
-acceptance inputs, not invented defaults. Their absence blocks production
-acceptance, not implementation of independent generic prerequisites.
+acceptance inputs, not invented defaults. Their absence blocks the claims and
+operations that depend on them, not unrelated functional-core implementation.
 
 ## Release acceptance
 
-The complete locked Prism model must generate every declared artifact through
-the accepted SDK, including the `.holo` runtime closure and browser projection.
+Acceptance is scoped to the explicitly authorized release stage. Full
+platform acceptance still requires the complete product scope; core
+acceptance does not imply it. No capability within the core may be omitted.
+
+The complete locked Prism model for that stage must generate every declared
+artifact through the accepted SDK, including the `.holo` runtime closure and
+browser projection.
 No independent handwritten UI, service, compiler, or policy implementation may
 substitute for the model. Bootstrap trust is explicit and non-circular.
 
-Acceptance requires complete control/oracle coverage, human assessment where
-required, all service journeys, negative/mutation tests, two clean reproducible
-builds, actual browser execution, recovery and fault tests, and verification
-of deployed bytes at the approved deployment address. All evidence binds
+Acceptance requires complete applicable control/oracle coverage, human assessment
+where required, all stage service journeys, negative/mutation tests, two clean
+reproducible builds, actual browser execution, recovery and fault tests, and
+verification of deployed bytes at the approved deployment address. All evidence binds
 exact inputs, subjects, tools, policies, and results. Empty registers cannot
 establish this.
 
 Release evidence has three explicit states:
 
-1. **Producer-ready:** the complete product and dependency closure pass every
-   pre-publication gate, including all applicable controls, assessments,
+1. **Producer-ready:** the complete declared stage and dependency closure pass
+   every pre-publication gate, including all applicable controls, assessments,
    reproducible builds, service journeys, and browser/fault/recovery tests.
    Only checks that require the actual target deployment remain outstanding;
    their exact required set is recorded. This is not final product acceptance.
 2. **Deployment-authorized:** an authorized decision binds that immutable
    producer-ready release to its target. The publisher verifies both the
    complete readiness evidence and authorization before deploying unchanged
-   bytes. A partial service or draft-preview release cannot enter this state.
+   bytes. An incomplete core capability or draft-preview release cannot enter
+   this state. Authorization names the stage; it cannot imply full platform
+   acceptance.
 3. **Accepted:** post-deployment identity, bytes, live journeys, operational
    measurements, and every remaining applicable control/assessment pass for
    that exact release. Failed or missing checks prevent final acceptance;
@@ -181,21 +341,21 @@ Release evidence has three explicit states:
 This ordering permits the first deployment without claiming live evidence
 before deployment or bypassing a gate. Changes invalidate affected evidence
 and repeat the required checks. A deployable candidate is not a completed or
-production-accepted Foundation portal.
+production-accepted organization-management platform.
 
-The producer release binds its source revision, model digest, complete
-service and dependency closure, controls, assessments, browser artifacts,
+The producer release binds its stage, source revision, model digest, complete
+stage service and dependency closure, controls, assessments, browser artifacts,
 and reproducible-build evidence. `foundry-web` independently verifies that
 binding and the authorized target before publication. Its delivery checks
 cannot replace producer acceptance. A signed SDK, a draft preview, or a valid
-artifact digest does not establish the complete product.
+artifact digest does not establish the core or complete product.
 
 Publication promotes unchanged artifacts authorized for that release state;
-the publisher must reject missing, substituted, stale, partial, or
-state-inappropriate evidence. Target changes requiring different generated
-assets return to `uor-foundry` for modeling and acceptance. Live verification
-checks the actual deployment identity, approved URL, artifact bytes, and
-complete stakeholder journeys.
+the publisher must reject missing, substituted, stale, stage-incomplete, or
+state-inappropriate evidence. Target
+changes requiring different generated assets return to `uor-foundry` for
+modeling and acceptance. Live verification checks the actual deployment
+identity, approved URL, artifact bytes, and complete stage stakeholder journeys.
 
 Development and verification use repository devcontainers; consumer acceptance
 uses the immutable SDK lock. Preserve template policy, keep build/cache output
