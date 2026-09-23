@@ -24,6 +24,12 @@ model does not sanction.
 | --- | --- | --- |
 | `FW-01` | `build` | The LexLean-defined draft preview bounds and validates UTF-8 input and renders an explicitly unpublished response through generated Core-Wasm and portable/browser Views. |
 
+## kappa-service
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `KB-01` | `build` | The browser object-space service retains inbound transport receiver semantics and executes verified blob reconciliation, rejecting partial, unverified, or disconnected state updates. |
+
 ## owner-inputs
 
 | ID | Level | Statement |

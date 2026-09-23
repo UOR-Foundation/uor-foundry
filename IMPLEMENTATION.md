@@ -139,15 +139,21 @@ dependent claims and operations.
 
 ## External boundaries
 
-Kappa `2af86560a177fc9651b6c0e92e7974140ed77dd5` is a native Rust service;
-its Veilid startup discards the inbound receiver, and reconciliation copies
-tags/digests without referenced blob bytes. It is not an accepted browser
-service. The locked Veilid browser path requires reachable transport peers;
-Pages distribution alone does not provide them.
+The documented Kappa browser-service receiver and blob reconciliation gap
+(`2af86560a177fc9651b6c0e92e7974140ed77dd5`) is closed under the `KB-01`
+conformance contract (`model/kappa.toml`, `crates/model/src/kappa.rs`, and
+`crates/conformance/tests/kappa_service.rs`). The browser object-space service
+retains inbound transport receiver semantics without channel discarding, services
+incoming transport messages, and executes verified blob reconciliation. Tag commits
+require prior cryptographic content verification (`sha256`) and local blob storage;
+missing, truncated, or hash-mismatched blob bytes are rejected with `KappaError`
+rather than copying metadata without content.
 
-The owner authorizes disclosed public Veilid bootstrap/relay peers for bootstrap.
-Their modeled bindings, transport integration, trust/failure tests and actual
-network acceptance remain required; no such dependency is configured yet.
+The locked Veilid browser path requires reachable transport peers; Pages distribution
+alone does not provide them. The owner authorizes disclosed public Veilid
+bootstrap/relay peers for bootstrap. Their modeled bindings, transport integration,
+trust/failure tests and actual network acceptance remain required; no such dependency
+is configured yet.
 On 18 September 2026, four bounded discovery requests to the official default
 and its two DNS-advertised bootstrap hosts returned UDP/TCP/WS peers but no WSS
 endpoint. This is a discovery limit, not a census of the public network.

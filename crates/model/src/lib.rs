@@ -12,9 +12,15 @@
 #![deny(missing_docs)]
 
 pub mod codegen;
+pub mod kappa;
 pub mod owner_inputs;
 pub mod registry;
 
+pub use kappa::{
+    compute_sha256_digest, create_inbound_channel, Blob, InMemoryObjectStore, InboundChannel,
+    InboundMessage, InboundService, KappaConfig, KappaError, ReconcileReport, ReconciliationEngine,
+    Tag, TransportPeer,
+};
 pub use owner_inputs::OwnerInputs;
 pub use registry::{Authorities, AuthorityRow, Claim, IdRow, Ids, Ledger, Level};
 
@@ -31,6 +37,8 @@ pub struct Model {
     pub authorities: Authorities,
     /// `model/owner_inputs.toml`: approved owner-controlled acceptance inputs.
     pub owner_inputs: OwnerInputs,
+    /// `model/kappa.toml`: Kappa browser-service boundary and reconciliation specification.
+    pub kappa: KappaConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -64,6 +72,7 @@ impl Model {
             ids: read(dir, "ids.toml")?,
             authorities: read(dir, "authorities.toml")?,
             owner_inputs: read(dir, "owner_inputs.toml")?,
+            kappa: read(dir, "kappa.toml")?,
         })
     }
 
@@ -75,13 +84,14 @@ impl Model {
 
     /// Cross-check the model against itself: every ID well formed, every claim
     /// well formed for its level, every `some-true` claim bound to an
-    /// authority that exists (`CM-01` .. `CM-03`, R2), and every owner-controlled
-    /// input record valid.
+    /// authority that exists (`CM-01` .. `CM-03`, R2), every owner-controlled
+    /// input record valid, and Kappa boundary rules valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
         self.check_authorities()?;
         self.owner_inputs.check()?;
+        self.kappa.check(&self.owner_inputs)?;
         Ok(())
     }
 
