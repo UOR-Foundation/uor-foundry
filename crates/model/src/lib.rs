@@ -12,6 +12,7 @@
 #![deny(missing_docs)]
 
 pub mod authority;
+pub mod backup_codes;
 pub mod codegen;
 pub mod identity_email;
 pub mod kappa;
@@ -23,6 +24,11 @@ pub use authority::{
     AuthorityAction, AuthorityConfig, AuthorityError, AuthorityGrant, AuthorityManager,
     AuthorityPolicyConfig, ChangeProposal, GrantStatus, OrganizationAuthorityRecord,
     ProposalApproval, ProposalStatus, ScopeRuleConfig,
+};
+pub use backup_codes::{
+    BackupCodeBatch, BackupCodeConfig, BackupCodeError, BackupCodeLifecycleConfig,
+    BackupCodeManager, BackupCodeNotificationConfig, BackupCodeStandardsConfig, CodeStatus,
+    RedeemBackupCodeRequest, RedemptionReport, StoredBackupCode,
 };
 pub use identity_email::{
     AccountStatus, ChallengePurpose, EmailChallenge, EmailContinuityConfig, EmailContinuityManager,
@@ -64,6 +70,8 @@ pub struct Model {
     pub authority: AuthorityConfig,
     /// `model/email_continuity.toml`: UOR-native verified email identity continuity protocol.
     pub email_continuity: EmailContinuityConfig,
+    /// `model/backup_codes.toml`: Saved backup-code recovery protocol.
+    pub backup_codes: BackupCodeConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -101,6 +109,7 @@ impl Model {
             organization_lifecycle: read(dir, "organization_lifecycle.toml")?,
             authority: read(dir, "authority.toml")?,
             email_continuity: read(dir, "email_continuity.toml")?,
+            backup_codes: read(dir, "backup_codes.toml")?,
         })
     }
 
@@ -114,7 +123,7 @@ impl Model {
     /// well formed for its level, every `some-true` claim bound to an
     /// authority that exists (`CM-01` .. `CM-03`, R2), every owner-controlled
     /// input record valid, Kappa boundary rules valid, organization lifecycle policy valid,
-    /// authority model policy valid, and email continuity protocol valid.
+    /// authority model policy valid, email continuity protocol valid, and backup codes policy valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -125,6 +134,7 @@ impl Model {
         self.authority
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         self.email_continuity.check(&self.owner_inputs)?;
+        self.backup_codes.check(&self.owner_inputs)?;
         Ok(())
     }
 
