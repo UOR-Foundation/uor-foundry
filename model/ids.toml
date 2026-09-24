@@ -101,5 +101,11 @@ level = "build"
 suite = "publication-sdk"
 statement = "The publication SDK boundary enforces source-free acquisition, producer readiness verification, target authorization, confined atomic artifact export, live post-deployment verification, and accepted-release rollback without server proxies or byte substitution."
 
+[[id]]
+id = "VB-01"
+level = "build"
+suite = "veilid-bootstrap"
+statement = "The Veilid external boundary enforces authenticated secure bootstrap routing, browser transport integration, relay public-key verification, outbound-relay limitation mitigations, and network discovery under adverse conditions without feature-flag-only or unauthenticated proxy substitutes."
+
 
 

@@ -102,6 +102,12 @@ model does not sanction.
 | --- | --- | --- |
 | `ST-01` | `build` | The standards boundary implements complete OSCAL catalogs, profile resolution, component and system implementation records, inheritance tracking, and authenticated assessment coverage across all adopted standards. |
 
+## veilid-bootstrap
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `VB-01` | `build` | The Veilid external boundary enforces authenticated secure bootstrap routing, browser transport integration, relay public-key verification, outbound-relay limitation mitigations, and network discovery under adverse conditions without feature-flag-only or unauthenticated proxy substitutes. |
+
 ## Cited authorities
 
 Never re-derived, vendored, or gated on.

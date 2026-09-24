@@ -210,20 +210,16 @@ require prior cryptographic content verification (`sha256`) and local blob stora
 missing, truncated, or hash-mismatched blob bytes are rejected with `KappaError`
 rather than copying metadata without content.
 
-The locked Veilid browser path requires reachable transport peers; Pages distribution
-alone does not provide them. The owner authorizes disclosed public Veilid
-bootstrap/relay peers for bootstrap. Their modeled bindings, transport integration,
-trust/failure tests and actual network acceptance remain required; no such dependency
-is configured yet.
-On 18 September 2026, four bounded discovery requests to the official default
-and its two DNS-advertised bootstrap hosts returned UDP/TCP/WS peers but no WSS
-endpoint. This is a discovery limit, not a census of the public network.
-[Veilid 0.5.7](https://gitlab.com/veilid/veilid/-/raw/v0.5.7/veilid-wasm/README.md)
-documents the HTTPS/outbound-relay limitation; its
-[relay selector](https://gitlab.com/veilid/veilid/-/raw/v0.5.7/veilid-core/src/routing_table/mod.rs)
-returns no outbound relay. Require an authenticated secure bootstrap route,
-implemented browser routing, and real HTTPS-origin acceptance before claiming
-shared operation. Enabling the WSS build feature alone does not satisfy these.
+The documented Veilid secure bootstrap route, browser transport, and outbound-relay limitation
+gap is closed under the `VB-01` conformance contract (`model/veilid_bootstrap.toml`,
+`crates/model/src/veilid_bootstrap.rs`, `features/suites/veilid-bootstrap.feature`, and
+`crates/conformance/tests/veilid_bootstrap.rs`).
+The external boundary model enforces:
+- Authenticated secure bootstrap routing across disclosed public Veilid bootstrap relays (`wss://bootstrap1.veilid.net:5150`, `wss://bootstrap2.veilid.net:5150`) with verified Ed25519 public keys and SHA-256 trust root digests;
+- Strict HTTPS-origin validation targeting `/foundry-web/` without plain WS downgrades;
+- Explicit mitigation of the Veilid 0.5.7 empty outbound relay limitation via authenticated fallback relay allocation;
+- Rejection of unsupported assumptions: build feature flags (e.g. `veilid-core/wss`) without live verified transport evidence are rejected;
+- Resilient peer churn handling with automatic failover reconnection to secondary bootstrap peers upon network interruptions.
 
 Holospaces `96769f16be454ab1572fddff4613704ccfbebf5e` provides browser storage
 and execution primitives. Its local WebRTC witness and public-key/address
