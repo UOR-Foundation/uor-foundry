@@ -17,6 +17,7 @@ pub mod codegen;
 pub mod functional_core;
 pub mod holospaces_boundary;
 pub mod identity_email;
+pub mod implementation_closure;
 pub mod kappa;
 pub mod network_acceptance;
 pub mod object_space;
@@ -56,6 +57,10 @@ pub use identity_email::{
     AccountStatus, ChallengePurpose, EmailChallenge, EmailContinuityConfig, EmailContinuityManager,
     EmailDeliveryConfig, EmailProtocolConfig, EmailSecurityBoundsConfig, IdentityError,
     SessionRecord, UserAccountRecord,
+};
+pub use implementation_closure::{
+    AcceptedBoundaryRecord, ImplementationClosureConfig, ImplementationClosureEngine,
+    ImplementationClosureError, ImplementationClosurePolicyConfig, ReleaseIdentityRecord,
 };
 pub use kappa::{
     compute_sha256_digest, create_inbound_channel, Blob, InMemoryObjectStore, InboundChannel,
@@ -164,6 +169,8 @@ pub struct Model {
     pub sdk_boundary: SdkBoundaryConfig,
     /// `model/functional_core.toml`: Authorized first-release functional core specification.
     pub functional_core: FunctionalCoreConfig,
+    /// `model/implementation_closure.toml`: Implementation closure and complete remaining-work verification.
+    pub implementation_closure: ImplementationClosureConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -213,6 +220,7 @@ impl Model {
             holospaces_boundary: read(dir, "holospaces_boundary.toml")?,
             sdk_boundary: read(dir, "sdk_boundary.toml")?,
             functional_core: read(dir, "functional_core.toml")?,
+            implementation_closure: read(dir, "implementation_closure.toml")?,
         })
     }
 
@@ -230,7 +238,8 @@ impl Model {
     /// standards OSCAL boundary valid, organization sites boundary valid, services boundary valid,
     /// browser object space boundary valid, network acceptance boundary valid, producer
     /// release boundary valid, publication SDK boundary valid, Veilid bootstrap boundary valid,
-    /// Holospaces boundary valid, SDK boundary valid, and functional core valid.
+    /// Holospaces boundary valid, SDK boundary valid, functional core valid, and
+    /// implementation closure valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -269,6 +278,8 @@ impl Model {
         self.sdk_boundary
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         self.functional_core
+            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+        self.implementation_closure
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         Ok(())
     }

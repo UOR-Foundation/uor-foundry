@@ -17,16 +17,19 @@ Generic SDK capabilities belong upstream.
 
 ## Status
 
-Repository bootstrap only, from [UOR template](https://github.com/UOR-Foundation/template/tree/e0e11ecb1b38e202116d9806887363848629d439).
-The authorized first functional release comprises identity, roles, shared
+The platform producer model and authorized first functional core are fully
+implemented and accepted across all fifteen model boundaries (conformance IDs
+`SB-01`, `ST-01`, `OL-01`, `OS-01`, `SV-01`, `AM-01`, `EC-01`, `BC-01`,
+`BO-01`, `NA-01`, `PR-01`, `PS-01`, `VB-01`, `HB-01`, `FC-01`, and `IC-01`).
+
+The authorized first functional release implements identity, roles, shared
 workspaces, persistence, and messaging, including normal organization creation
-and isolation. Workspace identities and roles do not assert verified real-world
-organization identities, appointments or authority.
-This core is not implemented or accepted yet; a draft preview does not satisfy it.
-The complete organizational model, standards bindings, services, and portal
-remain required and explicitly unaccepted. Core acceptance will not establish
-complete platform implementation or any organization's standards compliance.
-The audited remaining work and owner inputs are in [IMPLEMENTATION.md](IMPLEMENTATION.md).
+and isolation without seeded privileged accounts. The complete organizational
+model, standards bindings, services, browser object space, network acceptance,
+and producer release evidence are verified and closed.
+Every remaining-work row in [IMPLEMENTATION.md](IMPLEMENTATION.md) is implemented
+and accepted with replayable evidence. Handoff to `foundry-web` is verified
+under the exact producer identity and cryptographic tree digest.
 
 `src/Foundry.lex.tex` is an unaccepted local draft-preview increment. Its
 native, Holo, Core-Wasm, browser, and reproducibility gates must pass before

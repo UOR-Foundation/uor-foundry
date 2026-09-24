@@ -125,5 +125,8 @@ level = "build"
 suite = "functional-core"
 statement = "The authorized first-release functional core implements identity, roles, shared workspaces, persistence, and messaging as a single accepted stage without preview substitutions or seeded privileges, proving normal account/organization creation, multi-user interaction, permission enforcement, persisted state recovery, and message delivery with resilient fault recovery."
 
-
-
+[[id]]
+id = "IC-01"
+level = "build"
+suite = "implementation-closure"
+statement = "The implementation closure model verifies complete remaining-work closure across all product requirements and boundaries, zero deferred or narrowed scope, exact producer release identity binding, and handoff readiness for foundry-web consumption without draft preview or handwritten substitutes."

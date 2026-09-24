@@ -60,6 +60,12 @@ model does not sanction.
 | --- | --- | --- |
 | `HB-01` | `build` | The Holospaces external boundary revalidates threat-model assumptions against participant/faculty session realities, requiring private-key possession proofs, in-band authenticated discovery, and replica quorum durability under browser churn while rejecting native-relay and local-witness proxy assumptions. |
 
+## implementation-closure
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `IC-01` | `build` | The implementation closure model verifies complete remaining-work closure across all product requirements and boundaries, zero deferred or narrowed scope, exact producer release identity binding, and handoff readiness for foundry-web consumption without draft preview or handwritten substitutes. |
+
 ## kappa-service
 
 | ID | Level | Statement |

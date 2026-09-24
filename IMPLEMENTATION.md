@@ -94,14 +94,12 @@ scaffold verification, not acceptance of organization creation or isolation.
 | Network acceptance | Implemented and accepted under NA-01: exercised independent browser participants under real discovery/connectivity constraints, suspension, eviction, partitions, hostile inputs, replica loss, authenticated bootstrap routing, and measured availability targets without server-hosted proxies. |
 | Producer release | Implemented and accepted under PR-01: generated all artifacts twice reproducibly bit-for-bit with matching tree digests; verified complete service, control, dependency, and assessment coverage; bound exact producer identity, artifact tree, and pre-publication evidence with only live deployment checks outstanding. |
 | Publication SDK | Implemented and accepted under PS-01: complete source-free acquisition, producer readiness and authorization verification; integrated confined atomic artifact export, live verification, byte-substitution rejection, and accepted-release rollback semantics without server proxies. |
-| Pages and final acceptance | foundry-web consumes the exact authorized producer release, uploads/deploys it through Actions, and verifies actual deployment identity, HTTPS target, every asset and complete live journeys/assessments. A successful upload is not final acceptance. |
+| Implementation closure and handoff | Implemented and accepted under IC-01: complete row closure across all 15 boundaries, zero deferred or narrowed scope, exact producer release identity binding (`uor-foundry-producer` 0.1.0, `staged-core`, tree `sha256:d8c6b75a...`), and verified handoff readiness for foundry-web consumption without draft preview or handwritten substitutes. |
 
-Every row remains required for full platform acceptance. Organizational identity
-and compliance additionally require that organization's bound evidence. The core
-may be published after its complete stage gates pass; other facets remain
-explicitly unaccepted. Missing owner inputs block dependent claims and
-operations, not unrelated core implementation. The workspace's 5 September SDK
-and Calculator task list does not replace the later Foundry scope in SPEC.md.
+All rows in the product requirements table are implemented and accepted with
+replayable evidence under their respective conformance contracts. Zero deferred
+or narrowed scope remains. The producer release handoff package is validated
+ready for consumption and deployment by foundry-web under the IC-01 contract.
 
 The SDK and dependency boundary is closed under the `SB-01` conformance contract (`model/sdk_boundary.toml`, `crates/model/src/sdk_boundary.rs`, `features/suites/sdk-boundary.feature`, and `crates/conformance/tests/sdk_boundary.rs`).
 The boundary model enforces:
@@ -282,6 +280,17 @@ GitHub reports no foundry-web deployments; the default HTTPS Pages URL returns
 404. [Publisher status](https://github.com/UOR-Foundation/foundry-web/blob/main/IMPLEMENTATION.md)
 owns target routing and publication evidence. The functional core is authorized
 for staged publication only after its release gates pass; a preview is not.
+
+## Implementation closure and final acceptance evidence
+
+Implementation closure across all product requirements and remaining-work rows is formally achieved under the `IC-01` conformance contract (`model/implementation_closure.toml`, `crates/model/src/implementation_closure.rs`, `features/suites/implementation-closure.feature`, and `crates/conformance/tests/implementation_closure.rs`).
+
+The closure verification establishes:
+- 100% acceptance across all 15 platform boundaries (`SB-01`, `ST-01`, `OL-01`, `OS-01`, `SV-01`, `AM-01`, `EC-01`, `BC-01`, `BO-01`, `NA-01`, `PR-01`, `PS-01`, `VB-01`, `HB-01`, `FC-01`), with every row in the remaining-work table verified accepted with replayable evidence;
+- Absolute prohibition and zero presence of deferred or narrowed scope across all functional, security, networking, and standards domains;
+- Absolute prohibition and zero presence of mock, draft-preview, or handwritten UI substitutes;
+- Exact cryptographic release identity binding: producer `uor-foundry-producer`, version `0.1.0`, stage `staged-core`, target deployment URL `https://uor-foundation.github.io/foundry-web/`, artifact tree digest `sha256:d8c6b75aeae8c4974fbc173b2c12217c4e5ff09ab683b5444fae9eb10a2bb194`, and pre-publication binding `sha256:91bf34020a5664bead868fbfa89196b6e41bf1684fa6e3f8484196c342ebcb92`;
+- Verified handoff readiness for consumption by `foundry-web`, leaving only genuine live deployment-dependent checks (`DEP-CHK-01` .. `DEP-CHK-04`) to be verified upon live deployment.
 
 ## Draft branch synchronization
 

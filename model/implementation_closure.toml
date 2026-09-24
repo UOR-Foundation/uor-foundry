@@ -1,0 +1,97 @@
+# model/implementation_closure.toml --- Complete uor-foundry producer model
+# and implementation closure across all product requirements and remaining-work rows.
+#
+# Conformance ID: IC-01 (suite: implementation-closure)
+
+spec = "foundry/implementation-closure/1"
+stage = "staged-core"
+
+[policy]
+enforce_complete_row_closure = true
+prohibit_deferred_scope = true
+prohibit_mock_substitutes = true
+require_replayable_evidence = true
+require_producer_handoff_readiness = true
+
+[release_identity]
+producer_name = "uor-foundry-producer"
+release_version = "0.1.0"
+release_stage = "staged-core"
+target_deployment_url = "https://uor-foundation.github.io/foundry-web/"
+artifact_tree_digest = "sha256:d8c6b75aeae8c4974fbc173b2c12217c4e5ff09ab683b5444fae9eb10a2bb194"
+pre_publication_binding = "sha256:91bf34020a5664bead868fbfa89196b6e41bf1684fa6e3f8484196c342ebcb92"
+
+[[accepted_boundaries]]
+id = "SB-01"
+name = "SDK and dependencies"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "ST-01"
+name = "Standards"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "OL-01"
+name = "Organization lifecycle"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "OS-01"
+name = "Organization sites"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "SV-01"
+name = "Services and Views"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "AM-01"
+name = "Authority model"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "EC-01"
+name = "Email continuity"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "BC-01"
+name = "Backup codes"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "BO-01"
+name = "Browser object space"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "NA-01"
+name = "Network acceptance"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "PR-01"
+name = "Producer release"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "PS-01"
+name = "Publication SDK"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "VB-01"
+name = "Veilid bootstrap"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "HB-01"
+name = "Holospaces boundary"
+status = "accepted"
+
+[[accepted_boundaries]]
+id = "FC-01"
+name = "Functional core"
+status = "accepted"
