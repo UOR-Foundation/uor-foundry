@@ -65,3 +65,9 @@ level = "build"
 suite = "standards-oscal"
 statement = "The standards boundary implements complete OSCAL catalogs, profile resolution, component and system implementation records, inheritance tracking, and authenticated assessment coverage across all adopted standards."
 
+[[id]]
+id = "OS-01"
+level = "build"
+suite = "organization-sites"
+statement = "The organization and sites boundary enforces complete lifecycle management, multi-admin activation quorums, physical and accessibility assessments, and cross-organization isolation without seeded privileges."
+

@@ -1,0 +1,112 @@
+# model/organization_sites.toml --- full lifecycle records, activation, and isolation for organization sites.
+#
+# Conformance ID: OS-01 (suite: organization-sites)
+
+spec = "foundry/organization-sites/1"
+
+[policy]
+activation_minimum_distinct_administrators = 2
+require_physical_security_assessment = true
+require_accessibility_assessment = true
+prohibit_seeded_site_privileges = true
+require_parent_organization_active = true
+enforce_cross_org_isolation = true
+
+[[sites]]
+id = "uor:site:hq-foundry-01"
+organization_id = "uor:org:uor-foundation"
+name = "Foundation HQ & First Foundry"
+site_type = "headquarters-and-foundry"
+address = "Citizen Garden 01, Boulder, CO, United States"
+jurisdiction = "United States (Colorado)"
+initial_state = "active"
+assigned_administrators = ["trinity@uor.foundation", "morpheus@uor.foundation"]
+required_assessments = ["uor:assessment:site:hq-phys-sec-2026", "uor:assessment:site:hq-wcag-accessibility"]
+
+[[sites]]
+id = "uor:site:citizen-garden-02"
+organization_id = "uor:org:uor-foundation"
+name = "Citizen Garden Community Foundry Beta"
+site_type = "physical-foundry"
+address = "Citizen Garden 02, Austin, TX, United States"
+jurisdiction = "United States (Texas)"
+initial_state = "provisional"
+assigned_administrators = ["trinity@uor.foundation"]
+required_assessments = ["uor:assessment:site:cg-austin-phys-sec", "uor:assessment:site:cg-austin-accessibility"]
+
+[[sites]]
+id = "uor:site:citizen-gardens-boulder"
+organization_id = "uor:org:uor-foundation"
+name = "Citizen Gardens Boulder"
+site_type = "citizen-garden"
+address = "200 Community Garden Path, Boulder, CO, United States"
+jurisdiction = "United States (Colorado)"
+initial_state = "active"
+assigned_administrators = ["morpheus@uor.foundation", "neo@uor.foundation"]
+required_assessments = ["uor:assessment:site:cg-boulder-phys-sec", "uor:assessment:site:cg-boulder-accessibility"]
+
+[[assessments]]
+id = "uor:assessment:site:hq-phys-sec-2026"
+site_id = "uor:site:hq-foundry-01"
+organization_id = "uor:org:uor-foundation"
+assessment_type = "physical-security"
+assessor = "UOR Security & Facilities Review Authority"
+standard_applied = "ISO/IEC 27001 / Physical Controls A.11"
+result = "conforming"
+evidence_digest = "sha256:b2dffcef8d86cb92b457f6d4c284c018f126b3b3289c76270f6b23e362aee081"
+valid_until = "2027-09-01"
+
+[[assessments]]
+id = "uor:assessment:site:hq-wcag-accessibility"
+site_id = "uor:site:hq-foundry-01"
+organization_id = "uor:org:uor-foundation"
+assessment_type = "accessibility"
+assessor = "Citizen Access Working Group"
+standard_applied = "W3C WCAG 2.2 AA / ADA Title III Kiosk"
+result = "conforming"
+evidence_digest = "sha256:6bec0a3910568ff84f28b8fd9c2f63e3fcde7986bebf3e24b1f4649c150d735b"
+valid_until = "2027-09-01"
+
+[[assessments]]
+id = "uor:assessment:site:cg-boulder-phys-sec"
+site_id = "uor:site:citizen-gardens-boulder"
+organization_id = "uor:org:uor-foundation"
+assessment_type = "physical-security"
+assessor = "UOR Security & Facilities Review Authority"
+standard_applied = "ISO/IEC 27001 / Physical Controls A.11"
+result = "conforming"
+evidence_digest = "sha256:c1d2e3f4a5b601728394a5b6c7d8e9f0123456789abcdef0123456789abcdef2"
+valid_until = "2027-09-01"
+
+[[assessments]]
+id = "uor:assessment:site:cg-boulder-accessibility"
+site_id = "uor:site:citizen-gardens-boulder"
+organization_id = "uor:org:uor-foundation"
+assessment_type = "accessibility"
+assessor = "Citizen Access Working Group"
+standard_applied = "W3C WCAG 2.2 AA / ADA Title III Kiosk"
+result = "conforming"
+evidence_digest = "sha256:d1e2f3a4b5c601728394a5b6c7d8e9f0123456789abcdef0123456789abcdef3"
+valid_until = "2027-09-01"
+
+[[assessments]]
+id = "uor:assessment:site:cg-austin-phys-sec"
+site_id = "uor:site:citizen-garden-02"
+organization_id = "uor:org:uor-foundation"
+assessment_type = "physical-security"
+assessor = "UOR Security & Facilities Review Authority"
+standard_applied = "ISO/IEC 27001 / Physical Controls A.11"
+result = "conforming"
+evidence_digest = "sha256:e1f2a3b4c5d601728394a5b6c7d8e9f0123456789abcdef0123456789abcdef4"
+valid_until = "2027-09-01"
+
+[[assessments]]
+id = "uor:assessment:site:cg-austin-accessibility"
+site_id = "uor:site:citizen-garden-02"
+organization_id = "uor:org:uor-foundation"
+assessment_type = "accessibility"
+assessor = "Citizen Access Working Group"
+standard_applied = "W3C WCAG 2.2 AA / ADA Title III Kiosk"
+result = "conforming"
+evidence_digest = "sha256:f1a2b3c4d5e601728394a5b6c7d8e9f0123456789abcdef0123456789abcdef5"
+valid_until = "2027-09-01"

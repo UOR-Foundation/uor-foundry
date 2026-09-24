@@ -17,6 +17,7 @@ pub mod codegen;
 pub mod identity_email;
 pub mod kappa;
 pub mod organization;
+pub mod organization_sites;
 pub mod owner_inputs;
 pub mod registry;
 pub mod standards;
@@ -46,6 +47,11 @@ pub use organization::{
     LifecycleTransitionRule, OrgAdministrator, OrganizationError, OrganizationLifecycleConfig,
     OrganizationLifecycleState, OrganizationManager, OrganizationRecord, OrganizationRules,
     RetireFoundingGrantRequest,
+};
+pub use organization_sites::{
+    AccessSiteRequest, ActivateSiteRequest, ActiveSiteState, CreateSiteRequest,
+    SiteAssessmentLifecycleRecord, SiteError, SiteLifecycleConfig, SiteLifecycleRecord,
+    SiteLifecycleState, SiteManager, SitePolicyConfig, TransitionSiteRequest,
 };
 pub use owner_inputs::OwnerInputs;
 pub use registry::{Authorities, AuthorityRow, Claim, IdRow, Ids, Ledger, Level};
@@ -81,6 +87,8 @@ pub struct Model {
     pub backup_codes: BackupCodeConfig,
     /// `model/standards.toml`: OSCAL catalogs, profile resolution, and authenticated assessments.
     pub standards: StandardsConfig,
+    /// `model/organization_sites.toml`: Organization sites lifecycle, activation, and isolation policy.
+    pub organization_sites: SiteLifecycleConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -120,6 +128,7 @@ impl Model {
             email_continuity: read(dir, "email_continuity.toml")?,
             backup_codes: read(dir, "backup_codes.toml")?,
             standards: read(dir, "standards.toml")?,
+            organization_sites: read(dir, "organization_sites.toml")?,
         })
     }
 
@@ -134,7 +143,7 @@ impl Model {
     /// authority that exists (`CM-01` .. `CM-03`, R2), every owner-controlled
     /// input record valid, Kappa boundary rules valid, organization lifecycle policy valid,
     /// authority model policy valid, email continuity protocol valid, backup codes policy valid,
-    /// and standards OSCAL boundary valid.
+    /// standards OSCAL boundary valid, and organization sites boundary valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -147,6 +156,8 @@ impl Model {
         self.email_continuity.check(&self.owner_inputs)?;
         self.backup_codes.check(&self.owner_inputs)?;
         self.standards.check(&self.owner_inputs)?;
+        self.organization_sites
+            .check(&self.owner_inputs, &self.organization_lifecycle)?;
         Ok(())
     }
 
