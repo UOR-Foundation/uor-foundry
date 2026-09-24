@@ -60,6 +60,14 @@ PrismPM's prior Workspace/V1 single-owner operations are replaced under the
 AM-01 scoped multi-administrator policy, modeling its authority, protocol and
 recovery boundaries across distinct-user quorums, atomic post-change coverage
 and revision fencing.
+Standards and OSCAL governance are implemented under the ST-01 contract:
+OSCAL catalogs, profile resolution, component and system implementation records,
+explicit inheritance tracking, and authenticated assessment coverage across all
+adopted standards (ISO/IEC 27034-1:2011, ISO/IEC 27034-5:2017, ISO/IEC 27005:2022,
+ISO/IEC 25010:2023, ISO/IEC/IEEE 42010:2022, NIST SP 800-63B-4, W3C WCAG 2.2 AA)
+and the mandatory PrismPM base profile. Assessments are cryptographically bound
+to authorized assessment authorities, confirming conforming verdicts and full
+control satisfaction without weakened baselines or unassessed claims.
 
 The generic-organization contract update passed full `just vv` in the locked
 AMD64 SDK; log: `target/generic-organization-contract-full-vv.log`. This is
@@ -70,7 +78,7 @@ scaffold verification, not acceptance of organization creation or isolation.
 | Boundary | Remaining work and acceptance |
 | --- | --- |
 | SDK and dependencies | Publish and verify the self-contained immutable OCI SDK on both architectures, including the complete offline dependency closure and digest-bound oracle inputs from a fresh cache. Source integration is not consumer acceptance. Public Cargo publication follows Foundry publication and verification. |
-| Standards | Implement OSCAL catalogs, profile resolution, component/system records, inheritance and authenticated assessments. Bind every adopted edition to its complete applicable authoritative coverage. Existing structural control records are not OSCAL implementation. |
+| Standards | Implemented and accepted under ST-01: OSCAL catalogs, profile resolution, component/system records, explicit inheritance and authenticated assessment coverage across all adopted standards without weakening base profile. |
 | Organization lifecycle and sites | Model normal creation, provisional setup, activation, isolated records and site lifecycles. UOR's Foundation, HQ, Foundry and Citizen Gardens records use these same workflows; validate authorized policies and applicable physical/human assessments without seeded privileges. |
 | Services and Views | Implement every service and stakeholder journey in SPEC.md through Prism/LexLean and prism-stdlib, including state, permissions, effects, resource bounds and failures. No handwritten application substitute or draft-preview release. |
 | Account and authority continuity | Implement UOR-native verified email enrollment/login/recovery through PrismPM, scoped grants, distinct-user approval quorums and atomic post-change ownership coverage. Reject concurrent lockout, replay, revoked-grant recovery and premature bootstrap retirement; a self-selected role or repeated key is not another administrator. |
