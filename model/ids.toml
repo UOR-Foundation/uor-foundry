@@ -95,5 +95,11 @@ level = "build"
 suite = "producer-release"
 statement = "Producer release generates all artifacts twice reproducibly, verifies complete service, control, dependency, and assessment coverage, and binds exact producer identity, artifact tree, and pre-publication evidence with only deployment-dependent checks outstanding."
 
+[[id]]
+id = "PS-01"
+level = "build"
+suite = "publication-sdk"
+statement = "The publication SDK boundary enforces source-free acquisition, producer readiness verification, target authorization, confined atomic artifact export, live post-deployment verification, and accepted-release rollback without server proxies or byte substitution."
+
 
 

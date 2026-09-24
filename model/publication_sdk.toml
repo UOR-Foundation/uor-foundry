@@ -1,0 +1,43 @@
+# model/publication_sdk.toml --- publication SDK specification, source-free acquisition,
+# readiness verification, target authorization, confined atomic artifact export,
+# live verification, and accepted-release rollback semantics.
+#
+# Conformance ID: PS-01 (suite: publication-sdk)
+
+spec = "foundry/publication-sdk/1"
+stage = "staged-core"
+target_domain = "https://uor-foundation.github.io/foundry-web/"
+
+[policy]
+enforce_source_free_acquisition = true
+enforce_atomic_artifact_export = true
+require_exact_producer_binding = true
+require_target_authorization_decision = true
+prohibit_byte_substitution = true
+prohibit_stale_or_partial_evidence = true
+enable_accepted_release_rollback = true
+
+[producer_handoff]
+producer_release_spec = "foundry/producer-release/1"
+expected_producer_identity = "uor-foundry-producer"
+expected_stage = "staged-core"
+producer_binding_digest = "sha256:91bf34020a5664bead868fbfa89196b6e41bf1684fa6e3f8484196c342ebcb92"
+
+[atomic_export]
+export_api = "export-browser"
+output_dir = "dist/"
+required_assets = [
+  "index.html",
+  "foundry.js",
+  "foundry_bg.wasm",
+  "foundry.css",
+  "manifest.json",
+  "holo_runtime.holo"
+]
+preserve_unchanged_bytes = true
+
+[rollback_policy]
+retained_previous_release_digest = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+rollback_trigger_on_verification_failure = true
+atomic_reversion_required = true
+

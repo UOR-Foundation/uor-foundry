@@ -84,6 +84,12 @@ model does not sanction.
 | --- | --- | --- |
 | `PR-01` | `build` | Producer release generates all artifacts twice reproducibly, verifies complete service, control, dependency, and assessment coverage, and binds exact producer identity, artifact tree, and pre-publication evidence with only deployment-dependent checks outstanding. |
 
+## publication-sdk
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `PS-01` | `build` | The publication SDK boundary enforces source-free acquisition, producer readiness verification, target authorization, confined atomic artifact export, live post-deployment verification, and accepted-release rollback without server proxies or byte substitution. |
+
 ## services-views
 
 | ID | Level | Statement |
