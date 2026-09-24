@@ -1,0 +1,28 @@
+# model/holospaces_boundary.toml --- Holospaces threat-model revalidation,
+# participant-only session realities, browser-only durability, discovery without
+# local witness proxies, and session churn modeling.
+#
+# Conformance ID: HB-01 (suite: holospaces-boundary)
+
+spec = "foundry/holospaces-boundary/1"
+stage = "staged-core"
+pinned_upstream_commit = "96769f16be454ab1572fddff4613704ccfbebf5e"
+
+[threat_model]
+prohibit_native_relay_assumptions = true
+prohibit_local_witness_proxies = true
+prohibit_out_of_band_signaling = true
+require_private_key_possession = true
+require_participant_session_churn_model = true
+prohibit_all_offline_execution = true
+
+[durability]
+min_participant_replicas = 3
+max_acceptable_offline_hours = 72
+anti_entropy_repair_frequency_seconds = 300
+required_quorum_percentage = 60.0
+
+[discovery]
+primary_discovery = "veilid-authenticated-relay"
+webrtc_signaling = "authenticated-in-band"
+prohibit_out_of_band_rendezvous = true

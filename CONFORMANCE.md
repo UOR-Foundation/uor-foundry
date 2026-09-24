@@ -48,6 +48,12 @@ model does not sanction.
 | --- | --- | --- |
 | `EC-01` | `build` | The UOR-native verified email identity continuity protocol enforces browser-native challenge-response enrollment, login, and recovery, rejecting replay, unverified mailbox control, revoked-grant restoration, and unauthorized authority creation. |
 
+## holospaces-boundary
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `HB-01` | `build` | The Holospaces external boundary revalidates threat-model assumptions against participant/faculty session realities, requiring private-key possession proofs, in-band authenticated discovery, and replica quorum durability under browser churn while rejecting native-relay and local-witness proxy assumptions. |
+
 ## kappa-service
 
 | ID | Level | Statement |

@@ -107,5 +107,11 @@ level = "build"
 suite = "veilid-bootstrap"
 statement = "The Veilid external boundary enforces authenticated secure bootstrap routing, browser transport integration, relay public-key verification, outbound-relay limitation mitigations, and network discovery under adverse conditions without feature-flag-only or unauthenticated proxy substitutes."
 
+[[id]]
+id = "HB-01"
+level = "build"
+suite = "holospaces-boundary"
+statement = "The Holospaces external boundary revalidates threat-model assumptions against participant/faculty session realities, requiring private-key possession proofs, in-band authenticated discovery, and replica quorum durability under browser churn while rejecting native-relay and local-witness proxy assumptions."
+
 
 

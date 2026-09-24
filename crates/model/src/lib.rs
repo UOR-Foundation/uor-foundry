@@ -14,6 +14,7 @@
 pub mod authority;
 pub mod backup_codes;
 pub mod codegen;
+pub mod holospaces_boundary;
 pub mod identity_email;
 pub mod kappa;
 pub mod network_acceptance;
@@ -37,6 +38,11 @@ pub use backup_codes::{
     BackupCodeBatch, BackupCodeConfig, BackupCodeError, BackupCodeLifecycleConfig,
     BackupCodeManager, BackupCodeNotificationConfig, BackupCodeStandardsConfig, CodeStatus,
     RedeemBackupCodeRequest, RedemptionReport, StoredBackupCode,
+};
+pub use holospaces_boundary::{
+    HolospacesBoundaryConfig, HolospacesBoundaryError, HolospacesDiscoveryConfig,
+    HolospacesDurabilityConfig, HolospacesMeshCoordinator, HolospacesThreatModelConfig,
+    ParticipantSessionRecord,
 };
 pub use identity_email::{
     AccountStatus, ChallengePurpose, EmailChallenge, EmailContinuityConfig, EmailContinuityManager,
@@ -140,6 +146,8 @@ pub struct Model {
     pub publication_sdk: PublicationSdkConfig,
     /// `model/veilid_bootstrap.toml`: Veilid secure bootstrap route specification.
     pub veilid_bootstrap: VeilidBootstrapConfig,
+    /// `model/holospaces_boundary.toml`: Holospaces boundary specification.
+    pub holospaces_boundary: HolospacesBoundaryConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -186,6 +194,7 @@ impl Model {
             producer_release: read(dir, "producer_release.toml")?,
             publication_sdk: read(dir, "publication_sdk.toml")?,
             veilid_bootstrap: read(dir, "veilid_bootstrap.toml")?,
+            holospaces_boundary: read(dir, "holospaces_boundary.toml")?,
         })
     }
 
@@ -202,7 +211,8 @@ impl Model {
     /// authority model policy valid, email continuity protocol valid, backup codes policy valid,
     /// standards OSCAL boundary valid, organization sites boundary valid, services boundary valid,
     /// browser object space boundary valid, network acceptance boundary valid, producer
-    /// release boundary valid, publication SDK boundary valid, and Veilid bootstrap boundary valid.
+    /// release boundary valid, publication SDK boundary valid, Veilid bootstrap boundary valid,
+    /// and Holospaces boundary valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -235,6 +245,8 @@ impl Model {
             &self.producer_release,
         )?;
         self.veilid_bootstrap
+            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+        self.holospaces_boundary
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         Ok(())
     }
