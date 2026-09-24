@@ -54,6 +54,12 @@ model does not sanction.
 | --- | --- | --- |
 | `OL-01` | `build` | Organization lifecycle enforces open creation, provisional creator grants, policy-compliant activation, distinct-user quorum coverage, and cross-organization isolation. |
 
+## organization-sites
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `OS-01` | `build` | The organization and sites boundary enforces complete lifecycle management, multi-admin activation quorums, physical and accessibility assessments, and cross-organization isolation without seeded privileges. |
+
 ## owner-inputs
 
 | ID | Level | Statement |
