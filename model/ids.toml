@@ -113,5 +113,11 @@ level = "build"
 suite = "holospaces-boundary"
 statement = "The Holospaces external boundary revalidates threat-model assumptions against participant/faculty session realities, requiring private-key possession proofs, in-band authenticated discovery, and replica quorum durability under browser churn while rejecting native-relay and local-witness proxy assumptions."
 
+[[id]]
+id = "SB-01"
+level = "build"
+suite = "sdk-boundary"
+statement = "The SDK boundary enforces immutable multi-architecture OCI SDK verification across linux/amd64 and linux/arm64, complete offline dependency closure from Cargo.lock, digest-bound authoritative oracle inputs, and the strict rule that source integration is not consumer acceptance."
+
 
 

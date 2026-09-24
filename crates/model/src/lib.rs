@@ -25,6 +25,7 @@ pub mod owner_inputs;
 pub mod producer_release;
 pub mod publication_sdk;
 pub mod registry;
+pub mod sdk_boundary;
 pub mod services;
 pub mod standards;
 pub mod veilid_bootstrap;
@@ -89,6 +90,10 @@ pub use publication_sdk::{
     PublicationState, RollbackPolicyConfig,
 };
 pub use registry::{Authorities, AuthorityRow, Claim, IdRow, Ids, Ledger, Level};
+pub use sdk_boundary::{
+    ArchitectureManifestRecord, OracleSpecificationRecord, SdkBoundaryConfig, SdkBoundaryEngine,
+    SdkBoundaryError, SdkPolicyConfig,
+};
 pub use services::{
     AiInferenceProposal, AiProposalState, BrandKit, BrandKitState, CertificationState,
     CreateAiProposalRequest, FinancialInvoice, FinancialInvoiceState, GovernanceProposal,
@@ -148,6 +153,8 @@ pub struct Model {
     pub veilid_bootstrap: VeilidBootstrapConfig,
     /// `model/holospaces_boundary.toml`: Holospaces boundary specification.
     pub holospaces_boundary: HolospacesBoundaryConfig,
+    /// `model/sdk_boundary.toml`: SDK and offline dependency boundary specification.
+    pub sdk_boundary: SdkBoundaryConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -195,6 +202,7 @@ impl Model {
             publication_sdk: read(dir, "publication_sdk.toml")?,
             veilid_bootstrap: read(dir, "veilid_bootstrap.toml")?,
             holospaces_boundary: read(dir, "holospaces_boundary.toml")?,
+            sdk_boundary: read(dir, "sdk_boundary.toml")?,
         })
     }
 
@@ -212,7 +220,7 @@ impl Model {
     /// standards OSCAL boundary valid, organization sites boundary valid, services boundary valid,
     /// browser object space boundary valid, network acceptance boundary valid, producer
     /// release boundary valid, publication SDK boundary valid, Veilid bootstrap boundary valid,
-    /// and Holospaces boundary valid.
+    /// Holospaces boundary valid, and SDK boundary valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -247,6 +255,8 @@ impl Model {
         self.veilid_bootstrap
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         self.holospaces_boundary
+            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+        self.sdk_boundary
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         Ok(())
     }

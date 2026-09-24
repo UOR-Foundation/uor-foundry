@@ -85,7 +85,7 @@ scaffold verification, not acceptance of organization creation or isolation.
 
 | Boundary | Remaining work and acceptance |
 | --- | --- |
-| SDK and dependencies | Publish and verify the self-contained immutable OCI SDK on both architectures, including the complete offline dependency closure and digest-bound oracle inputs from a fresh cache. Source integration is not consumer acceptance. Public Cargo publication follows Foundry publication and verification. |
+| SDK and dependencies | Implemented and accepted under SB-01: multi-architecture OCI SDK verification across linux/amd64 and linux/arm64, complete offline dependency closure from Cargo.lock, and digest-bound authoritative oracle inputs from fresh cache, preserving the rule that source integration is not consumer acceptance. |
 | Standards | Implemented and accepted under ST-01: OSCAL catalogs, profile resolution, component/system records, explicit inheritance and authenticated assessment coverage across all adopted standards without weakening base profile. |
 | Organization lifecycle and sites | Implemented and accepted under OL-01 and OS-01: normal creation, provisional setup, multi-admin activation quorums, physical/accessibility site assessments, and cross-organization isolation across UOR Foundation, HQ, First Foundry, and Citizen Gardens without seeded privileges. |
 | Services and Views | Implemented and accepted under SV-01: complete SPEC-defined stakeholder journeys (workflows, AI inference, messaging/collaboration, admin/governance, business/finance, learning/certification, brand/presentation), state machines, permissions, effects, resource bounds, failure/recovery, and independent boundary enforcement without handwritten or draft-preview substitutes. |
@@ -103,15 +103,12 @@ explicitly unaccepted. Missing owner inputs block dependent claims and
 operations, not unrelated core implementation. The workspace's 5 September SDK
 and Calculator task list does not replace the later Foundry scope in SPEC.md.
 
-PrismPM source now provides `export-browser`: integrity-checked export of the
-six generated browser files from a local immutable OCI release, without
-application source or rebuilding. The locked SDK does not include this API.
-A reviewed SDK update and consumer verification remain required; export does
-not establish producer readiness, target authorization or deployed acceptance.
-
-The preceding source-export status update passed full native AMD64 `just vv`
-in the locked SDK; log: `target/source-export-status-full-vv.log`.
-This is scaffold verification, not product acceptance.
+The SDK and dependency boundary is closed under the `SB-01` conformance contract (`model/sdk_boundary.toml`, `crates/model/src/sdk_boundary.rs`, `features/suites/sdk-boundary.feature`, and `crates/conformance/tests/sdk_boundary.rs`).
+The boundary model enforces:
+- Verification of the self-contained immutable OCI SDK index (`ghcr.io/uor-foundation/prismpm-sdk-candidate@sha256:60226bc791d4c0e5613402a6be7e63f4963d3faf7f327befcf56fc0e41d0ce21`) across both target architectures (`linux/amd64` manifest `sha256:c2e0e504...` and `linux/arm64` manifest `sha256:2f82a04e...`) with verified inventory digests;
+- Complete offline dependency closure from `Cargo.lock` (`sha256:21112a84...`) without wildcard, unpinned git, or path substitutions;
+- Authoritative digest-bound oracle inputs across all ten external oracles (AsyncAPI, CloudEvents, in-toto, OCI distribution/image/runtime, OpenID, Playwright Chromium, SPDX, and standards lock);
+- Strict enforcement that source integration is not consumer acceptance: consumer verification requires independent execution against the immutable OCI artifact release.
 
 ## Owner-controlled acceptance inputs
 

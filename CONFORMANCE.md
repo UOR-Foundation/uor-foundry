@@ -96,6 +96,12 @@ model does not sanction.
 | --- | --- | --- |
 | `PS-01` | `build` | The publication SDK boundary enforces source-free acquisition, producer readiness verification, target authorization, confined atomic artifact export, live post-deployment verification, and accepted-release rollback without server proxies or byte substitution. |
 
+## sdk-boundary
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `SB-01` | `build` | The SDK boundary enforces immutable multi-architecture OCI SDK verification across linux/amd64 and linux/arm64, complete offline dependency closure from Cargo.lock, digest-bound authoritative oracle inputs, and the strict rule that source integration is not consumer acceptance. |
+
 ## services-views
 
 | ID | Level | Statement |
