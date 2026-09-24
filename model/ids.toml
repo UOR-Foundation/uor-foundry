@@ -89,5 +89,11 @@ level = "build"
 suite = "network-acceptance"
 statement = "Network acceptance exercises independent browser participants under real discovery constraints, network partitions, browser suspensions, replica loss, hostile inputs, authenticated bootstrap routing, and measured availability targets without server-hosted proxies."
 
+[[id]]
+id = "PR-01"
+level = "build"
+suite = "producer-release"
+statement = "Producer release generates all artifacts twice reproducibly, verifies complete service, control, dependency, and assessment coverage, and binds exact producer identity, artifact tree, and pre-publication evidence with only deployment-dependent checks outstanding."
+
 
 

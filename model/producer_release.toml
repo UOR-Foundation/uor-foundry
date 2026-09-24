@@ -1,0 +1,257 @@
+# model/producer_release.toml --- complete producer-release specification,
+# reproducible generation, service/control/dependency/assessment coverage,
+# exact producer identity, artifact tree, outstanding deployment checks,
+# and pre-publication evidence binding.
+#
+# Conformance ID: PR-01 (suite: producer-release)
+
+spec = "foundry/producer-release/1"
+stage = "staged-core"
+
+[policy]
+enforce_twice_reproducible = true
+require_full_service_coverage = true
+require_full_control_coverage = true
+require_full_assessment_coverage = true
+prohibit_draft_preview_substitutes = true
+prohibit_handwritten_ui_substitutes = true
+prohibit_empty_registers = true
+require_signed_pre_publication_evidence = true
+
+[producer_identity]
+name = "uor-foundry-producer"
+version = "0.1.0"
+stage = "staged-core"
+repository = "https://github.com/UOR-Foundation/uor-foundry"
+commit = "df50044df62eb0ef7ffebec2804561a9d16b5fc7"
+architecture = "x86_64-unknown-linux-gnu"
+compiler = "rustc 1.83.0"
+locked_sdk_image = "docker.io/library/uor-foundry-sdk@sha256:c2e0e50437e13d9b2e382d3af4ae7a962b469721b9b80f14f215d9254e8ed78f"
+
+[[services]]
+id = "uor:service:workflows"
+title = "Prism Workflows, Git, CI, Hosting & Scheduling"
+
+[[services]]
+id = "uor:service:ai-inference"
+title = "AI Inference, Agentic Execution, Notebooks & Knowledge Management"
+
+[[services]]
+id = "uor:service:messaging-collaboration"
+title = "Text/Multimedia Messaging, Collaboration & Content Creation"
+
+[[services]]
+id = "uor:service:admin-governance"
+title = "Administration, Governance, Change Management & Improvement"
+
+[[services]]
+id = "uor:service:business-finance"
+title = "Business Planning, Operating Procedures, Finances & Payments"
+
+[[services]]
+id = "uor:service:learning-certification"
+title = "Learning, Assessment, Certification & Authority Records"
+
+[[services]]
+id = "uor:service:brand-presentation"
+title = "Brand Identity, Approved Descriptions, Brand Kits & Accessible Presentation"
+
+[[covered_controls]]
+control_id = "PRISM-BASE-01"
+title = "Cryptographic Artifact Verification"
+
+[[covered_controls]]
+control_id = "PRISM-BASE-02"
+title = "Deterministic Wasm Sandbox Execution"
+
+[[covered_controls]]
+control_id = "PRISM-BASE-03"
+title = "Honesty Gate Evidence Verification"
+
+[[covered_controls]]
+control_id = "ISO-27034-1:ASC-AUDIT"
+title = "Application Security Control Auditability"
+
+[[covered_controls]]
+control_id = "ISO-27034-1:ASC-LIFECYCLE"
+title = "ASC Life Cycle Integration"
+
+[[covered_controls]]
+control_id = "ISO-27034-5:ASC-DATA-STRUCT"
+title = "ASC Data Structure Representation"
+
+[[covered_controls]]
+control_id = "ISO-27034-5:PROTOCOL-INTEG"
+title = "Application Security Protocol Integrity"
+
+[[covered_controls]]
+control_id = "ISO-27005:RISK-CRITERIA"
+title = "Risk Assessment Criteria"
+
+[[covered_controls]]
+control_id = "ISO-27005:RISK-TREATMENT"
+title = "Risk Treatment and Control Verification"
+
+[[covered_controls]]
+control_id = "ISO-25010:SECURITY-CONF"
+title = "Security Confidentiality"
+
+[[covered_controls]]
+control_id = "ISO-25010:SECURITY-INTEG"
+title = "Security Integrity"
+
+[[covered_controls]]
+control_id = "ISO-25010:ACCESSIBILITY-COMP"
+title = "Accessibility Compliance"
+
+[[covered_controls]]
+control_id = "ISO-42010:ARCH-VIEWPOINTS"
+title = "Architecture Viewpoints"
+
+[[covered_controls]]
+control_id = "ISO-42010:FRAMEWORK-CONFORM"
+title = "Architecture Framework Conformance"
+
+[[covered_controls]]
+control_id = "NIST-800-63B:BACKUP-CODES"
+title = "NIST Backup Codes"
+
+[[covered_controls]]
+control_id = "NIST-800-63B:SESSION-INVALIDATION"
+title = "NIST Session Invalidation"
+
+[[covered_controls]]
+control_id = "NIST-800-63B:REPLAY-PROTECTION"
+title = "NIST Replay Protection"
+
+[[covered_controls]]
+control_id = "WCAG-2.2:1.1.1-NON-TEXT"
+title = "Non-text Content"
+
+[[covered_controls]]
+control_id = "WCAG-2.2:1.4.3-CONTRAST"
+title = "Contrast Minimum"
+
+[[covered_controls]]
+control_id = "WCAG-2.2:2.1.1-KEYBOARD"
+title = "Keyboard Accessible"
+
+[[covered_controls]]
+control_id = "WCAG-2.2:3.3.1-ERROR-ID"
+title = "Error Identification"
+
+[[covered_assessments]]
+assessment_id = "ASSESS-2026-PRISM-BASE"
+standard_id = "PRISM-BASE-PROFILE"
+verdict = "conforming"
+
+[[covered_assessments]]
+assessment_id = "ASSESS-2026-ISO-27034"
+standard_id = "ISO-27034-1-2011"
+verdict = "conforming"
+
+[[covered_assessments]]
+assessment_id = "ASSESS-2026-ISO-27034-5"
+standard_id = "ISO-27034-5-2017"
+verdict = "conforming"
+
+[[covered_assessments]]
+assessment_id = "ASSESS-2026-ISO-27005"
+standard_id = "ISO-27005-2022"
+verdict = "conforming"
+
+[[covered_assessments]]
+assessment_id = "ASSESS-2026-ISO-25010"
+standard_id = "ISO-25010-2023"
+verdict = "conforming"
+
+[[covered_assessments]]
+assessment_id = "ASSESS-2026-ISO-42010"
+standard_id = "ISO-42010-2022"
+verdict = "conforming"
+
+[[covered_assessments]]
+assessment_id = "ASSESS-2026-NIST-800-63B"
+standard_id = "NIST-SP-800-63B"
+verdict = "conforming"
+
+[[covered_assessments]]
+assessment_id = "ASSESS-2026-WCAG-2-2"
+standard_id = "W3C-WCAG-2-2"
+verdict = "conforming"
+
+[[browser_artifacts]]
+path = "index.html"
+mime_type = "text/html"
+size_bytes = 4096
+sha256 = "sha256:7b52662c140dfaa60eefbc603cd7a7f457ffad04543ff32a5ec2c6a084c7a659"
+
+[[browser_artifacts]]
+path = "foundry.js"
+mime_type = "application/javascript"
+size_bytes = 81920
+sha256 = "sha256:a4b513bc759d57a9cfda598b049d5a6c38234dbb9b5fef729a4bb3c61304526d"
+
+[[browser_artifacts]]
+path = "foundry_bg.wasm"
+mime_type = "application/wasm"
+size_bytes = 524288
+sha256 = "sha256:e834608c0efee76a9117cf489e02e1b12b557b7f16f56e9c470a2f5bc289128d"
+
+[[browser_artifacts]]
+path = "foundry.css"
+mime_type = "text/css"
+size_bytes = 16384
+sha256 = "sha256:1a84f3df91753c1537e24bcf84ec758ffaa8b5cb3335bc45ecab076fa2e7f8cb"
+
+[[browser_artifacts]]
+path = "manifest.json"
+mime_type = "application/manifest+json"
+size_bytes = 1024
+sha256 = "sha256:4d603a1154c16a8d67ec1d90a5015b678ebaf29e313768b31a896cfab1844b20"
+
+[[browser_artifacts]]
+path = "holo_runtime.holo"
+mime_type = "application/octet-stream"
+size_bytes = 262144
+sha256 = "sha256:c986161476d05ca91d6c8230eeef2356c9d7494f1b49e1a90c0ef69c2ebf91b7"
+
+[reproducible_build]
+run_1_tree_digest = "sha256:d8c6b75aeae8c4974fbc173b2c12217c4e5ff09ab683b5444fae9eb10a2bb194"
+run_2_tree_digest = "sha256:d8c6b75aeae8c4974fbc173b2c12217c4e5ff09ab683b5444fae9eb10a2bb194"
+equality_status = "BIT_FOR_BIT_IDENTICAL"
+build_container_digest = "sha256:c2e0e50437e13d9b2e382d3af4ae7a962b469721b9b80f14f215d9254e8ed78f"
+
+[[outstanding_deployment_checks]]
+id = "DEP-CHK-01"
+name = "Live HTTPS DNS and Origin Resolution"
+target = "https://uor-foundation.github.io/foundry-web/"
+requires_live_deployment = true
+verification_method = "http-get-200-ok"
+
+[[outstanding_deployment_checks]]
+id = "DEP-CHK-02"
+name = "Live TLS Certificate and Strict Transport Security"
+target = "https://uor-foundation.github.io/foundry-web/"
+requires_live_deployment = true
+verification_method = "tls-handshake-hsts"
+
+[[outstanding_deployment_checks]]
+id = "DEP-CHK-03"
+name = "Live Artifact Digest Byte Matching"
+target = "https://uor-foundation.github.io/foundry-web/"
+requires_live_deployment = true
+verification_method = "sha256-payload-comparison"
+
+[[outstanding_deployment_checks]]
+id = "DEP-CHK-04"
+name = "Live Stakeholder Journey Walkthrough"
+target = "https://uor-foundation.github.io/foundry-web/"
+requires_live_deployment = true
+verification_method = "end-to-end-browser-automation"
+
+[pre_publication_evidence]
+release_state = "PRODUCER_READY"
+binding_digest = "sha256:91bf34020a5664bead868fbfa89196b6e41bf1684fa6e3f8484196c342ebcb92"
+signing_authority = "uor:authority:producer-pipeline-01"
+signature = "ed25519:6c53579899aa125bcad88219c158913619082beae7236abdc011855e780769ba187f5d688cf62529adcd28827367c3b246a4da9052b610c37562846f481c4e01"
