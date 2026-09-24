@@ -20,6 +20,7 @@ pub mod organization;
 pub mod organization_sites;
 pub mod owner_inputs;
 pub mod registry;
+pub mod services;
 pub mod standards;
 
 pub use authority::{
@@ -55,6 +56,13 @@ pub use organization_sites::{
 };
 pub use owner_inputs::OwnerInputs;
 pub use registry::{Authorities, AuthorityRow, Claim, IdRow, Ids, Ledger, Level};
+pub use services::{
+    AiInferenceProposal, AiProposalState, BrandKit, BrandKitState, CertificationState,
+    CreateAiProposalRequest, FinancialInvoice, FinancialInvoiceState, GovernanceProposal,
+    GovernanceProposalState, LearnerAssessment, MessageDeliveryState, MessageRecord,
+    RawBoundaryExecutor, ServiceDefinition, ServiceError, ServicesConfig, ServicesPolicyConfig,
+    ViewDefinition, ViewProjector, WorkflowRun, WorkflowRunState,
+};
 pub use standards::{
     AssessmentVerificationReport, ImplementedRequirement, InheritedControlRecord,
     OscalAssessmentRecord, OscalCatalog, OscalComponent, OscalControl, OscalProfile,
@@ -89,6 +97,8 @@ pub struct Model {
     pub standards: StandardsConfig,
     /// `model/organization_sites.toml`: Organization sites lifecycle, activation, and isolation policy.
     pub organization_sites: SiteLifecycleConfig,
+    /// `model/services.toml`: Services and Views specification.
+    pub services: ServicesConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -129,6 +139,7 @@ impl Model {
             backup_codes: read(dir, "backup_codes.toml")?,
             standards: read(dir, "standards.toml")?,
             organization_sites: read(dir, "organization_sites.toml")?,
+            services: read(dir, "services.toml")?,
         })
     }
 
@@ -143,7 +154,7 @@ impl Model {
     /// authority that exists (`CM-01` .. `CM-03`, R2), every owner-controlled
     /// input record valid, Kappa boundary rules valid, organization lifecycle policy valid,
     /// authority model policy valid, email continuity protocol valid, backup codes policy valid,
-    /// standards OSCAL boundary valid, and organization sites boundary valid.
+    /// standards OSCAL boundary valid, organization sites boundary valid, and services boundary valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -157,6 +168,8 @@ impl Model {
         self.backup_codes.check(&self.owner_inputs)?;
         self.standards.check(&self.owner_inputs)?;
         self.organization_sites
+            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+        self.services
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         Ok(())
     }

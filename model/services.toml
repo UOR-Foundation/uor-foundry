@@ -1,0 +1,142 @@
+# model/services.toml --- full service definitions, stakeholder journeys, state machines,
+# resource bounds, failure recovery, raw boundary checks, and view projections.
+#
+# Conformance ID: SV-01 (suite: services-views)
+
+spec = "foundry/services/1"
+
+[policy]
+enforce_raw_boundary_permissions = true
+require_workflow_authorization_for_ai = true
+require_independent_settlement_oracle = true
+require_accredited_certification_authority = true
+enforce_wcag_contrast_minimum = true
+prohibit_private_credentials_in_views = true
+min_governance_quorum_administrators = 2
+
+[[services]]
+id = "uor:service:workflows"
+domain = "workflows"
+title = "Prism Workflows, Git, CI, Hosting & Scheduling"
+actors = ["developer", "release-engineer", "ci-bot"]
+permissions = ["workflow:create", "workflow:execute", "workflow:promote", "release:sign"]
+allowed_states = ["draft", "queued", "running", "succeeded", "failed", "cancelled"]
+max_execution_seconds = 3600
+max_memory_mb = 16384
+max_disk_mb = 51200
+associated_view = "WorkflowsView"
+
+[[services]]
+id = "uor:service:ai-inference"
+domain = "ai-inference"
+title = "AI Inference, Agentic Execution, Notebooks & Knowledge Management"
+actors = ["researcher", "participant", "agent", "workflow-evaluator"]
+permissions = ["inference:submit", "agent:execute", "notebook:evaluate", "knowledge:index", "proposal:authorize", "proposal:apply"]
+allowed_states = ["proposed", "evaluating", "workflow-authorized", "verified-applied", "rejected", "resource-exceeded"]
+max_context_tokens = 131072
+max_generation_tokens = 4096
+associated_view = "InferenceView"
+
+[[services]]
+id = "uor:service:messaging-collaboration"
+domain = "messaging-collaboration"
+title = "Text/Multimedia Messaging, Collaboration & Content Creation"
+actors = ["member", "contributor", "collaborator"]
+permissions = ["channel:create", "message:send", "message:read", "content:edit", "media:upload"]
+allowed_states = ["draft", "sent", "relayed", "delivered", "acknowledged", "delivery-failed"]
+max_message_bytes = 65536
+max_attachment_bytes = 26214400
+associated_view = "CollaborationView"
+
+[[services]]
+id = "uor:service:admin-governance"
+domain = "admin-governance"
+title = "Administration, Governance, Change Management & Improvement"
+actors = ["administrator", "auditor", "governance-lead"]
+permissions = ["policy:propose", "policy:vote", "policy:enact", "role:assign", "audit:export"]
+allowed_states = ["proposed", "voting", "approved", "enacted", "rejected", "superceded"]
+min_distinct_approvers = 2
+voting_window_hours = 72
+associated_view = "GovernanceView"
+
+[[services]]
+id = "uor:service:business-finance"
+domain = "business-finance"
+title = "Business Planning, Operating Procedures, Finances & Payments"
+actors = ["business-manager", "billing-admin", "payment-oracle"]
+permissions = ["budget:create", "invoice:issue", "payment:authorize", "payment:settle", "procedure:publish"]
+allowed_states = ["draft", "authorized", "pending-settlement", "settled", "declined", "disputed"]
+max_transaction_amount_cents = 100000000
+settlement_oracle_id = "uor:oracle:settlement-authority-01"
+associated_view = "FinanceView"
+
+[[services]]
+id = "uor:service:learning-certification"
+domain = "learning-certification"
+title = "Learning, Assessment, Certification & Authority Records"
+actors = ["learner", "instructor", "accredited-assessor", "certification-authority"]
+permissions = ["course:enroll", "exam:submit", "assessment:evaluate", "certificate:issue", "certificate:revoke"]
+allowed_states = ["enrolled", "in-progress", "submitted", "assessed", "certified", "uncertified", "revoked"]
+certification_authority_id = "uor:authority:accredited-cert-board-01"
+max_exam_attempts = 3
+associated_view = "LearningView"
+
+[[services]]
+id = "uor:service:brand-presentation"
+domain = "brand-presentation"
+title = "Brand Identity, Approved Descriptions, Brand Kits & Accessible Presentation"
+actors = ["brand-steward", "accessibility-auditor", "designer"]
+permissions = ["brand:update", "asset:publish", "description:approve", "palette:configure"]
+allowed_states = ["draft", "review", "accessibility-validated", "published", "rejected"]
+min_wcag_normal_text_contrast = 4.5
+min_wcag_ui_contrast = 3.0
+associated_view = "BrandView"
+
+[[views]]
+id = "uor:view:workflows"
+name = "WorkflowsView"
+service_id = "uor:service:workflows"
+exposed_fields = ["run_id", "workflow_name", "status", "commit_sha", "elapsed_seconds", "artifact_digest"]
+redacted_fields = ["signing_private_key", "build_secret", "ci_token"]
+
+[[views]]
+id = "uor:view:inference"
+name = "InferenceView"
+service_id = "uor:service:ai-inference"
+exposed_fields = ["proposal_id", "prompt_summary", "status", "model_uri", "is_proposal", "authorized_by_workflow"]
+redacted_fields = ["model_weights_credential", "confidential_system_prompt", "agent_private_seed"]
+
+[[views]]
+id = "uor:view:collaboration"
+name = "CollaborationView"
+service_id = "uor:service:messaging-collaboration"
+exposed_fields = ["message_id", "channel_id", "sender_id", "delivery_status", "timestamp", "payload_preview"]
+redacted_fields = ["recipient_private_key", "end_to_end_session_key", "ephemeral_salt"]
+
+[[views]]
+id = "uor:view:governance"
+name = "GovernanceView"
+service_id = "uor:service:admin-governance"
+exposed_fields = ["proposal_id", "title", "status", "proposer", "distinct_approvals", "quorum_met", "target_revision"]
+redacted_fields = ["ballot_sealing_secret", "admin_private_key"]
+
+[[views]]
+id = "uor:view:finance"
+name = "FinanceView"
+service_id = "uor:service:business-finance"
+exposed_fields = ["invoice_id", "organization_id", "amount_cents", "currency", "status", "settlement_oracle", "settlement_digest"]
+redacted_fields = ["bank_routing_number", "payment_card_pan", "oracle_signing_key"]
+
+[[views]]
+id = "uor:view:learning"
+name = "LearningView"
+service_id = "uor:service:learning-certification"
+exposed_fields = ["learner_id", "course_id", "status", "assessment_score", "certification_authority", "certificate_digest"]
+redacted_fields = ["unreleased_exam_questions", "assessor_private_key", "rubric_hidden_weights"]
+
+[[views]]
+id = "uor:view:brand"
+name = "BrandView"
+service_id = "uor:service:brand-presentation"
+exposed_fields = ["kit_id", "organization_id", "status", "text_contrast_ratio", "ui_contrast_ratio", "wcag_compliant", "public_assets"]
+redacted_fields = ["draft_unreleased_assets", "brand_watermark_secret"]

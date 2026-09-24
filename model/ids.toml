@@ -71,3 +71,9 @@ level = "build"
 suite = "organization-sites"
 statement = "The organization and sites boundary enforces complete lifecycle management, multi-admin activation quorums, physical and accessibility assessments, and cross-organization isolation without seeded privileges."
 
+[[id]]
+id = "SV-01"
+level = "build"
+suite = "services-views"
+statement = "Services and Views enforce SPEC-defined stakeholder journeys, explicit state machines, permissions, effects, resource bounds, failure recovery, and independent raw-request boundary verification without mock or draft-preview substitutes."
+
