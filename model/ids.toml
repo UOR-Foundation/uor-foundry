@@ -59,3 +59,9 @@ level = "build"
 suite = "backup-codes"
 statement = "The saved backup-code recovery protocol enforces NIST SP 800-63B-4 compliant protected issuance, account/revision binding, single-use redemption, rotation, session invalidation, and replay/rollback rejection."
 
+[[id]]
+id = "ST-01"
+level = "build"
+suite = "standards-oscal"
+statement = "The standards boundary implements complete OSCAL catalogs, profile resolution, component and system implementation records, inheritance tracking, and authenticated assessment coverage across all adopted standards."
+

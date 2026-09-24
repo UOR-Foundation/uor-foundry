@@ -1,0 +1,360 @@
+# model/standards.toml --- OSCAL catalogs, profile resolution, component/system records, inheritance, and authenticated assessments.
+#
+# Conformance ID: ST-01 (suite: standards-oscal)
+
+spec = "foundry/standards-oscal/1"
+
+[policy]
+mandatory_base_profile = "CAT-PRISM-BASE"
+prohibit_unsupported_inapplicability = true
+prohibit_weakening_base_profile = true
+require_conforming_verdict = true
+require_authenticated_assessor = true
+require_authoritative_coverage = true
+require_explicit_inheritance = true
+enforce_cross_org_isolation = true
+
+[[catalogs]]
+catalog_id = "CAT-PRISM-BASE"
+standard_id = "PRISM-BASE-PROFILE"
+canonical_id = "PrismPM Base Security & Integrity Profile"
+edition = "2026.1"
+title = "PrismPM Base Runtime and Verifiable Compilation Baseline"
+controls = [
+  { id = "PRISM-BASE-01", title = "Cryptographic Artifact Verification", statement = "All runtime artifacts and models must be verified against immutable cryptographic hashes." },
+  { id = "PRISM-BASE-02", title = "Deterministic Wasm Sandbox Execution", statement = "Code execution must occur within memory-isolated, deterministic WebAssembly runtimes." },
+  { id = "PRISM-BASE-03", title = "Honesty Gate Evidence Verification", statement = "All claimed capabilities must be bound to verifiable automated test oracles without mock shortcuts." }
+]
+
+[[catalogs]]
+catalog_id = "CAT-ISO-27034-1"
+standard_id = "ISO-27034-1-2011"
+canonical_id = "ISO/IEC 27034-1:2011"
+edition = "2011-cor1-2014"
+title = "Application Security - Overview and Concepts"
+controls = [
+  { id = "ISO-27034-1:ASC-AUDIT", title = "Application Security Control Auditability", statement = "Application security controls must maintain auditable traces and non-repudiation." },
+  { id = "ISO-27034-1:ASC-LIFECYCLE", title = "ASC Life Cycle Integration", statement = "Security controls must be integrated continuously across application development and execution lifecycles." }
+]
+
+[[catalogs]]
+catalog_id = "CAT-ISO-27034-5"
+standard_id = "ISO-27034-5-2017"
+canonical_id = "ISO/IEC 27034-5:2017"
+edition = "2017"
+title = "Application Security - Protocols and ASC Data Structure"
+controls = [
+  { id = "ISO-27034-5:ASC-DATA-STRUCT", title = "ASC Data Structure Representation", statement = "Security controls must be structured as machine-readable verified data definitions." },
+  { id = "ISO-27034-5:PROTOCOL-INTEG", title = "Application Security Protocol Integrity", statement = "Cryptographic protocol exchanges must ensure tamper-evidence and authenticated origin." }
+]
+
+[[catalogs]]
+catalog_id = "CAT-ISO-27005"
+standard_id = "ISO-27005-2022"
+canonical_id = "ISO/IEC 27005:2022"
+edition = "2022"
+title = "Information Security Risk Management"
+controls = [
+  { id = "ISO-27005:RISK-CRITERIA", title = "Risk Assessment Criteria", statement = "Establish explicit quantitative criteria for availability, integrity, and identity risks." },
+  { id = "ISO-27005:RISK-TREATMENT", title = "Risk Treatment and Control Verification", statement = "Risk treatment controls must be evaluated and verified against residual risk thresholds." }
+]
+
+[[catalogs]]
+catalog_id = "CAT-ISO-25010"
+standard_id = "ISO-25010-2023"
+canonical_id = "ISO/IEC 25010:2023"
+edition = "2023"
+title = "Systems and Software Quality Models"
+controls = [
+  { id = "ISO-25010:SECURITY-CONF", title = "Security Confidentiality & Authenticity", statement = "Data access must enforce authenticated identities and prevent unauthorized disclosure." },
+  { id = "ISO-25010:SECURITY-INTEG", title = "System Integrity and Non-Repudiation", statement = "System states and logs must be tamper-evident and protected against unauthorized mutation." },
+  { id = "ISO-25010:ACCESSIBILITY-COMP", title = "Software Accessibility Compliance", statement = "Interfaces must satisfy universal access criteria for diverse participant abilities." }
+]
+
+[[catalogs]]
+catalog_id = "CAT-ISO-42010"
+standard_id = "ISO-42010-2022"
+canonical_id = "ISO/IEC/IEEE 42010:2022"
+edition = "2022"
+title = "Architecture Description"
+controls = [
+  { id = "ISO-42010:ARCH-VIEWPOINTS", title = "Explicit Architectural Viewpoints", statement = "Architectural descriptions must articulate explicit viewpoints for distinct stakeholders." },
+  { id = "ISO-42010:FRAMEWORK-CONFORM", title = "Architecture Framework Conformance", statement = "Architecture models must formally conform to stated framework principles and concerns." }
+]
+
+[[catalogs]]
+catalog_id = "CAT-NIST-800-63B"
+standard_id = "NIST-SP-800-63B"
+canonical_id = "NIST SP 800-63B-4"
+edition = "4.2.1.1"
+title = "Digital Identity Guidelines - Authentication and Lifecycle Management"
+controls = [
+  { id = "NIST-800-63B:BACKUP-CODES", title = "Lookup Secrets (Backup Codes) Issuance", statement = "Backup codes must provide at least 128 bits of entropy, be stored salted, and be single-use." },
+  { id = "NIST-800-63B:SESSION-INVALIDATION", title = "Session Invalidation upon Credential Recovery", statement = "Redemption of recovery credentials must terminate all prior authenticated user sessions." },
+  { id = "NIST-800-63B:REPLAY-PROTECTION", title = "Replay and Rollback Resistance", statement = "Authentication exchanges must reject replayed tokens and enforce monotonic sequence revisions." }
+]
+
+[[catalogs]]
+catalog_id = "CAT-W3C-WCAG-2-2"
+standard_id = "W3C-WCAG-2-2"
+canonical_id = "W3C WCAG 2.2"
+edition = "2.2-AA"
+title = "Web Content Accessibility Guidelines 2.2 Level AA"
+controls = [
+  { id = "WCAG-2.2:1.1.1-NON-TEXT", title = "Non-text Content Alternatives", statement = "All non-text content presented to users has a text alternative that serves equivalent purpose." },
+  { id = "WCAG-2.2:1.4.3-CONTRAST", title = "Contrast (Minimum)", statement = "Visual presentation of text has a contrast ratio of at least 4.5:1." },
+  { id = "WCAG-2.2:2.1.1-KEYBOARD", title = "Keyboard Accessible", statement = "All functionality of the content is operable through a keyboard interface without exception." },
+  { id = "WCAG-2.2:3.3.1-ERROR-ID", title = "Error Identification", statement = "Input errors are automatically detected and described to the user in text with guidance." }
+]
+
+[[profiles]]
+profile_id = "PROF-FOUNDRY-PRODUCTION"
+title = "UOR Foundry Production Profile"
+import_catalogs = [
+  "CAT-PRISM-BASE",
+  "CAT-ISO-27034-1",
+  "CAT-ISO-27034-5",
+  "CAT-ISO-27005",
+  "CAT-ISO-25010",
+  "CAT-ISO-42010",
+  "CAT-NIST-800-63B",
+  "CAT-W3C-WCAG-2-2"
+]
+mandatory_base_profile = "CAT-PRISM-BASE"
+excluded_controls = []
+
+[[components]]
+component_id = "COMP-PRISMPM-SDK"
+title = "PrismPM Immutable SDK & Proof Assistant Runtime"
+component_type = "upstream-platform"
+implemented_requirements = [
+  { control_id = "PRISM-BASE-01", description = "Immutable OCI container digests and deterministic content-addressed store.", status = "implemented" },
+  { control_id = "PRISM-BASE-02", description = "Core-Wasm runtime sandbox executing verified bytecode without host escape.", status = "implemented" },
+  { control_id = "PRISM-BASE-03", description = "Honesty gate enforcing 100% automated oracle verification on AMD64 and ARM64.", status = "implemented" },
+  { control_id = "ISO-27034-5:ASC-DATA-STRUCT", description = "LexLean formal semantic data structures and verified TOML definitions.", status = "implemented" },
+  { control_id = "ISO-42010:ARCH-VIEWPOINTS", description = "LexLean architecture viewpoints and typed projection views.", status = "implemented" }
+]
+
+[[components]]
+component_id = "COMP-UOR-FOUNDRY-CORE"
+title = "UOR Foundry Functional Core & Model Layer"
+component_type = "service-core"
+implemented_requirements = [
+  { control_id = "ISO-27034-1:ASC-AUDIT", description = "Tamper-evident append-only event logs with SHA-256 state transitions.", status = "implemented" },
+  { control_id = "ISO-27034-1:ASC-LIFECYCLE", description = "Continuous verification gates executed via pinned container during build.", status = "implemented" },
+  { control_id = "ISO-27034-5:PROTOCOL-INTEG", description = "Cryptographic signature validation and non-repudiation on authority actions.", status = "implemented" },
+  { control_id = "ISO-27005:RISK-CRITERIA", description = "Modeled availability, RPO/RTO bounds, and fault-tolerance ratios in owner inputs.", status = "implemented" },
+  { control_id = "ISO-27005:RISK-TREATMENT", description = "Multi-administrator approval quorums and concurrent lockout fences.", status = "implemented" },
+  { control_id = "ISO-25010:SECURITY-CONF", description = "Cryptographic session binding, token hashing, and strict boundary checks.", status = "implemented" },
+  { control_id = "ISO-25010:SECURITY-INTEG", description = "Optimistic concurrency revision fencing preventing rollback and replay.", status = "implemented" },
+  { control_id = "ISO-42010:FRAMEWORK-CONFORM", description = "Explicit adherence to UOR architecture framework and model schema rules.", status = "implemented" },
+  { control_id = "NIST-800-63B:BACKUP-CODES", description = "128-bit salted SHA-256 single-use backup code issuance and redemption.", status = "implemented" },
+  { control_id = "NIST-800-63B:SESSION-INVALIDATION", description = "Immediate revocation and invalidation of active sessions on credential recovery.", status = "implemented" },
+  { control_id = "NIST-800-63B:REPLAY-PROTECTION", description = "Single-use challenge nonce tokens and revision rollback guards.", status = "implemented" }
+]
+
+[[components]]
+component_id = "COMP-UOR-FOUNDRY-WEB"
+title = "UOR Foundry Browser Native Client & Views"
+component_type = "client-presentation"
+implemented_requirements = [
+  { control_id = "ISO-25010:ACCESSIBILITY-COMP", description = "Keyboard navigable UI, semantic HTML elements, and high contrast styling.", status = "implemented" },
+  { control_id = "WCAG-2.2:1.1.1-NON-TEXT", description = "Mandatory alt attributes and text descriptions for all graphic elements.", status = "implemented" },
+  { control_id = "WCAG-2.2:1.4.3-CONTRAST", description = "Standard color tokens exceeding 4.5:1 contrast against background.", status = "implemented" },
+  { control_id = "WCAG-2.2:2.1.1-KEYBOARD", description = "Complete focus trapping, tab ordering, and keyboard operation of all journeys.", status = "implemented" },
+  { control_id = "WCAG-2.2:3.3.1-ERROR-ID", description = "Real-time client input validation with descriptive textual error labels.", status = "implemented" }
+]
+
+[[systems]]
+system_id = "SYS-UOR-FOUNDRY"
+organization_id = "uor:org:uor-foundation"
+profile_id = "PROF-FOUNDRY-PRODUCTION"
+system_name = "UOR Foundry Production System"
+components = [
+  "COMP-PRISMPM-SDK",
+  "COMP-UOR-FOUNDRY-CORE",
+  "COMP-UOR-FOUNDRY-WEB"
+]
+
+[[systems.inherited_controls]]
+control_id = "PRISM-BASE-01"
+provider_component_id = "COMP-PRISMPM-SDK"
+provider_organization = "uor:org:prismpm"
+provider_scope = "cryptographic-verification-and-sandbox"
+exact_subject_and_revision = "git:32e93a5b5fbbdcbf380b4a893e150cb940bc66cb"
+evidence_digest = "sha256:d9b23b1853a479ff7ddc7b64ff1e600572b93809623e6fc1d56350f5573427df"
+validity_conditions = "Container execution in pinned OCI environment with verified SHA256 checksums."
+consumer_responsibilities = "UOR Foundry must not bypass SDK sandbox or disable artifact integrity checks."
+
+[[systems.inherited_controls]]
+control_id = "PRISM-BASE-02"
+provider_component_id = "COMP-PRISMPM-SDK"
+provider_organization = "uor:org:prismpm"
+provider_scope = "cryptographic-verification-and-sandbox"
+exact_subject_and_revision = "git:32e93a5b5fbbdcbf380b4a893e150cb940bc66cb"
+evidence_digest = "sha256:7b1a20ffea04c1072a2db9aa298db3a8e9e6a00445d0705ef294f386ec79bc74"
+validity_conditions = "Core-Wasm deterministic execution engine."
+consumer_responsibilities = "UOR Foundry must execute all untrusted business logic within the Wasm sandbox."
+
+[[systems.inherited_controls]]
+control_id = "PRISM-BASE-03"
+provider_component_id = "COMP-PRISMPM-SDK"
+provider_organization = "uor:org:prismpm"
+provider_scope = "cryptographic-verification-and-sandbox"
+exact_subject_and_revision = "git:32e93a5b5fbbdcbf380b4a893e150cb940bc66cb"
+evidence_digest = "sha256:6272da01ea2045906f5f844988b6265d6c867f39151590492cbaf3ea28eb2434"
+validity_conditions = "Upstream Honesty Gate 100% passing across AMD64 and ARM64 runners."
+consumer_responsibilities = "UOR Foundry must maintain automated conformance tests matching all registered model IDs."
+
+[[systems.inherited_controls]]
+control_id = "ISO-27034-5:ASC-DATA-STRUCT"
+provider_component_id = "COMP-PRISMPM-SDK"
+provider_organization = "uor:org:prismpm"
+provider_scope = "formal-semantics-and-data-structures"
+exact_subject_and_revision = "git:32e93a5b5fbbdcbf380b4a893e150cb940bc66cb"
+evidence_digest = "sha256:a48e77a11dc3253bba61d4a8449e6f3b0e3776fa2e7d69234850ef60bbf4ec7e"
+validity_conditions = "LexLean formal language entries parsed without syntactic deviation."
+consumer_responsibilities = "UOR Foundry must define architectural models conforming to LexLean entry frames."
+
+[[systems.inherited_controls]]
+control_id = "ISO-42010:ARCH-VIEWPOINTS"
+provider_component_id = "COMP-PRISMPM-SDK"
+provider_organization = "uor:org:prismpm"
+provider_scope = "formal-semantics-and-data-structures"
+exact_subject_and_revision = "git:32e93a5b5fbbdcbf380b4a893e150cb940bc66cb"
+evidence_digest = "sha256:22bc43da2d90a5d2eb60b73c9ff4c28e945c58c281df6fa37cc730aef48479e0"
+validity_conditions = "Architecture viewpoints defined in prism.arch entry definitions."
+consumer_responsibilities = "UOR Foundry views must project viewpoints without unauthorized structural extensions."
+
+[[assessments]]
+assessment_id = "ASSESS-2026-PRISM-BASE"
+organization_id = "uor:org:uor-foundation"
+assessor_authority_id = "AUTH-UOR-SEC"
+assessor_signature_key = "SHA256:SfMATR1dMO6TOjDSjfAKOBWYCV85WAUwF/VVQeSsZwM"
+standard_id = "PRISM-BASE-PROFILE"
+assessed_controls = [
+  "PRISM-BASE-01",
+  "PRISM-BASE-02",
+  "PRISM-BASE-03"
+]
+assessment_method = "formal-proof"
+verdict = "conforming"
+evidence_digest = "sha256:4a0c83e298516d3f2ef137bc449dbd0774a3f5f3032488bc1f13b6928e367839"
+assessed_date = "2026-09-20"
+valid_until = "2027-09-20"
+
+[[assessments]]
+assessment_id = "ASSESS-2026-ISO-27034"
+organization_id = "uor:org:uor-foundation"
+assessor_authority_id = "AUTH-ISO-IEC"
+assessor_signature_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+standard_id = "ISO-27034-1-2011"
+assessed_controls = [
+  "ISO-27034-1:ASC-AUDIT",
+  "ISO-27034-1:ASC-LIFECYCLE"
+]
+assessment_method = "structural-validation"
+verdict = "conforming"
+evidence_digest = "sha256:6e2d93e5066d8ba986e7ec5ea0a058da43ce348a735c02b9e606e902b77c6883"
+assessed_date = "2026-09-20"
+valid_until = "2027-09-20"
+
+[[assessments]]
+assessment_id = "ASSESS-2026-ISO-27034-5"
+organization_id = "uor:org:uor-foundation"
+assessor_authority_id = "AUTH-ISO-IEC"
+assessor_signature_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+standard_id = "ISO-27034-5-2017"
+assessed_controls = [
+  "ISO-27034-5:ASC-DATA-STRUCT",
+  "ISO-27034-5:PROTOCOL-INTEG"
+]
+assessment_method = "test-corpus-agreement"
+verdict = "conforming"
+evidence_digest = "sha256:f1262d29487595ef7f16ef062a7d4a4608bfa0d2358897d197621c172cb82422"
+assessed_date = "2026-09-20"
+valid_until = "2027-09-20"
+
+[[assessments]]
+assessment_id = "ASSESS-2026-ISO-27005"
+organization_id = "uor:org:uor-foundation"
+assessor_authority_id = "AUTH-ISO-IEC"
+assessor_signature_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+standard_id = "ISO-27005-2022"
+assessed_controls = [
+  "ISO-27005:RISK-CRITERIA",
+  "ISO-27005:RISK-TREATMENT"
+]
+assessment_method = "human-assessment"
+verdict = "conforming"
+evidence_digest = "sha256:88fe31fbf52ca858bd9bbca3b4685ffb1574c861eefef4d9cf9e46a782488a03"
+assessed_date = "2026-09-20"
+valid_until = "2027-09-20"
+
+[[assessments]]
+assessment_id = "ASSESS-2026-ISO-25010"
+organization_id = "uor:org:uor-foundation"
+assessor_authority_id = "AUTH-ISO-IEC"
+assessor_signature_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+standard_id = "ISO-25010-2023"
+assessed_controls = [
+  "ISO-25010:SECURITY-CONF",
+  "ISO-25010:SECURITY-INTEG",
+  "ISO-25010:ACCESSIBILITY-COMP"
+]
+assessment_method = "test-corpus-agreement"
+verdict = "conforming"
+evidence_digest = "sha256:aa59f6f6005dd95dcf7f1e7a5c8ba0e238cb0973a949f57d6ea87a74796fb324"
+assessed_date = "2026-09-20"
+valid_until = "2027-09-20"
+
+[[assessments]]
+assessment_id = "ASSESS-2026-ISO-42010"
+organization_id = "uor:org:uor-foundation"
+assessor_authority_id = "AUTH-ISO-IEC"
+assessor_signature_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+standard_id = "ISO-42010-2022"
+assessed_controls = [
+  "ISO-42010:ARCH-VIEWPOINTS",
+  "ISO-42010:FRAMEWORK-CONFORM"
+]
+assessment_method = "structural-validation"
+verdict = "conforming"
+evidence_digest = "sha256:d8c6b75aeae8c4974fbc173b2c12217c4e5ff09ab683b5444fae9eb10a2bb194"
+assessed_date = "2026-09-20"
+valid_until = "2027-09-20"
+
+[[assessments]]
+assessment_id = "ASSESS-2026-NIST-800-63B"
+organization_id = "uor:org:uor-foundation"
+assessor_authority_id = "AUTH-NIST"
+assessor_signature_key = "SHA256:NIST-CSR-TRUSTED-ROOT-2026"
+standard_id = "NIST-SP-800-63B"
+assessed_controls = [
+  "NIST-800-63B:BACKUP-CODES",
+  "NIST-800-63B:SESSION-INVALIDATION",
+  "NIST-800-63B:REPLAY-PROTECTION"
+]
+assessment_method = "observed-operation"
+verdict = "conforming"
+evidence_digest = "sha256:bfcae931758c14d9b4b9b9a6bfe3203c94f09d8469c4c70a8d6722d56a3f95e2"
+assessed_date = "2026-09-20"
+valid_until = "2027-09-20"
+
+[[assessments]]
+assessment_id = "ASSESS-2026-WCAG-2-2"
+organization_id = "uor:org:uor-foundation"
+assessor_authority_id = "AUTH-UOR-SEC"
+assessor_signature_key = "SHA256:SfMATR1dMO6TOjDSjfAKOBWYCV85WAUwF/VVQeSsZwM"
+standard_id = "W3C-WCAG-2-2"
+assessed_controls = [
+  "WCAG-2.2:1.1.1-NON-TEXT",
+  "WCAG-2.2:1.4.3-CONTRAST",
+  "WCAG-2.2:2.1.1-KEYBOARD",
+  "WCAG-2.2:3.3.1-ERROR-ID"
+]
+assessment_method = "observed-operation"
+verdict = "conforming"
+evidence_digest = "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+assessed_date = "2026-09-20"
+valid_until = "2027-09-20"

@@ -19,6 +19,7 @@ pub mod kappa;
 pub mod organization;
 pub mod owner_inputs;
 pub mod registry;
+pub mod standards;
 
 pub use authority::{
     AuthorityAction, AuthorityConfig, AuthorityError, AuthorityGrant, AuthorityManager,
@@ -48,6 +49,12 @@ pub use organization::{
 };
 pub use owner_inputs::OwnerInputs;
 pub use registry::{Authorities, AuthorityRow, Claim, IdRow, Ids, Ledger, Level};
+pub use standards::{
+    AssessmentVerificationReport, ImplementedRequirement, InheritedControlRecord,
+    OscalAssessmentRecord, OscalCatalog, OscalComponent, OscalControl, OscalProfile,
+    OscalSystemRecord, ResolvedProfile, StandardsConfig, StandardsError, StandardsPolicy,
+    VALID_ASSESSMENT_METHODS,
+};
 
 use std::path::{Path, PathBuf};
 
@@ -72,6 +79,8 @@ pub struct Model {
     pub email_continuity: EmailContinuityConfig,
     /// `model/backup_codes.toml`: Saved backup-code recovery protocol.
     pub backup_codes: BackupCodeConfig,
+    /// `model/standards.toml`: OSCAL catalogs, profile resolution, and authenticated assessments.
+    pub standards: StandardsConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -110,6 +119,7 @@ impl Model {
             authority: read(dir, "authority.toml")?,
             email_continuity: read(dir, "email_continuity.toml")?,
             backup_codes: read(dir, "backup_codes.toml")?,
+            standards: read(dir, "standards.toml")?,
         })
     }
 
@@ -123,7 +133,8 @@ impl Model {
     /// well formed for its level, every `some-true` claim bound to an
     /// authority that exists (`CM-01` .. `CM-03`, R2), every owner-controlled
     /// input record valid, Kappa boundary rules valid, organization lifecycle policy valid,
-    /// authority model policy valid, email continuity protocol valid, and backup codes policy valid.
+    /// authority model policy valid, email continuity protocol valid, backup codes policy valid,
+    /// and standards OSCAL boundary valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -135,6 +146,7 @@ impl Model {
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         self.email_continuity.check(&self.owner_inputs)?;
         self.backup_codes.check(&self.owner_inputs)?;
+        self.standards.check(&self.owner_inputs)?;
         Ok(())
     }
 

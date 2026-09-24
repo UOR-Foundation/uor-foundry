@@ -60,6 +60,12 @@ model does not sanction.
 | --- | --- | --- |
 | `OI-01` | `build` | Owner-controlled acceptance inputs are approved, bound to cryptographic evidence, and validated across identity, authority quorums, standards, operational approvals, and availability bounds. |
 
+## standards-oscal
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `ST-01` | `build` | The standards boundary implements complete OSCAL catalogs, profile resolution, component and system implementation records, inheritance tracking, and authenticated assessment coverage across all adopted standards. |
+
 ## Cited authorities
 
 Never re-derived, vendored, or gated on.
