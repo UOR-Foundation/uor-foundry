@@ -11,12 +11,18 @@
 
 #![deny(missing_docs)]
 
+pub mod authority;
 pub mod codegen;
 pub mod kappa;
 pub mod organization;
 pub mod owner_inputs;
 pub mod registry;
 
+pub use authority::{
+    AuthorityAction, AuthorityConfig, AuthorityError, AuthorityGrant, AuthorityManager,
+    AuthorityPolicyConfig, ChangeProposal, GrantStatus, OrganizationAuthorityRecord,
+    ProposalApproval, ProposalStatus, ScopeRuleConfig,
+};
 pub use kappa::{
     compute_sha256_digest, create_inbound_channel, Blob, InMemoryObjectStore, InboundChannel,
     InboundMessage, InboundService, KappaConfig, KappaError, ReconcileReport, ReconciliationEngine,
@@ -48,6 +54,8 @@ pub struct Model {
     pub kappa: KappaConfig,
     /// `model/organization_lifecycle.toml`: Organization lifecycle and activation policy.
     pub organization_lifecycle: OrganizationLifecycleConfig,
+    /// `model/authority.toml`: Scoped multi-administrator authority policy.
+    pub authority: AuthorityConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -83,6 +91,7 @@ impl Model {
             owner_inputs: read(dir, "owner_inputs.toml")?,
             kappa: read(dir, "kappa.toml")?,
             organization_lifecycle: read(dir, "organization_lifecycle.toml")?,
+            authority: read(dir, "authority.toml")?,
         })
     }
 
@@ -95,7 +104,8 @@ impl Model {
     /// Cross-check the model against itself: every ID well formed, every claim
     /// well formed for its level, every `some-true` claim bound to an
     /// authority that exists (`CM-01` .. `CM-03`, R2), every owner-controlled
-    /// input record valid, Kappa boundary rules valid, and organization lifecycle policy valid.
+    /// input record valid, Kappa boundary rules valid, organization lifecycle policy valid,
+    /// and authority model policy valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -103,6 +113,8 @@ impl Model {
         self.owner_inputs.check()?;
         self.kappa.check(&self.owner_inputs)?;
         self.organization_lifecycle.check(&self.owner_inputs)?;
+        self.authority
+            .check(&self.owner_inputs, &self.organization_lifecycle)?;
         Ok(())
     }
 

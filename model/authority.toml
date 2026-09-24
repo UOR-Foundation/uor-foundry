@@ -1,0 +1,60 @@
+# model/authority.toml --- scoped multi-administrator authority policy model.
+#
+# Conformance ID: AM-01 (suite: authority-model)
+
+spec = "foundry/authority/1"
+
+[policy]
+name = "scoped-multi-administrator-authority-policy"
+enforce_distinct_users_per_scope = true
+minimum_administrators_per_scope = 2
+prohibit_single_owner_bypass = true
+require_atomic_post_change_coverage = true
+prevent_concurrent_lockout = true
+prevent_premature_bootstrap_retirement = true
+optimistic_concurrency_fencing = true
+
+required_scopes = [
+    "organization",
+    "security",
+    "operations",
+    "releases",
+    "certification",
+    "membership",
+]
+
+[[scope_rules]]
+scope = "organization"
+minimum_distinct_administrators = 2
+approval_quorum = "2-of-N"
+description = "General organizational governance and policy updates"
+
+[[scope_rules]]
+scope = "security"
+minimum_distinct_administrators = 2
+approval_quorum = "2-of-N"
+description = "Cryptographic key custody, certificate revocation, and security posture"
+
+[[scope_rules]]
+scope = "operations"
+minimum_distinct_administrators = 2
+approval_quorum = "2-of-N"
+description = "Operational infrastructure, site management, and network peer coordination"
+
+[[scope_rules]]
+scope = "releases"
+minimum_distinct_administrators = 2
+approval_quorum = "2-of-N"
+description = "Software artifact signing, release authorization, and deployment"
+
+[[scope_rules]]
+scope = "certification"
+minimum_distinct_administrators = 2
+approval_quorum = "2-of-N"
+description = "Standards conformance, audit endorsement, and CA management"
+
+[[scope_rules]]
+scope = "membership"
+minimum_distinct_administrators = 2
+approval_quorum = "2-of-N"
+description = "Faculty and participant admission, role assignment, and grant lifecycle"
