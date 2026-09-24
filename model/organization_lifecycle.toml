@@ -1,0 +1,40 @@
+# model/organization_lifecycle.toml --- organization lifecycle, activation, and authority policy.
+#
+# Conformance ID: OL-01 (suite: organization-lifecycle)
+
+spec = "foundry/organization-lifecycle/1"
+
+[rules]
+open_enrollment = true
+open_organization_creation = true
+names_confer_no_privileges = true
+allow_sole_founding_admin_in_provisional = true
+activation_minimum_distinct_administrators = 2
+require_distinct_users_per_scope = true
+prohibit_single_owner_bypass = true
+retirement_requires_full_coverage = true
+enforce_cross_org_isolation = true
+
+[[allowed_transitions]]
+from = "provisional"
+to = "activated"
+minimum_distinct_administrators = 2
+description = "Provisional bootstrap activates only after meeting distinct-user multi-admin quorum coverage."
+
+[[allowed_transitions]]
+from = "activated"
+to = "suspended"
+minimum_distinct_administrators = 2
+description = "Activated organization may be suspended by authorized distinct administrators."
+
+[[allowed_transitions]]
+from = "suspended"
+to = "activated"
+minimum_distinct_administrators = 2
+description = "Suspended organization may be reactivated after security verification."
+
+[[allowed_transitions]]
+from = "activated"
+to = "retired"
+minimum_distinct_administrators = 2
+description = "Activated organization may be retired with retained cryptographic audit logs."

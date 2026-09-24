@@ -137,6 +137,17 @@ These records provide the authoritative inputs for downstream organization, auth
 standards, and publication gates. Missing organization input blockers are eliminated for
 dependent claims and operations.
 
+## Organization lifecycle and activation
+
+The no-seeded-authority organization lifecycle and scoped quorum policy contract is closed under the `OL-01` conformance contract (`model/organization_lifecycle.toml`, `crates/model/src/organization.rs`, `features/suites/organization-lifecycle.feature`, and `crates/conformance/tests/organization_lifecycle.rs`).
+The platform models:
+- Provisional organization creation without seeded accounts, organizations, or administrator mailboxes;
+- Open enrollment and creation with arbitrary display names (including duplicate and "UOR Foundation" names) without conferring platform-level authority or requiring Foundation approval;
+- Explicit provisional bootstrap condition permitting a sole founding administrator;
+- Policy-compliant activation requiring at least two distinct authenticated administrators, complete quorum coverage per scope (`organization` and `security`), rejection of single-owner bypasses, and rejection of duplicate key/mailbox disguises;
+- Founding-grant retirement requiring full coverage across all scopes by remaining distinct administrators rather than an all-powerful successor;
+- Strict cross-organization isolation across records, queries, and effects using distinct UOR-referenced organization identifiers.
+
 ## External boundaries
 
 The documented Kappa browser-service receiver and blob reconciliation gap
