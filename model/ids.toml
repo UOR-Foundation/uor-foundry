@@ -77,3 +77,10 @@ level = "build"
 suite = "services-views"
 statement = "Services and Views enforce SPEC-defined stakeholder journeys, explicit state machines, permissions, effects, resource bounds, failure recovery, and independent raw-request boundary verification without mock or draft-preview substitutes."
 
+[[id]]
+id = "BO-01"
+level = "build"
+suite = "browser-object-space"
+statement = "Browser object space implements authenticated membership, confidentiality, storage queries, inbound dispatch, verified blob transfer, conflict resolution, revocation, retention, replication, repair, and recovery without server-hosted substitutes."
+
+

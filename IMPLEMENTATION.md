@@ -74,6 +74,8 @@ assessments, and cross-organization isolation across UOR Foundation HQ, First Fo
 and Citizen Gardens sites without seeded privileges or authority leakage.
 Services and views are implemented under the SV-01 contract:
 complete SPEC-defined stakeholder journeys (workflows, AI inference, messaging/collaboration, admin/governance, business/finance, learning/certification, brand/presentation), state machines, permissions, effects, resource bounds, failure/recovery, and independent boundary enforcement without handwritten or draft-preview substitutes.
+Browser object space is implemented under the BO-01 contract:
+decentralized Kappa storage, queries, inbound dispatch, verified blob transfer, authenticated membership, confidentiality, conflicts, revocation, retention, replication, repair, and offline recovery without server-hosted substitutes.
 
 The generic-organization contract update passed full `just vv` in the locked
 AMD64 SDK; log: `target/generic-organization-contract-full-vv.log`. This is
@@ -88,7 +90,7 @@ scaffold verification, not acceptance of organization creation or isolation.
 | Organization lifecycle and sites | Implemented and accepted under OL-01 and OS-01: normal creation, provisional setup, multi-admin activation quorums, physical/accessibility site assessments, and cross-organization isolation across UOR Foundation, HQ, First Foundry, and Citizen Gardens without seeded privileges. |
 | Services and Views | Implemented and accepted under SV-01: complete SPEC-defined stakeholder journeys (workflows, AI inference, messaging/collaboration, admin/governance, business/finance, learning/certification, brand/presentation), state machines, permissions, effects, resource bounds, failure/recovery, and independent boundary enforcement without handwritten or draft-preview substitutes. |
 | Account and authority continuity | Implement UOR-native verified email enrollment/login/recovery through PrismPM, scoped grants, distinct-user approval quorums and atomic post-change ownership coverage. Reject concurrent lockout, replay, revoked-grant recovery and premature bootstrap retirement; a self-selected role or repeated key is not another administrator. |
-| Browser object space | Implement browser Kappa storage, queries, inbound dispatch and verified blob transfer; model authenticated membership, confidentiality, conflicts, revocation, retention, replication, repair and recovery. |
+| Browser object space | Implemented and accepted under BO-01: decentralized Kappa storage, queries, inbound dispatch, verified blob transfer, authenticated membership, confidentiality, conflicts, revocation, retention, replication, repair, and offline recovery without server-hosted substitutes. |
 | Network acceptance | Exercise independent participants under real discovery/connectivity constraints, suspension, eviction, partitions, hostile inputs and replica loss. Measure approved availability and recovery targets; local two-browser tests are not internet-scale evidence. |
 | Producer release | Generate all artifacts twice reproducibly; verify complete service/control/dependency/assessment coverage. Bind exact producer identity, artifact tree and pre-publication evidence, with only the exact deployment-dependent checks outstanding. |
 | Publication SDK | Complete source-free acquisition, readiness and authorization verification; integrate confined atomic artifact export, live verification and accepted-release rollback. Preserve unchanged bytes; reject partial, stale, substituted or unauthorized evidence. |
