@@ -21,6 +21,7 @@ pub mod object_space;
 pub mod organization;
 pub mod organization_sites;
 pub mod owner_inputs;
+pub mod producer_release;
 pub mod registry;
 pub mod services;
 pub mod standards;
@@ -68,6 +69,12 @@ pub use organization_sites::{
     SiteLifecycleState, SiteManager, SitePolicyConfig, TransitionSiteRequest,
 };
 pub use owner_inputs::OwnerInputs;
+pub use producer_release::{
+    AcceptedReleaseRecord, BrowserArtifactRecord, CoveredAssessmentConfig, CoveredControlConfig,
+    CoveredServiceConfig, DeploymentAuthorizationRecord, OutstandingDeploymentCheck,
+    PrePublicationEvidence, ProducerIdentityConfig, ProducerPolicyConfig, ProducerReleaseConfig,
+    ProducerReleaseEngine, ProducerReleaseError, ReleaseState, ReproducibleBuildEvidence,
+};
 pub use registry::{Authorities, AuthorityRow, Claim, IdRow, Ids, Ledger, Level};
 pub use services::{
     AiInferenceProposal, AiProposalState, BrandKit, BrandKitState, CertificationState,
@@ -116,6 +123,8 @@ pub struct Model {
     pub object_space: ObjectSpaceConfig,
     /// `model/network_acceptance.toml`: Real network acceptance under adverse conditions.
     pub network_acceptance: NetworkAcceptanceConfig,
+    /// `model/producer_release.toml`: Complete producer release specification.
+    pub producer_release: ProducerReleaseConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -159,6 +168,7 @@ impl Model {
             services: read(dir, "services.toml")?,
             object_space: read(dir, "object_space.toml")?,
             network_acceptance: read(dir, "network_acceptance.toml")?,
+            producer_release: read(dir, "producer_release.toml")?,
         })
     }
 
@@ -174,7 +184,8 @@ impl Model {
     /// input record valid, Kappa boundary rules valid, organization lifecycle policy valid,
     /// authority model policy valid, email continuity protocol valid, backup codes policy valid,
     /// standards OSCAL boundary valid, organization sites boundary valid, services boundary valid,
-    /// browser object space boundary valid, and network acceptance boundary valid.
+    /// browser object space boundary valid, network acceptance boundary valid, and producer
+    /// release boundary valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -195,6 +206,12 @@ impl Model {
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         self.network_acceptance
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
+        self.producer_release.check(
+            &self.owner_inputs,
+            &self.organization_lifecycle,
+            &self.services,
+            &self.standards,
+        )?;
         Ok(())
     }
 

@@ -78,6 +78,12 @@ model does not sanction.
 | --- | --- | --- |
 | `OI-01` | `build` | Owner-controlled acceptance inputs are approved, bound to cryptographic evidence, and validated across identity, authority quorums, standards, operational approvals, and availability bounds. |
 
+## producer-release
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `PR-01` | `build` | Producer release generates all artifacts twice reproducibly, verifies complete service, control, dependency, and assessment coverage, and binds exact producer identity, artifact tree, and pre-publication evidence with only deployment-dependent checks outstanding. |
+
 ## services-views
 
 | ID | Level | Statement |

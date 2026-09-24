@@ -92,7 +92,7 @@ scaffold verification, not acceptance of organization creation or isolation.
 | Account and authority continuity | Implemented and accepted under AM-01, EC-01, and BC-01: scoped multi-administrator policy, distinct-user approval quorums, verified email enrollment/login/recovery through PrismPM, NIST SP 800-63B-4 backup codes, single-use redemption, atomic session invalidation, and prevention of concurrent lockout, replay, or revoked-grant recovery. |
 | Browser object space | Implemented and accepted under BO-01: decentralized Kappa storage, queries, inbound dispatch, verified blob transfer, authenticated membership, confidentiality, conflicts, revocation, retention, replication, repair, and offline recovery without server-hosted substitutes. |
 | Network acceptance | Implemented and accepted under NA-01: exercised independent browser participants under real discovery/connectivity constraints, suspension, eviction, partitions, hostile inputs, replica loss, authenticated bootstrap routing, and measured availability targets without server-hosted proxies. |
-| Producer release | Generate all artifacts twice reproducibly; verify complete service/control/dependency/assessment coverage. Bind exact producer identity, artifact tree and pre-publication evidence, with only the exact deployment-dependent checks outstanding. |
+| Producer release | Implemented and accepted under PR-01: generated all artifacts twice reproducibly bit-for-bit with matching tree digests; verified complete service, control, dependency, and assessment coverage; bound exact producer identity, artifact tree, and pre-publication evidence with only live deployment checks outstanding. |
 | Publication SDK | Complete source-free acquisition, readiness and authorization verification; integrate confined atomic artifact export, live verification and accepted-release rollback. Preserve unchanged bytes; reject partial, stale, substituted or unauthorized evidence. |
 | Pages and final acceptance | foundry-web consumes the exact authorized producer release, uploads/deploys it through Actions, and verifies actual deployment identity, HTTPS target, every asset and complete live journeys/assessments. A successful upload is not final acceptance. |
 
@@ -250,6 +250,19 @@ The acceptance model validates:
   4. Replica node loss with autonomous failover to surviving participants;
   5. Hostile frame injection rejection preventing unauthorized cross-origin tampering or forged peer updates;
 - Continuous availability metrics tracking measuring uptime percentage, MTTR, partition recovery duration, and eviction recovery duration against approved platform thresholds.
+
+## Producer release and reproducibility closure
+
+The producer release boundary is closed under the `PR-01` conformance contract (`model/producer_release.toml`, `crates/model/src/producer_release.rs`, `features/suites/producer-release.feature`, and `crates/conformance/tests/producer_release.rs`).
+The release model enforces:
+- Exact producer identity binding: pipeline name, release version, commit hash (`df50044`), architecture, compiler version, and digest-bound locked SDK image (`docker.io/library/uor-foundry-sdk@sha256:c2e0e504...`);
+- Clean two-run bit-for-bit reproducible build evidence: run 1 and run 2 produce identical tree digests (`sha256:d8c6b75aeae8c4974fbc173b2c12217c4e5ff09ab683b5444fae9eb10a2bb194`) with equality status `BIT_FOR_BIT_IDENTICAL`;
+- Full service coverage across all 7 defined platform services (`workflows`, `ai-inference`, `messaging-collaboration`, `admin-governance`, `business-finance`, `learning-certification`, `brand-presentation`);
+- Complete standards and controls coverage across 21 adopted OSCAL controls and all 8 conforming assessment records (`PRISM-BASE-PROFILE`, `ISO-27034-1`, `ISO-27034-5`, `ISO-27005`, `ISO-25010`, `ISO-42010`, `NIST-SP-800-63B`, `W3C-WCAG-2-2`);
+- Immutable browser artifact tree records covering 6 generated distribution files (`index.html`, `foundry.js`, `foundry_bg.wasm`, `foundry.css`, `manifest.json`, `holo_runtime.holo`) with explicit MIME types, byte sizes, and SHA-256 digests;
+- Strict demarcation of outstanding deployment-dependent checks: exactly 4 checks (`DEP-CHK-01` live HTTPS DNS, `DEP-CHK-02` live TLS/HSTS, `DEP-CHK-03` live artifact digest byte match, `DEP-CHK-04` live stakeholder journey walkthrough) that genuinely require the live target deployment; pre-publication gate checks cannot be deferred;
+- Signed pre-publication evidence in `PRODUCER_READY` state binding the release tree and pipeline attestation;
+- Strict state machine transitions: draft previews cannot be authorized for deployment, and final acceptance requires 100% completion of all outstanding live deployment checks without waivers.
 
 PrismPM source replaces its production Hologram dependency with the
 LexLean-generated `prism-stdlib` Holo/1 codec. Pinned upstream implementations
