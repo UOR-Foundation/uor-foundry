@@ -48,6 +48,12 @@ model does not sanction.
 | --- | --- | --- |
 | `EC-01` | `build` | The UOR-native verified email identity continuity protocol enforces browser-native challenge-response enrollment, login, and recovery, rejecting replay, unverified mailbox control, revoked-grant restoration, and unauthorized authority creation. |
 
+## functional-core
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `FC-01` | `build` | The authorized first-release functional core implements identity, roles, shared workspaces, persistence, and messaging as a single accepted stage without preview substitutions or seeded privileges, proving normal account/organization creation, multi-user interaction, permission enforcement, persisted state recovery, and message delivery with resilient fault recovery. |
+
 ## holospaces-boundary
 
 | ID | Level | Statement |

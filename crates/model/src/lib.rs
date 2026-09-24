@@ -14,6 +14,7 @@
 pub mod authority;
 pub mod backup_codes;
 pub mod codegen;
+pub mod functional_core;
 pub mod holospaces_boundary;
 pub mod identity_email;
 pub mod kappa;
@@ -39,6 +40,12 @@ pub use backup_codes::{
     BackupCodeBatch, BackupCodeConfig, BackupCodeError, BackupCodeLifecycleConfig,
     BackupCodeManager, BackupCodeNotificationConfig, BackupCodeStandardsConfig, CodeStatus,
     RedeemBackupCodeRequest, RedemptionReport, StoredBackupCode,
+};
+pub use functional_core::{
+    CoreMessageRecord, CoreWorkspaceRecord, FunctionalCoreConfig, FunctionalCoreCoordinator,
+    FunctionalCoreError, FunctionalCoreIdentityConfig, FunctionalCoreMessagingConfig,
+    FunctionalCoreOrgWorkflowConfig, FunctionalCorePolicyConfig, FunctionalCoreWorkspaceConfig,
+    WorkspaceMember,
 };
 pub use holospaces_boundary::{
     HolospacesBoundaryConfig, HolospacesBoundaryError, HolospacesDiscoveryConfig,
@@ -155,6 +162,8 @@ pub struct Model {
     pub holospaces_boundary: HolospacesBoundaryConfig,
     /// `model/sdk_boundary.toml`: SDK and offline dependency boundary specification.
     pub sdk_boundary: SdkBoundaryConfig,
+    /// `model/functional_core.toml`: Authorized first-release functional core specification.
+    pub functional_core: FunctionalCoreConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -203,6 +212,7 @@ impl Model {
             veilid_bootstrap: read(dir, "veilid_bootstrap.toml")?,
             holospaces_boundary: read(dir, "holospaces_boundary.toml")?,
             sdk_boundary: read(dir, "sdk_boundary.toml")?,
+            functional_core: read(dir, "functional_core.toml")?,
         })
     }
 
@@ -220,7 +230,7 @@ impl Model {
     /// standards OSCAL boundary valid, organization sites boundary valid, services boundary valid,
     /// browser object space boundary valid, network acceptance boundary valid, producer
     /// release boundary valid, publication SDK boundary valid, Veilid bootstrap boundary valid,
-    /// Holospaces boundary valid, and SDK boundary valid.
+    /// Holospaces boundary valid, SDK boundary valid, and functional core valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -257,6 +267,8 @@ impl Model {
         self.holospaces_boundary
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         self.sdk_boundary
+            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+        self.functional_core
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         Ok(())
     }
