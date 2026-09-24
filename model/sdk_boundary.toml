@@ -1,0 +1,103 @@
+# model/sdk_boundary.toml --- Immutable OCI SDK on both architectures,
+# complete offline dependency closure, and digest-bound oracle inputs.
+#
+# Conformance ID: SB-01 (suite: sdk-boundary)
+
+spec = "foundry/sdk-boundary/1"
+stage = "staged-core"
+sdk_image = "ghcr.io/uor-foundation/prismpm-sdk-candidate@sha256:60226bc791d4c0e5613402a6be7e63f4963d3faf7f327befcf56fc0e41d0ce21"
+sdk_version = "0.3.0"
+standards_lock_digest = "sha256:4396feba2f6ef28ed69bfccecba29398fd30c22861d30a6a2a9cde3d00b34426"
+cargo_lock_digest = "sha256:21112a843436d09369282bbc8407025dd794d175bdec81d9d9ccb47733332987"
+
+[policy]
+require_multi_arch_manifest = true
+require_immutable_digest = true
+require_complete_offline_closure = true
+prohibit_wildcard_dependencies = true
+prohibit_unlocked_git_dependencies = true
+prohibit_path_dependencies_in_shipped = true
+require_digest_bound_oracles = true
+source_integration_is_not_consumer_acceptance = true
+
+[[architectures]]
+platform = "linux/amd64"
+architecture = "amd64"
+os = "linux"
+manifest_digest = "sha256:c2e0e50437e13d9b2e382d3af4ae7a962b469721b9b80f14f215d9254e8ed78f"
+inventory_count = 53
+inventory_digest = "sha256:7bf8f597b532f49644e7a4c44c25eba6bdaacd6f00f15c5045abb8f0a8817d59"
+
+[[architectures]]
+platform = "linux/arm64"
+architecture = "arm64"
+os = "linux"
+manifest_digest = "sha256:2f82a04e8f8141636e03a219d3960e30d98a6f304828341dd47b553b3c23baeb"
+inventory_count = 53
+inventory_digest = "sha256:3b315ee041bd1d7ed2794a2aa13374b88c1fb9ada338f166fdfe743a56fed4f3"
+
+[[oracle_specifications]]
+id = "asyncapi-oracle"
+version = "3.1.0"
+digest_amd64 = "sha256:1b81d841f8fac6ff59b6788b22b9bc8d7fbeda36bd8c15ec9b34753caaeef5bf"
+digest_arm64 = "sha256:1b81d841f8fac6ff59b6788b22b9bc8d7fbeda36bd8c15ec9b34753caaeef5bf"
+
+[[oracle_specifications]]
+id = "cloudevents-sdk-conformance"
+version = "2.16.2"
+digest_amd64 = "sha256:9ad865a01c7ccb541255a2f89a2dbb34093c6ae3f57ce9e637eabf9edb146da0"
+digest_arm64 = "sha256:519ec1d39566de154730bc87930f274be947d0eff0ce7d5ed00606cb4bda2117"
+
+[[oracle_specifications]]
+id = "cloudevents-validator"
+version = "sdk-go/2.16.2"
+digest_amd64 = "sha256:0f25ac26370a32f0d61fb50fc25e9c6ac5357680306e8c6e60f8dddad4f54eae"
+digest_arm64 = "sha256:7d91646555ef85ca92aef3c100efd3c36a3b76b1f46000ffa1558b4715a25d58"
+
+[[oracle_specifications]]
+id = "intoto-statement-validator"
+version = "1.0@ee16c68a"
+digest_amd64 = "sha256:591f463460916feef9ac066f38654ab6be819dccc66738088d7b264ae2e44d79"
+digest_arm64 = "sha256:ccda3abd60d6616425f0f4af1b1444dd1245e76c4c9fa1b8bba4d2f65e587f02"
+
+[[oracle_specifications]]
+id = "oci-distribution-conformance"
+version = "1.1.1@a139cc42"
+digest_amd64 = "sha256:7b0e39ab2f616c7b33a7ffc57331b90a27ea4cc23ffbc1526c3dee80187332b2"
+digest_arm64 = "sha256:6fa5e5b29dd6727e2e0af3eacdac7f5597a77bde14ef16957467ebfe42cc40fd"
+
+[[oracle_specifications]]
+id = "oci-image-schema-conformance"
+version = "1.1.1@147f9c13"
+digest_amd64 = "sha256:87e0a99983e0bf9af63d5ac49cd7c1df476231f1de947d0e1c7e7b51b57cc0fd"
+digest_arm64 = "sha256:b1342cb1c38c1072e2c86a0e35343605d2bf5c63affa768a5116c1d5fc68e4b0"
+
+[[oracle_specifications]]
+id = "oci-runtime-validate"
+version = "1.3.0@92249139"
+digest_amd64 = "sha256:65bd7332ae65e906405bb3b4e1dfcbfa7c9e25dcc3ceeff5a7331a1b942be26e"
+digest_arm64 = "sha256:e2a80254467d17855b584e82aaf1c248c7cbe58ad6a18c4af3d7d783b7081b78"
+
+[[oracle_specifications]]
+id = "openid-conformance"
+version = "3e09b13b896f"
+digest_amd64 = "sha256:d2817d7206452360534c9f4d7913fae962fce6e45130b6336b6adc73248aa963"
+digest_arm64 = "sha256:d2817d7206452360534c9f4d7913fae962fce6e45130b6336b6adc73248aa963"
+
+[[oracle_specifications]]
+id = "playwright-chromium"
+version = "1.62.1"
+digest_amd64 = "sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e"
+digest_arm64 = "sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e"
+
+[[oracle_specifications]]
+id = "spdx-validator"
+version = "ajv-8.20.0+spdx-3.0.1"
+digest_amd64 = "sha256:e2670b02913ab07bef777fe30075892652b2fd8b78ca396d83916368946334a1"
+digest_arm64 = "sha256:e2670b02913ab07bef777fe30075892652b2fd8b78ca396d83916368946334a1"
+
+[[oracle_specifications]]
+id = "standards-and-oracles"
+version = "prismpm/standards-lock/1"
+digest_amd64 = "sha256:4396feba2f6ef28ed69bfccecba29398fd30c22861d30a6a2a9cde3d00b34426"
+digest_arm64 = "sha256:4396feba2f6ef28ed69bfccecba29398fd30c22861d30a6a2a9cde3d00b34426"
