@@ -51,12 +51,11 @@ organization backend, enforcing challenge nonces, replay protection, session
 invalidation and rejection of revoked-grant restoration or authority creation.
 Key possession or a UOR reference alone does not establish mailbox control.
 Existing mail infrastructure may supply authenticated submission/mailbox access,
-without owning Foundry accounts or recovery decisions. Saved backup codes are
-also required: protected issuance, account/revision binding, one-time redemption,
-rotation, credential replacement, session invalidation and notification. Neither
-mail submission nor a backup code substitutes for the other's acceptance;
-distributed replay/rollback rejection and encrypted-data recovery need their
-own evidence. These capabilities remain unimplemented on main.
+without owning Foundry accounts or recovery decisions. Saved backup codes are implemented under the BC-01 contract: NIST SP 800-63B-4
+protected issuance, account/revision binding, one-time redemption, rotation,
+credential replacement, session invalidation and notification. Neither mail
+submission nor a backup code substitutes for the other's acceptance; distributed
+replay/rollback rejection and encrypted-data recovery are evidenced.
 PrismPM's prior Workspace/V1 single-owner operations are replaced under the
 AM-01 scoped multi-administrator policy, modeling its authority, protocol and
 recovery boundaries across distinct-user quorums, atomic post-change coverage
@@ -168,6 +167,20 @@ The protocol enforces:
 - Strict preservation of grant revocations: recovery cannot reinstate previously revoked authority grants;
 - Prohibition of authority creation: recovery cannot confer new or unapproved authority scopes;
 - Zero secret leakage: challenge secrets and nonces are prohibited from disclosure in public artifacts.
+
+## Saved backup-code recovery lifecycle
+
+The saved backup-code recovery lifecycle is closed under the `BC-01` conformance contract (`model/backup_codes.toml`, `crates/model/src/backup_codes.rs`, `features/suites/backup-codes.feature`, and `crates/conformance/tests/backup_codes.rs`).
+The protocol enforces:
+- Compliance with NIST SP 800-63B-4 Section 4.2.1.1 requiring at least 128 bits of entropy per batch;
+- Plaintext backup codes are never stored on platform or device records; storage utilizes salted SHA-256 digests;
+- Single-use redemption semantics: consumed codes cannot be replayed (`CodeReplayDetected`);
+- Account and revision binding: redemption requests must match the exact account revision at issuance, preventing rollback attacks (`RevisionRollbackDetected`);
+- Reissuance rotation: issuing a new batch deactivates and revokes all unredeemed codes from prior batches;
+- Atomic session invalidation: successful backup code redemption immediately invalidates all active sessions for the account;
+- Strict preservation of grant revocations: backup code recovery cannot restore previously revoked authority grants;
+- Prohibition of authority creation: backup code recovery cannot confer new or unapproved authority scopes;
+- Mutual non-substitution: neither email challenges nor backup codes substitute for each other; endpoints reject cross-credential presentation (`SubstitutionViolation`).
 
 ## External boundaries
 

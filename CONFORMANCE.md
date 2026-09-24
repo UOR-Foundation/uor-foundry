@@ -24,6 +24,12 @@ model does not sanction.
 | --- | --- | --- |
 | `AM-01` | `build` | The authority model replaces single-owner operations with scoped multi-administrator policies, enforcing distinct-user quorums, atomic post-change coverage, and concurrent lockout protection. |
 
+## backup-codes
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `BC-01` | `build` | The saved backup-code recovery protocol enforces NIST SP 800-63B-4 compliant protected issuance, account/revision binding, single-use redemption, rotation, session invalidation, and replay/rollback rejection. |
+
 ## draft-preview
 
 | ID | Level | Statement |

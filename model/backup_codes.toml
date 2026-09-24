@@ -1,0 +1,26 @@
+# model/backup_codes.toml --- NIST SP 800-63B-4 compliant saved backup-code recovery lifecycle.
+#
+# Conformance ID: BC-01 (suite: backup-codes)
+
+spec = "foundry/backup-codes/1"
+
+[standards]
+standard = "NIST SP 800-63B-4 Section 4.2.1.1"
+minimum_entropy_bits = 128
+storage_scheme = "salted-sha256"
+
+[lifecycle]
+batch_size = 10
+single_use = true
+session_invalidation_on_recovery = true
+account_and_revision_binding = true
+require_rotation_on_reissuance = true
+reject_replay_and_rollback = true
+prohibit_revoked_grant_restoration = true
+prohibit_authority_creation_on_recovery = true
+require_mutual_non_substitution = true
+
+[notification]
+notify_on_redemption = true
+notify_on_exhaustion = true
+remaining_threshold_warning = 2
