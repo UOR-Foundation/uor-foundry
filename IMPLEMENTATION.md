@@ -222,15 +222,17 @@ The external boundary model enforces:
 - Resilient peer churn handling with automatic failover reconnection to secondary bootstrap peers upon network interruptions.
 
 Holospaces `96769f16be454ab1572fddff4613704ccfbebf5e` provides browser storage
-and execution primitives. Its local WebRTC witness and public-key/address
-tests do not establish production discovery, private-key possession, private
-replication or approved durability. Its threat-model assumptions must be
-revalidated against participant/faculty sessions only.
-Its threat model assumes native relay peers alongside browser tabs; its local
-WebRTC witness uses out-of-band signaling. Neither establishes automatic public
-discovery or availability under participant-only session churn. A browser-only
-replacement cannot be accepted until these dependencies and loss cases are
-modeled and exercised; an all-offline participant network cannot execute services.
+and execution primitives. Its threat-model assumptions have been revalidated against
+participant/faculty sessions only, and the boundary is formally closed under the `HB-01`
+conformance contract (`model/holospaces_boundary.toml`, `crates/model/src/holospaces_boundary.rs`,
+`features/suites/holospaces-boundary.feature`, and `crates/conformance/tests/holospaces_boundary.rs`).
+The external boundary model enforces:
+- Strict rejection of native relay daemon assumptions alongside browser tabs in browser-only operation;
+- Mandatory cryptographic proof of private key possession (rejecting public key address alone as proof of identity);
+- Strict prohibition of local WebRTC witness proxies and out-of-band signaling from passing as production discovery or availability evidence;
+- Durability quorum constraints under participant churn (minimum 3 participant replicas, 60% write quorum, 300s anti-entropy repair frequency, and 72h max offline tolerance);
+- Prohibition of all-offline execution: an all-offline participant network cannot execute services;
+- Production discovery via Veilid-authenticated relay and WebRTC authenticated in-band signaling.
 
 ## Network acceptance and adverse conditions
 
