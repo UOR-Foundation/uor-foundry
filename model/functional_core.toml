@@ -1,0 +1,37 @@
+# model/functional_core.toml --- Authorized first-release functional core:
+# identity, roles, shared workspaces, persistence, and messaging as a single accepted stage.
+#
+# Conformance ID: FC-01 (suite: functional-core)
+
+spec = "foundry/functional-core/1"
+stage = "staged-core"
+
+[policy]
+require_single_accepted_stage = true
+prohibit_preview_substitutions = true
+prohibit_seeded_privileged_accounts = true
+prohibit_seeded_privileged_orgs = true
+require_independent_user_interaction = true
+require_permission_enforcement = true
+require_persisted_state_recovery = true
+require_messaging_delivery_states = true
+
+[identity_and_roles]
+min_distinct_users = 3
+allow_open_enrollment = true
+prohibit_unauthenticated_actions = true
+
+[organization_workflow]
+standard_uor_creation = true
+prohibit_privileged_name_semantics = true
+enforce_cross_org_isolation = true
+
+[workspace_persistence]
+storage_engine = "kappa-browser-object-space"
+require_state_recovery_on_restart = true
+max_reconciliation_latency_ms = 1000
+
+[messaging]
+delivery_states = ["draft", "queued", "dispatched", "delivered", "acknowledged", "failed", "recovered"]
+require_end_to_end_delivery = true
+enable_retransmission_on_failure = true

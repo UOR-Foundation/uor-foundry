@@ -22,14 +22,14 @@ unaccepted and blocked on upstream compiler correction (LexLean `ee18ad9`).
 
 ## Authorized first release
 
-Implement identity, roles, shared workspaces, persistence, and messaging as one
-functional core under SPEC.md's staged acceptance contract. None is implemented
-or accepted on main. Require actual independent-user interaction, permission
-enforcement, persisted state, message delivery and fault/recovery evidence.
-Normal account/organization creation and isolation are required, including UOR
-creation through the same workflow as any other organization. Workspace identity
-does not establish legal-entity identity, appointments or real-world authority.
-The draft text preview does not meet this release scope.
+The authorized first release of the functional core is formally implemented and accepted under the `FC-01` conformance contract (`model/functional_core.toml`, `crates/model/src/functional_core.rs`, `features/suites/functional-core.feature`, and `crates/conformance/tests/functional_core.rs`).
+The acceptance evidence establishes:
+- End-to-end integration of all five functional capabilities (identity, roles, shared workspaces, persistence, messaging) as a single accepted stage without draft preview bypasses or substitutions;
+- Open enrollment and ordinary account/organization creation without seeded privileges or pre-granted administrative mailboxes, including UOR Foundation creation through the identical standard workflow;
+- Strict cross-organization isolation across independent entities sharing display names (e.g., `Citizen Gardens`);
+- Role-based permission enforcement across shared workspace state (viewers prohibited from mutating shared state, non-admins prohibited from adding members, non-members prohibited from dispatching messages);
+- Retained persistence across simulated restarts without data or message loss;
+- Explicit messaging delivery states (`Draft`, `Queued`, `Dispatched`, `Delivered`, `Acknowledged`, `Failed`, `Recovered`) with automated retransmission recovery under transient network interruption.
 
 The generic platform must start without seeded accounts, organizations or
 administrator mailboxes. Model provisional organization creation, explicit

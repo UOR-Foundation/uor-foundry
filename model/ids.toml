@@ -119,5 +119,11 @@ level = "build"
 suite = "sdk-boundary"
 statement = "The SDK boundary enforces immutable multi-architecture OCI SDK verification across linux/amd64 and linux/arm64, complete offline dependency closure from Cargo.lock, digest-bound authoritative oracle inputs, and the strict rule that source integration is not consumer acceptance."
 
+[[id]]
+id = "FC-01"
+level = "build"
+suite = "functional-core"
+statement = "The authorized first-release functional core implements identity, roles, shared workspaces, persistence, and messaging as a single accepted stage without preview substitutions or seeded privileges, proving normal account/organization creation, multi-user interaction, permission enforcement, persisted state recovery, and message delivery with resilient fault recovery."
+
 
 
