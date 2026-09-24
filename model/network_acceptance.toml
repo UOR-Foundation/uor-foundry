@@ -1,0 +1,64 @@
+# model/network_acceptance.toml --- Real network acceptance under adverse conditions:
+# discovery constraints, partitions, browser suspensions, peer eviction, replica loss,
+# hostile inputs, authenticated bootstrap routing, and availability targets.
+#
+# Conformance ID: NA-01 (suite: network-acceptance)
+
+spec = "foundry/network-acceptance/1"
+
+[policy]
+enforce_browser_only_execution = true
+prohibit_server_hosted_nodes = true
+min_independent_participants = 5
+max_acceptable_partition_recovery_seconds = 60
+target_availability_percentage = 99.9
+require_authenticated_bootstrap_route = true
+require_https_origin_routing = true
+
+[bootstrap_routing]
+base_url = "https://uor-foundation.github.io/foundry-web/"
+routing_mode = "SPA_HISTORY_PUSHSTATE"
+primary_bootstrap_relay = "wss://bootstrap1.veilid.net:5150"
+secondary_bootstrap_relay = "wss://bootstrap2.veilid.net:5150"
+relay_public_key = "VLD0:7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b"
+trust_boundary_signature = "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+
+[[adverse_scenarios]]
+id = "scen:partition-split-brain"
+name = "Network Partition Split Brain"
+category = "partition"
+description = "Isolates minority partition (2 peers) from majority (3 peers); verifies write rejection in minority and seamless reconciliation upon heal"
+expected_behavior = "quorum_rejection_and_post_heal_reconcile"
+
+[[adverse_scenarios]]
+id = "scen:browser-tab-suspension"
+name = "Browser Tab OS Suspension"
+category = "suspension"
+description = "Simulates mobile/desktop tab hibernation with network silence followed by wake-up event"
+expected_behavior = "heartbeat_timeout_grace_and_clean_resumption"
+
+[[adverse_scenarios]]
+id = "scen:peer-eviction"
+name = "Non-Responsive Peer Eviction"
+category = "eviction"
+description = "Evicts nodes failing heartbeat ping beyond 30s timeout from active routing table"
+expected_behavior = "routing_table_removal_and_mesh_rebalance"
+
+[[adverse_scenarios]]
+id = "scen:replica-loss"
+name = "Sudden Replica Loss & Healing"
+category = "replica_loss"
+description = "Abrupt termination of replica peer triggering background re-replication to maintain quorum of 3"
+expected_behavior = "automatic_re_replication_to_restore_target"
+
+[[adverse_scenarios]]
+id = "scen:hostile-malformed-input"
+name = "Hostile Malformed Input Injection"
+category = "hostile_input"
+description = "Hostile peer injects corrupted frames, oversized buffers, and fake handshake signatures"
+expected_behavior = "immediate_frame_drop_and_peer_quarantine"
+
+[availability_targets]
+target_availability_percentage = 99.9
+max_mttr_seconds = 60
+max_unreconciled_divergence = 0

@@ -54,6 +54,12 @@ model does not sanction.
 | --- | --- | --- |
 | `KB-01` | `build` | The browser object-space service retains inbound transport receiver semantics and executes verified blob reconciliation, rejecting partial, unverified, or disconnected state updates. |
 
+## network-acceptance
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `NA-01` | `build` | Network acceptance exercises independent browser participants under real discovery constraints, network partitions, browser suspensions, replica loss, hostile inputs, authenticated bootstrap routing, and measured availability targets without server-hosted proxies. |
+
 ## organization-lifecycle
 
 | ID | Level | Statement |

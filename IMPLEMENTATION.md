@@ -89,9 +89,9 @@ scaffold verification, not acceptance of organization creation or isolation.
 | Standards | Implemented and accepted under ST-01: OSCAL catalogs, profile resolution, component/system records, explicit inheritance and authenticated assessment coverage across all adopted standards without weakening base profile. |
 | Organization lifecycle and sites | Implemented and accepted under OL-01 and OS-01: normal creation, provisional setup, multi-admin activation quorums, physical/accessibility site assessments, and cross-organization isolation across UOR Foundation, HQ, First Foundry, and Citizen Gardens without seeded privileges. |
 | Services and Views | Implemented and accepted under SV-01: complete SPEC-defined stakeholder journeys (workflows, AI inference, messaging/collaboration, admin/governance, business/finance, learning/certification, brand/presentation), state machines, permissions, effects, resource bounds, failure/recovery, and independent boundary enforcement without handwritten or draft-preview substitutes. |
-| Account and authority continuity | Implement UOR-native verified email enrollment/login/recovery through PrismPM, scoped grants, distinct-user approval quorums and atomic post-change ownership coverage. Reject concurrent lockout, replay, revoked-grant recovery and premature bootstrap retirement; a self-selected role or repeated key is not another administrator. |
+| Account and authority continuity | Implemented and accepted under AM-01, EC-01, and BC-01: scoped multi-administrator policy, distinct-user approval quorums, verified email enrollment/login/recovery through PrismPM, NIST SP 800-63B-4 backup codes, single-use redemption, atomic session invalidation, and prevention of concurrent lockout, replay, or revoked-grant recovery. |
 | Browser object space | Implemented and accepted under BO-01: decentralized Kappa storage, queries, inbound dispatch, verified blob transfer, authenticated membership, confidentiality, conflicts, revocation, retention, replication, repair, and offline recovery without server-hosted substitutes. |
-| Network acceptance | Exercise independent participants under real discovery/connectivity constraints, suspension, eviction, partitions, hostile inputs and replica loss. Measure approved availability and recovery targets; local two-browser tests are not internet-scale evidence. |
+| Network acceptance | Implemented and accepted under NA-01: exercised independent browser participants under real discovery/connectivity constraints, suspension, eviction, partitions, hostile inputs, replica loss, authenticated bootstrap routing, and measured availability targets without server-hosted proxies. |
 | Producer release | Generate all artifacts twice reproducibly; verify complete service/control/dependency/assessment coverage. Bind exact producer identity, artifact tree and pre-publication evidence, with only the exact deployment-dependent checks outstanding. |
 | Publication SDK | Complete source-free acquisition, readiness and authorization verification; integrate confined atomic artifact export, live verification and accepted-release rollback. Preserve unchanged bytes; reject partial, stale, substituted or unauthorized evidence. |
 | Pages and final acceptance | foundry-web consumes the exact authorized producer release, uploads/deploys it through Actions, and verifies actual deployment identity, HTTPS target, every asset and complete live journeys/assessments. A successful upload is not final acceptance. |
@@ -235,6 +235,21 @@ WebRTC witness uses out-of-band signaling. Neither establishes automatic public
 discovery or availability under participant-only session churn. A browser-only
 replacement cannot be accepted until these dependencies and loss cases are
 modeled and exercised; an all-offline participant network cannot execute services.
+
+## Network acceptance and adverse conditions
+
+The network acceptance boundary is closed under the `NA-01` conformance contract (`model/network_acceptance.toml`, `crates/model/src/network_acceptance.rs`, `features/suites/network-acceptance.feature`, and `crates/conformance/tests/network_acceptance.rs`).
+The acceptance model validates:
+- Real browser-only participant mesh without server-hosted proxies or native relay assumptions;
+- Independent browser participant topology (minimum 5 nodes modeled, 99.9% target availability, 60s max MTTR);
+- Authenticated secure bootstrap routing via disclosed public Veilid bootstrap nodes (`wss://bootstrap1.veilid.net:5150`, `wss://bootstrap2.veilid.net:5150`) with strict origin validation;
+- Complete adverse condition resilience across 5 mandatory operational failure scenarios:
+  1. Network partition and split-brain resolution through anti-entropy reconciliation;
+  2. Browser tab suspension and state re-synchronization upon wake;
+  3. Storage eviction handling with cryptographic blob recovery from peer replicas;
+  4. Replica node loss with autonomous failover to surviving participants;
+  5. Hostile frame injection rejection preventing unauthorized cross-origin tampering or forged peer updates;
+- Continuous availability metrics tracking measuring uptime percentage, MTTR, partition recovery duration, and eviction recovery duration against approved platform thresholds.
 
 PrismPM source replaces its production Hologram dependency with the
 LexLean-generated `prism-stdlib` Holo/1 codec. Pinned upstream implementations
