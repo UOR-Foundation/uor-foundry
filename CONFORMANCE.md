@@ -66,6 +66,12 @@ model does not sanction.
 | --- | --- | --- |
 | `OI-01` | `build` | Owner-controlled acceptance inputs are approved, bound to cryptographic evidence, and validated across identity, authority quorums, standards, operational approvals, and availability bounds. |
 
+## services-views
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `SV-01` | `build` | Services and Views enforce SPEC-defined stakeholder journeys, explicit state machines, permissions, effects, resource bounds, failure recovery, and independent raw-request boundary verification without mock or draft-preview substitutes. |
+
 ## standards-oscal
 
 | ID | Level | Statement |
