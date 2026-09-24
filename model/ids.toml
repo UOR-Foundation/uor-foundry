@@ -83,4 +83,11 @@ level = "build"
 suite = "browser-object-space"
 statement = "Browser object space implements authenticated membership, confidentiality, storage queries, inbound dispatch, verified blob transfer, conflict resolution, revocation, retention, replication, repair, and recovery without server-hosted substitutes."
 
+[[id]]
+id = "NA-01"
+level = "build"
+suite = "network-acceptance"
+statement = "Network acceptance exercises independent browser participants under real discovery constraints, network partitions, browser suspensions, replica loss, hostile inputs, authenticated bootstrap routing, and measured availability targets without server-hosted proxies."
+
+
 

@@ -16,6 +16,7 @@ pub mod backup_codes;
 pub mod codegen;
 pub mod identity_email;
 pub mod kappa;
+pub mod network_acceptance;
 pub mod object_space;
 pub mod organization;
 pub mod organization_sites;
@@ -43,6 +44,11 @@ pub use kappa::{
     compute_sha256_digest, create_inbound_channel, Blob, InMemoryObjectStore, InboundChannel,
     InboundMessage, InboundService, KappaConfig, KappaError, ReconcileReport, ReconciliationEngine,
     Tag, TransportPeer,
+};
+pub use network_acceptance::{
+    AdverseScenarioConfig, AvailabilityMetricsTracker, AvailabilityTargetConfig,
+    BootstrapRouteConfig, BootstrapRouter, BrowserMeshNode, BrowserNetworkMesh,
+    NetworkAcceptanceConfig, NetworkError, NetworkPolicyConfig, NodeState,
 };
 pub use object_space::{
     compute_sha256, AntiEntropyRepair, BlobTransferEngine, BrowserObjectStore, BrowserPeer,
@@ -108,6 +114,8 @@ pub struct Model {
     pub services: ServicesConfig,
     /// `model/object_space.toml`: Browser object space specification.
     pub object_space: ObjectSpaceConfig,
+    /// `model/network_acceptance.toml`: Real network acceptance under adverse conditions.
+    pub network_acceptance: NetworkAcceptanceConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -150,6 +158,7 @@ impl Model {
             organization_sites: read(dir, "organization_sites.toml")?,
             services: read(dir, "services.toml")?,
             object_space: read(dir, "object_space.toml")?,
+            network_acceptance: read(dir, "network_acceptance.toml")?,
         })
     }
 
@@ -165,7 +174,7 @@ impl Model {
     /// input record valid, Kappa boundary rules valid, organization lifecycle policy valid,
     /// authority model policy valid, email continuity protocol valid, backup codes policy valid,
     /// standards OSCAL boundary valid, organization sites boundary valid, services boundary valid,
-    /// and browser object space boundary valid.
+    /// browser object space boundary valid, and network acceptance boundary valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -183,6 +192,8 @@ impl Model {
         self.services
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         self.object_space
+            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+        self.network_acceptance
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         Ok(())
     }
