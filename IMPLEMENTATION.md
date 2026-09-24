@@ -93,7 +93,7 @@ scaffold verification, not acceptance of organization creation or isolation.
 | Browser object space | Implemented and accepted under BO-01: decentralized Kappa storage, queries, inbound dispatch, verified blob transfer, authenticated membership, confidentiality, conflicts, revocation, retention, replication, repair, and offline recovery without server-hosted substitutes. |
 | Network acceptance | Implemented and accepted under NA-01: exercised independent browser participants under real discovery/connectivity constraints, suspension, eviction, partitions, hostile inputs, replica loss, authenticated bootstrap routing, and measured availability targets without server-hosted proxies. |
 | Producer release | Implemented and accepted under PR-01: generated all artifacts twice reproducibly bit-for-bit with matching tree digests; verified complete service, control, dependency, and assessment coverage; bound exact producer identity, artifact tree, and pre-publication evidence with only live deployment checks outstanding. |
-| Publication SDK | Complete source-free acquisition, readiness and authorization verification; integrate confined atomic artifact export, live verification and accepted-release rollback. Preserve unchanged bytes; reject partial, stale, substituted or unauthorized evidence. |
+| Publication SDK | Implemented and accepted under PS-01: complete source-free acquisition, producer readiness and authorization verification; integrated confined atomic artifact export, live verification, byte-substitution rejection, and accepted-release rollback semantics without server proxies. |
 | Pages and final acceptance | foundry-web consumes the exact authorized producer release, uploads/deploys it through Actions, and verifies actual deployment identity, HTTPS target, every asset and complete live journeys/assessments. A successful upload is not final acceptance. |
 
 Every row remains required for full platform acceptance. Organizational identity
@@ -263,6 +263,17 @@ The release model enforces:
 - Strict demarcation of outstanding deployment-dependent checks: exactly 4 checks (`DEP-CHK-01` live HTTPS DNS, `DEP-CHK-02` live TLS/HSTS, `DEP-CHK-03` live artifact digest byte match, `DEP-CHK-04` live stakeholder journey walkthrough) that genuinely require the live target deployment; pre-publication gate checks cannot be deferred;
 - Signed pre-publication evidence in `PRODUCER_READY` state binding the release tree and pipeline attestation;
 - Strict state machine transitions: draft previews cannot be authorized for deployment, and final acceptance requires 100% completion of all outstanding live deployment checks without waivers.
+
+## Publication SDK and handoff closure
+
+The publication SDK boundary is closed under the `PS-01` conformance contract (`model/publication_sdk.toml`, `crates/model/src/publication_sdk.rs`, `features/suites/publication-sdk.feature`, and `crates/conformance/tests/publication_sdk.rs`).
+The handoff model enforces:
+- Source-free acquisition: consumes the immutable producer release without requiring application source code or triggering rebuilds;
+- Producer readiness verification: strictly checks that the release is in `PRODUCER_READY` state, verifies producer pipeline identity (`uor-foundry-producer`), and validates the cryptographic binding digest (`sha256:91bf340...`);
+- Target authorization decision: requires an explicit authorized decision binding the target HTTPS origin (`https://uor-foundation.github.io/foundry-web/`) and Ed25519 signature before permitting asset extraction;
+- Confined atomic artifact export: extracts all 6 required browser distribution assets (`index.html`, `foundry.js`, `foundry_bg.wasm`, `foundry.css`, `manifest.json`, `holo_runtime.holo`) while strictly preserving unchanged bytes; detects and rejects any byte substitution, truncation, or hash discrepancies;
+- Post-deployment live verification: independently verifies deployed asset SHA-256 byte parity on the live target HTTPS origin;
+- Accepted-release rollback semantics: any post-deploy verification failure or integrity violation automatically triggers atomic reversion to the previous stable accepted release (`retained_previous_release_digest`).
 
 PrismPM source replaces its production Hologram dependency with the
 LexLean-generated `prism-stdlib` Holo/1 codec. Pinned upstream implementations

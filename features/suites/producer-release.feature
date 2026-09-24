@@ -11,3 +11,4 @@ Feature: Producer Release reproducible generation, coverage, and pre-publication
     And signed pre-publication evidence binds the exact producer identity, commit hash, and artifact digests
     And deployment authorization transitions only after complete readiness verification
     And final acceptance confirms that all outstanding deployment-dependent checks passed on the target
+
