@@ -26,6 +26,7 @@ pub mod publication_sdk;
 pub mod registry;
 pub mod services;
 pub mod standards;
+pub mod veilid_bootstrap;
 
 pub use authority::{
     AuthorityAction, AuthorityConfig, AuthorityError, AuthorityGrant, AuthorityManager,
@@ -95,6 +96,10 @@ pub use standards::{
     OscalSystemRecord, ResolvedProfile, StandardsConfig, StandardsError, StandardsPolicy,
     VALID_ASSESSMENT_METHODS,
 };
+pub use veilid_bootstrap::{
+    BootstrapPeerConfig, RelaySelectorConfig, VeilidBootstrapConfig, VeilidBootstrapEngine,
+    VeilidBootstrapError, VeilidPolicyConfig, VeilidRoutingConfig, VeilidTransportSession,
+};
 
 use std::path::{Path, PathBuf};
 
@@ -133,6 +138,8 @@ pub struct Model {
     pub producer_release: ProducerReleaseConfig,
     /// `model/publication_sdk.toml`: Publication SDK handoff specification.
     pub publication_sdk: PublicationSdkConfig,
+    /// `model/veilid_bootstrap.toml`: Veilid secure bootstrap route specification.
+    pub veilid_bootstrap: VeilidBootstrapConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -178,6 +185,7 @@ impl Model {
             network_acceptance: read(dir, "network_acceptance.toml")?,
             producer_release: read(dir, "producer_release.toml")?,
             publication_sdk: read(dir, "publication_sdk.toml")?,
+            veilid_bootstrap: read(dir, "veilid_bootstrap.toml")?,
         })
     }
 
@@ -194,7 +202,7 @@ impl Model {
     /// authority model policy valid, email continuity protocol valid, backup codes policy valid,
     /// standards OSCAL boundary valid, organization sites boundary valid, services boundary valid,
     /// browser object space boundary valid, network acceptance boundary valid, producer
-    /// release boundary valid, and publication SDK boundary valid.
+    /// release boundary valid, publication SDK boundary valid, and Veilid bootstrap boundary valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -226,6 +234,8 @@ impl Model {
             &self.organization_lifecycle,
             &self.producer_release,
         )?;
+        self.veilid_bootstrap
+            .check(&self.owner_inputs, &self.organization_lifecycle)?;
         Ok(())
     }
 

@@ -1,0 +1,43 @@
+# model/veilid_bootstrap.toml --- Veilid secure bootstrap route, browser transport,
+# relay authentication, outbound-relay limitation mitigations, and network discovery.
+#
+# Conformance ID: VB-01 (suite: veilid-bootstrap)
+
+spec = "foundry/veilid-bootstrap/1"
+stage = "staged-core"
+
+[policy]
+require_authenticated_bootstrap_route = true
+require_https_origin_routing = true
+prohibit_feature_flag_only_claims = true
+prohibit_unauthenticated_relays = true
+require_outbound_relay_mitigation = true
+enforce_wss_transport_encryption = true
+
+[routing]
+https_origin = "https://uor-foundation.github.io/foundry-web/"
+base_path = "/foundry-web/"
+dial_timeout_seconds = 15
+max_reconnect_attempts = 5
+heartbeat_interval_seconds = 10
+
+[[routing.bootstrap_peers]]
+peer_id = "VLD0:6c53579899aa125bcad88219c158913619082beae7236abdc011855e780769ba"
+endpoint = "wss://bootstrap1.veilid.net:5150"
+public_key = "ed25519:6c53579899aa125bcad88219c158913619082beae7236abdc011855e780769ba187f5d688cf62529adcd28827367c3b246a4da9052b610c37562846f481c4e01"
+trust_root_digest = "sha256:d8c6b75aeae8c4974fbc173b2c12217c4e5ff09ab683b5444fae9eb10a2bb194"
+role = "primary-bootstrap"
+
+[[routing.bootstrap_peers]]
+peer_id = "VLD0:a4b513bc759d57a9cfda598b049d5a6c38234dbb9b5fef729a4bb3c61304526d"
+endpoint = "wss://bootstrap2.veilid.net:5150"
+public_key = "ed25519:a4b513bc759d57a9cfda598b049d5a6c38234dbb9b5fef729a4bb3c61304526d187f5d688cf62529adcd28827367c3b246a4da9052b610c37562846f481c4e02"
+trust_root_digest = "sha256:f1262d29487595ef7f16ef062a7d4a4608bfa0d2358897d197621c172cb82422"
+role = "secondary-bootstrap"
+
+[relay_selector]
+min_reputable_relays = 2
+protocol_version = "0.5.7"
+routing_table_capacity = 256
+enable_outbound_relay_fallback = true
+fallback_relay_endpoint = "wss://bootstrap1.veilid.net:5150"
