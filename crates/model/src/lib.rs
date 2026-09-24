@@ -16,6 +16,7 @@ pub mod backup_codes;
 pub mod codegen;
 pub mod identity_email;
 pub mod kappa;
+pub mod object_space;
 pub mod organization;
 pub mod organization_sites;
 pub mod owner_inputs;
@@ -42,6 +43,12 @@ pub use kappa::{
     compute_sha256_digest, create_inbound_channel, Blob, InMemoryObjectStore, InboundChannel,
     InboundMessage, InboundService, KappaConfig, KappaError, ReconcileReport, ReconciliationEngine,
     Tag, TransportPeer,
+};
+pub use object_space::{
+    compute_sha256, AntiEntropyRepair, BlobTransferEngine, BrowserObjectStore, BrowserPeer,
+    BrowserPeerConfig, ConflictResolver, ObjectRecord, ObjectSpaceConfig, ObjectSpaceError,
+    ObjectSpacePolicy, PartitionConfig, PeerRegistry, QueryFilter, RecoveryEngine,
+    ReplicationCoordinator,
 };
 pub use organization::{
     ActivateOrganizationRequest, CreateOrganizationRequest, CrossOrgAccessRequest,
@@ -99,6 +106,8 @@ pub struct Model {
     pub organization_sites: SiteLifecycleConfig,
     /// `model/services.toml`: Services and Views specification.
     pub services: ServicesConfig,
+    /// `model/object_space.toml`: Browser object space specification.
+    pub object_space: ObjectSpaceConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -140,6 +149,7 @@ impl Model {
             standards: read(dir, "standards.toml")?,
             organization_sites: read(dir, "organization_sites.toml")?,
             services: read(dir, "services.toml")?,
+            object_space: read(dir, "object_space.toml")?,
         })
     }
 
@@ -154,7 +164,8 @@ impl Model {
     /// authority that exists (`CM-01` .. `CM-03`, R2), every owner-controlled
     /// input record valid, Kappa boundary rules valid, organization lifecycle policy valid,
     /// authority model policy valid, email continuity protocol valid, backup codes policy valid,
-    /// standards OSCAL boundary valid, organization sites boundary valid, and services boundary valid.
+    /// standards OSCAL boundary valid, organization sites boundary valid, services boundary valid,
+    /// and browser object space boundary valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -170,6 +181,8 @@ impl Model {
         self.organization_sites
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         self.services
+            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+        self.object_space
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
         Ok(())
     }

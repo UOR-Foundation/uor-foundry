@@ -1,0 +1,64 @@
+# model/object_space.toml --- Browser object space specification: decentralized Kappa storage,
+# queries, inbound dispatch, verified blob transfer, authenticated membership, confidentiality,
+# conflicts, revocation, retention, replication, repair, and offline recovery.
+#
+# Conformance ID: BO-01 (suite: browser-object-space)
+
+spec = "foundry/object-space/1"
+
+[policy]
+enforce_authenticated_membership = true
+enforce_blob_confidentiality = true
+require_blob_content_verification = true
+min_replication_factor = 3
+max_query_limit = 1000
+tombstone_retention_seconds = 604800
+max_message_bytes = 1048576
+max_blob_bytes = 10485760
+inbound_channel_capacity = 256
+prohibit_server_hosted_backends = true
+
+[[peers]]
+id = "uor:peer:browser-alpha"
+organization_id = "uor:org:uor-foundation"
+user_id = "trinity@uor.foundation"
+public_key = "ed25519:6f8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b"
+admission_token = "uor:token:admit-alpha-2026"
+status = "active"
+
+[[peers]]
+id = "uor:peer:browser-beta"
+organization_id = "uor:org:uor-foundation"
+user_id = "morpheus@uor.foundation"
+public_key = "ed25519:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b"
+admission_token = "uor:token:admit-beta-2026"
+status = "active"
+
+[[peers]]
+id = "uor:peer:browser-gamma"
+organization_id = "uor:org:uor-foundation"
+user_id = "neo@uor.foundation"
+public_key = "ed25519:2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c"
+admission_token = "uor:token:admit-gamma-2026"
+status = "active"
+
+[[partitions]]
+namespace = "uor-foundry:shared"
+classification = "confidential"
+conflict_resolution = "vector_clock_crdt"
+min_replicas = 3
+
+[[partitions]]
+namespace = "uor-foundry:public-metadata"
+classification = "public"
+conflict_resolution = "last_write_wins"
+min_replicas = 2
+
+[retention]
+audit_retention_days = 90
+tombstone_purge_threshold_hours = 168
+orphan_blob_grace_period_hours = 24
+
+[anti_entropy]
+repair_interval_seconds = 300
+batch_digest_sync_limit = 500

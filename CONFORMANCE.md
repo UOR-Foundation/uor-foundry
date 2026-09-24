@@ -30,6 +30,12 @@ model does not sanction.
 | --- | --- | --- |
 | `BC-01` | `build` | The saved backup-code recovery protocol enforces NIST SP 800-63B-4 compliant protected issuance, account/revision binding, single-use redemption, rotation, session invalidation, and replay/rollback rejection. |
 
+## browser-object-space
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `BO-01` | `build` | Browser object space implements authenticated membership, confidentiality, storage queries, inbound dispatch, verified blob transfer, conflict resolution, revocation, retention, replication, repair, and recovery without server-hosted substitutes. |
+
 ## draft-preview
 
 | ID | Level | Statement |
