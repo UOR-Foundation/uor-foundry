@@ -30,6 +30,12 @@ model does not sanction.
 | --- | --- | --- |
 | `FW-01` | `build` | The LexLean-defined draft preview bounds and validates UTF-8 input and renders an explicitly unpublished response through generated Core-Wasm and portable/browser Views. |
 
+## email-continuity
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `EC-01` | `build` | The UOR-native verified email identity continuity protocol enforces browser-native challenge-response enrollment, login, and recovery, rejecting replay, unverified mailbox control, revoked-grant restoration, and unauthorized authority creation. |
+
 ## kappa-service
 
 | ID | Level | Statement |

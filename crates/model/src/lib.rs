@@ -13,6 +13,7 @@
 
 pub mod authority;
 pub mod codegen;
+pub mod identity_email;
 pub mod kappa;
 pub mod organization;
 pub mod owner_inputs;
@@ -22,6 +23,11 @@ pub use authority::{
     AuthorityAction, AuthorityConfig, AuthorityError, AuthorityGrant, AuthorityManager,
     AuthorityPolicyConfig, ChangeProposal, GrantStatus, OrganizationAuthorityRecord,
     ProposalApproval, ProposalStatus, ScopeRuleConfig,
+};
+pub use identity_email::{
+    AccountStatus, ChallengePurpose, EmailChallenge, EmailContinuityConfig, EmailContinuityManager,
+    EmailDeliveryConfig, EmailProtocolConfig, EmailSecurityBoundsConfig, IdentityError,
+    SessionRecord, UserAccountRecord,
 };
 pub use kappa::{
     compute_sha256_digest, create_inbound_channel, Blob, InMemoryObjectStore, InboundChannel,
@@ -56,6 +62,8 @@ pub struct Model {
     pub organization_lifecycle: OrganizationLifecycleConfig,
     /// `model/authority.toml`: Scoped multi-administrator authority policy.
     pub authority: AuthorityConfig,
+    /// `model/email_continuity.toml`: UOR-native verified email identity continuity protocol.
+    pub email_continuity: EmailContinuityConfig,
 }
 
 /// A failure to load or to cross-check the model.
@@ -92,6 +100,7 @@ impl Model {
             kappa: read(dir, "kappa.toml")?,
             organization_lifecycle: read(dir, "organization_lifecycle.toml")?,
             authority: read(dir, "authority.toml")?,
+            email_continuity: read(dir, "email_continuity.toml")?,
         })
     }
 
@@ -105,7 +114,7 @@ impl Model {
     /// well formed for its level, every `some-true` claim bound to an
     /// authority that exists (`CM-01` .. `CM-03`, R2), every owner-controlled
     /// input record valid, Kappa boundary rules valid, organization lifecycle policy valid,
-    /// and authority model policy valid.
+    /// authority model policy valid, and email continuity protocol valid.
     pub fn check(&self) -> Result<(), ModelError> {
         self.ledger.check()?;
         self.check_ids()?;
@@ -115,6 +124,7 @@ impl Model {
         self.organization_lifecycle.check(&self.owner_inputs)?;
         self.authority
             .check(&self.owner_inputs, &self.organization_lifecycle)?;
+        self.email_continuity.check(&self.owner_inputs)?;
         Ok(())
     }
 

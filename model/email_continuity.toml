@@ -1,0 +1,27 @@
+# model/email_continuity.toml --- UOR-native verified email identity continuity protocol.
+#
+# Conformance ID: EC-01 (suite: email-continuity)
+
+spec = "foundry/email-continuity/1"
+
+[protocol]
+name = "uor-native-verified-email-continuity"
+vendor_independent = true
+browser_native = true
+challenge_ttl_seconds = 900
+replay_protection = true
+require_cryptographic_mailbox_proof = true
+session_invalidation_on_recovery = true
+prohibit_revoked_grant_restoration = true
+prohibit_authority_creation_on_recovery = true
+prohibit_secret_leakage_in_artifacts = true
+
+[delivery]
+method = "authenticated-submission-native-browser"
+allow_unauthenticated_mail_submission = false
+require_tls_transport = true
+
+[security_bounds]
+minimum_nonce_length_bytes = 32
+max_attempts_per_challenge = 3
+lockout_duration_seconds = 1800
