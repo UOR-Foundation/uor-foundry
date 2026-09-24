@@ -30,6 +30,12 @@ model does not sanction.
 | --- | --- | --- |
 | `KB-01` | `build` | The browser object-space service retains inbound transport receiver semantics and executes verified blob reconciliation, rejecting partial, unverified, or disconnected state updates. |
 
+## organization-lifecycle
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `OL-01` | `build` | Organization lifecycle enforces open creation, provisional creator grants, policy-compliant activation, distinct-user quorum coverage, and cross-organization isolation. |
+
 ## owner-inputs
 
 | ID | Level | Statement |

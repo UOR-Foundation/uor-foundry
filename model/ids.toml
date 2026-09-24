@@ -35,3 +35,9 @@ level = "build"
 suite = "kappa-service"
 statement = "The browser object-space service retains inbound transport receiver semantics and executes verified blob reconciliation, rejecting partial, unverified, or disconnected state updates."
 
+[[id]]
+id = "OL-01"
+level = "build"
+suite = "organization-lifecycle"
+statement = "Organization lifecycle enforces open creation, provisional creator grants, policy-compliant activation, distinct-user quorum coverage, and cross-organization isolation."
+
