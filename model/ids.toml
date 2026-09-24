@@ -41,3 +41,9 @@ level = "build"
 suite = "organization-lifecycle"
 statement = "Organization lifecycle enforces open creation, provisional creator grants, policy-compliant activation, distinct-user quorum coverage, and cross-organization isolation."
 
+[[id]]
+id = "AM-01"
+level = "build"
+suite = "authority-model"
+statement = "The authority model replaces single-owner operations with scoped multi-administrator policies, enforcing distinct-user quorums, atomic post-change coverage, and concurrent lockout protection."
+

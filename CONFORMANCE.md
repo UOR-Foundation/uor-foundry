@@ -18,6 +18,12 @@ The three honesty levels (R2):
 `cargo xtask audit-limits` fails if any code path returns an error the
 model does not sanction.
 
+## authority-model
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `AM-01` | `build` | The authority model replaces single-owner operations with scoped multi-administrator policies, enforcing distinct-user quorums, atomic post-change coverage, and concurrent lockout protection. |
+
 ## draft-preview
 
 | ID | Level | Statement |

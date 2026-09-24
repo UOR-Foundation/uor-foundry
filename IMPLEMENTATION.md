@@ -61,9 +61,10 @@ rotation, credential replacement, session invalidation and notification. Neither
 mail submission nor a backup code substitutes for the other's acceptance;
 distributed replay/rollback rejection and encrypted-data recovery need their
 own evidence. These capabilities remain unimplemented on main.
-PrismPM's current Workspace/V1 single-owner operations do not implement the
-required scoped multi-administrator policy. Its authority, protocol and recovery
-boundaries need a modeled implementation, not merely additional View roles.
+PrismPM's prior Workspace/V1 single-owner operations are replaced under the
+AM-01 scoped multi-administrator policy, modeling its authority, protocol and
+recovery boundaries across distinct-user quorums, atomic post-change coverage
+and revision fencing.
 
 The generic-organization contract update passed full `just vv` in the locked
 AMD64 SDK; log: `target/generic-organization-contract-full-vv.log`. This is
@@ -147,6 +148,18 @@ The platform models:
 - Policy-compliant activation requiring at least two distinct authenticated administrators, complete quorum coverage per scope (`organization` and `security`), rejection of single-owner bypasses, and rejection of duplicate key/mailbox disguises;
 - Founding-grant retirement requiring full coverage across all scopes by remaining distinct administrators rather than an all-powerful successor;
 - Strict cross-organization isolation across records, queries, and effects using distinct UOR-referenced organization identifiers.
+
+## Scoped multi-administrator authority model
+
+The documented gap where PrismPM's current Workspace/V1 single-owner operations do not implement the required scoped multi-administrator policy is closed under the `AM-01` conformance contract (`model/authority.toml`, `crates/model/src/authority.rs`, `features/suites/authority-model.feature`, and `crates/conformance/tests/authority_model.rs`).
+The authority model:
+- Replaces single-owner operations with modeled scoped multi-administrator authority policies across normative scopes (`organization`, `security`, `operations`, `releases`, `certification`, `membership`);
+- Enforces distinct-user approval quorum semantics (minimum 2 distinct authenticated administrators holding the specific affected scope) and explicitly rejects single-owner execution bypasses;
+- Detects and rejects duplicate public keys (identity disguises) and alias mailboxes attempting to fulfill quorums;
+- Enforces atomic post-change ownership coverage: before committing any authority grant revocation or administrator retirement, simulates the resulting state and atomically aborts any operation that drops any scope below its required distinct administrator threshold;
+- Prevents concurrent lockout and race conditions through monotonic revision fencing (`ConcurrentRevisionConflict`);
+- Prohibits premature retirement of founding bootstrap grants unless replacement administrators provide verified active multi-administrator coverage across all required scopes;
+- Strictly enforces cross-organization authority isolation boundaries.
 
 ## External boundaries
 
