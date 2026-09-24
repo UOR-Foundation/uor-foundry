@@ -46,13 +46,9 @@ membership, concurrent changes, lost approvers and denied activation.
 
 Every user requires verified email enrollment/login/recovery as an available
 capability, modeled in PrismPM and implemented through the UOR Framework-native
-approach in browsers, without a hosted platform or organization backend.
-The native delivery, mailbox-proof and recovery protocol is not implemented;
-this is implementation work, not a requirement to choose an authentication
-vendor. Bind its account/credential/recovery records, effects, trust boundaries
-and complete acceptance evidence. Recovery cannot bypass scoped approval,
-restore revoked grants or create authority. External dependencies still need
-disclosure and approval; no verification secrets belong in public artifacts.
+approach in browsers under the EC-01 contract without a hosted platform or
+organization backend, enforcing challenge nonces, replay protection, session
+invalidation and rejection of revoked-grant restoration or authority creation.
 Key possession or a UOR reference alone does not establish mailbox control.
 Existing mail infrastructure may supply authenticated submission/mailbox access,
 without owning Foundry accounts or recovery decisions. Saved backup codes are
@@ -160,6 +156,18 @@ The authority model:
 - Prevents concurrent lockout and race conditions through monotonic revision fencing (`ConcurrentRevisionConflict`);
 - Prohibits premature retirement of founding bootstrap grants unless replacement administrators provide verified active multi-administrator coverage across all required scopes;
 - Strictly enforces cross-organization authority isolation boundaries.
+
+## Verified email identity continuity protocol
+
+The UOR-native verified email enrollment, login, and recovery protocol is closed under the `EC-01` conformance contract (`model/email_continuity.toml`, `crates/model/src/identity_email.rs`, `features/suites/email-continuity.feature`, and `crates/conformance/tests/email_continuity.rs`).
+The protocol enforces:
+- Vendor-independent, browser-native delivery and mailbox-proof verification without central application or organization backends;
+- Cryptographic challenge-response nonce verification with bounded TTL (900 seconds) and atomic consumption to protect against replay and rollback;
+- Key possession or UOR references alone do not confer mailbox control; verifiable challenge proof is strictly required;
+- Atomic session invalidation: completing account recovery invalidates all preexisting active sessions;
+- Strict preservation of grant revocations: recovery cannot reinstate previously revoked authority grants;
+- Prohibition of authority creation: recovery cannot confer new or unapproved authority scopes;
+- Zero secret leakage: challenge secrets and nonces are prohibited from disclosure in public artifacts.
 
 ## External boundaries
 
