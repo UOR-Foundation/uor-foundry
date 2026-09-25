@@ -17,3 +17,17 @@ fn draft_preview_executes_through_the_locked_sdk_fw_01() {
         .expect("the locked SDK supplies Node");
     assert!(status.success(), "the complete draft-preview oracle failed");
 }
+
+#[test]
+fn pure_model_browser_wasm_executes_acceptance_vectors_and_routing() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .ancestors()
+        .nth(2)
+        .expect("workspace root");
+    let status = Command::new("node")
+        .arg("scripts/verify-browser-wasm.mjs")
+        .current_dir(root)
+        .status()
+        .expect("the locked SDK supplies Node");
+    assert!(status.success(), "browser Wasm verification failed");
+}
