@@ -14,8 +14,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 fn hash_file(path: &Path) -> String {
-    let bytes =
-        fs::read(path).unwrap_or_else(|e| panic!("failed to read {}: {e}", path.display()));
+    let bytes = fs::read(path).unwrap_or_else(|e| panic!("failed to read {}: {e}", path.display()));
     repo_model::sha256_hex(&bytes)
 }
 

@@ -312,8 +312,7 @@ fn json_extract_str<'a>(json: &'a str, key: &str) -> Option<&'a str> {
     let pattern = format!("\"{key}\":");
     let pos = json.find(&pattern)?;
     let rest = json[pos + pattern.len()..].trim_start();
-    if rest.starts_with('"') {
-        let after_quote = &rest[1..];
+    if let Some(after_quote) = rest.strip_prefix('"') {
         let end = after_quote.find('"')?;
         Some(&after_quote[..end])
     } else {
@@ -370,7 +369,10 @@ fn nist_800_63b_authoritative_vectors_validation() {
         spec == "NIST-SP-800-63B-4 §4.2.1.1" || spec == "NIST-SP-800-63B-4 \\u00a74.2.1.1",
         "spec mismatch: {spec}"
     );
-    assert_eq!(json_extract_u64(&recovery_content, "batch_size").unwrap(), 10);
+    assert_eq!(
+        json_extract_u64(&recovery_content, "batch_size").unwrap(),
+        10
+    );
     assert!(json_extract_u64(&recovery_content, "total_entropy_bits").unwrap() >= 128);
     assert_eq!(
         json_extract_str(&recovery_content, "storage_scheme").unwrap(),
@@ -393,7 +395,11 @@ fn nist_800_63b_authoritative_vectors_validation() {
         });
     }
 
-    assert_eq!(codes.len(), 10, "expected 10 authoritative NIST recovery codes");
+    assert_eq!(
+        codes.len(),
+        10,
+        "expected 10 authoritative NIST recovery codes"
+    );
 
     let plaintexts: Vec<String> = codes.iter().map(|c| c.code_plaintext.clone()).collect();
 
