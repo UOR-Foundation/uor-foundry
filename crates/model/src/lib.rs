@@ -374,6 +374,20 @@ pub fn repo_root() -> PathBuf {
         .to_path_buf()
 }
 
+/// Compute lowercase hexadecimal SHA-256 digest of input bytes.
+pub fn sha256_hex(bytes: &[u8]) -> String {
+    use sha2::{Digest, Sha256};
+    use std::fmt::Write;
+    let mut hasher = Sha256::new();
+    hasher.update(bytes);
+    let result = hasher.finalize();
+    let mut hex = String::with_capacity(64);
+    for byte in result {
+        let _ = write!(hex, "{:02x}", byte);
+    }
+    hex
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

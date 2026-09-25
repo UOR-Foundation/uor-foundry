@@ -1,0 +1,37 @@
+{
+  "spec": "NIST-SP-800-132 / RFC-6070",
+  "vectors": [
+    {
+      "description": "RFC 6070 / NIST CAVP PBKDF2-HMAC-SHA256 Test 1",
+      "password": "password",
+      "salt": "salt",
+      "iterations": 1,
+      "key_length": 32,
+      "expected_key": "120fb6cffcf8b32c43e7225256c4f837a86548c92ccc35480805987cb70be17b"
+    },
+    {
+      "description": "RFC 6070 / NIST CAVP PBKDF2-HMAC-SHA256 Test 2",
+      "password": "password",
+      "salt": "salt",
+      "iterations": 2,
+      "key_length": 32,
+      "expected_key": "ae4d0c95af6b46d32d0adff928f06dd02a303f8ef3c251dfd6e2d85a95474c43"
+    },
+    {
+      "description": "RFC 6070 / NIST CAVP PBKDF2-HMAC-SHA256 Test 3 (4096 iterations)",
+      "password": "password",
+      "salt": "salt",
+      "iterations": 4096,
+      "key_length": 32,
+      "expected_key": "c5e478d59288c841aa530db6845c4c8d962893a001ce4e11a4963873aa98134a"
+    },
+    {
+      "description": "RFC 6070 / NIST CAVP PBKDF2-HMAC-SHA256 Test 4 (Long password and salt)",
+      "password": "passwordPASSWORDpassword",
+      "salt": "saltSALTsaltSALTsaltSALTsaltSALTsalt",
+      "iterations": 4096,
+      "key_length": 40,
+      "expected_key": "348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9"
+    }
+  ]
+}

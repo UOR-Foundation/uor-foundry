@@ -1,5 +1,6 @@
 import {test, expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import {runAxeCheck} from './helpers/axe-check.mjs';
 
 const prefix = 'Local draft — not saved, published, or approved.\n\n';
 const invalid = 'Enter non-empty UTF-8 text within 4,096 bytes.';
@@ -133,8 +134,7 @@ test('responsive layout and automated accessibility checks', async ({page}) => {
     await expect(submit(page)).toBeVisible();
     const auditState = async () => {
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      const audit = await new AxeBuilder({page}).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
-      expect(audit.violations).toEqual([]);
+      await runAxeCheck(page);
     };
     await auditState();
     await input(page).fill('x'.repeat(4096));
