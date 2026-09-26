@@ -22,6 +22,16 @@ package = "prism.arch"
 kind = "path"
 path = ".prism/sdk/inputs/language/prism.arch"
 
+[[lexicon_source]]
+package = "prism.qual"
+kind = "path"
+path = ".prism/sdk/inputs/language/prism.qual"
+
+[[lexicon_source]]
+package = "prism.sec"
+kind = "path"
+path = ".prism/sdk/inputs/language/prism.sec"
+
 [limits]
 max_file_bytes = 4194304
 max_total_source_bytes = 67108864
