@@ -1,7 +1,7 @@
 spec = "lexlean/lock/1"
 language = "1.1"
-compiler_semantics = "c56e1a234cee7c12f00e4f2f53d6094e2ed51f5bbf5195b60f79d4e8aa5bce53"
-project_config_sha256 = "73e80d890cd0db38bd06dc5b7e7bdca7aad9203a6099723cdd79e725dd9dd4f5"
+compiler_semantics = "49561889f77c9c3571da51e8e53233da9df5ab8f46d16165159425ba2e82dc44"
+project_config_sha256 = "363e81b5bff6d877e4c0295d7aadedb2b1a41b6810ba542d378bf043f5482a7c"
 lean_toolchain = "leanprover/lean4:v4.32.1"
 
 [[workspace_file]]
@@ -55,3 +55,23 @@ revision = "none"
 tree_sha256 = "db3d2446b25a0fc617ede3ffd0c92c2ad2d49641eef5451ce57bca28ed69e7c0"
 manifest_sha256 = "8ab357ccbdc3437ad3b98e37ee62bc17df04efb08906d1d4b1c4d58877c20ce8"
 imports = ["lexlean.core@1.1.0", "lexlean.std.bool@1.1.0", "lexlean.std.nat@1.1.0"]
+
+[[package]]
+id = "prism.qual"
+version = "1.0.0"
+kind = "path"
+source = ".prism/sdk/inputs/language/prism.qual"
+revision = "none"
+tree_sha256 = "aed1134dd23611a61541a626208e70120f2e9dd62abfa62eb892d66a03a2ee37"
+manifest_sha256 = "7a62b7c0688c8d89e126b609079ef92a9512553a4012ffb8c826d0f1c78071f1"
+imports = ["lexlean.core@1.1.0", "lexlean.std.nat@1.1.0", "prism.arch@1.0.0"]
+
+[[package]]
+id = "prism.sec"
+version = "1.0.0"
+kind = "path"
+source = ".prism/sdk/inputs/language/prism.sec"
+revision = "none"
+tree_sha256 = "9815267eba3d5df7fa0ef991c356f2e8bb8cfae424f0cbfca99a91dbc9259874"
+manifest_sha256 = "aa3941c467efb2844da3256cb9c7f76e8d3d2f5335f28f0d218b01cc64c6c1a1"
+imports = ["lexlean.core@1.1.0", "lexlean.std.bool@1.1.0", "lexlean.std.nat@1.1.0", "prism.arch@1.0.0"]
