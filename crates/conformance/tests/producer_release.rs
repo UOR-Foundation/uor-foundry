@@ -1,10 +1,9 @@
-//! Conformance tests for Producer Release: complete reproducibility verification,
-//! full service/control/dependency/assessment coverage, exact producer identity,
-//! artifact tree, and pre-publication evidence closure (PR-01).
+//! Synthetic PR-01 metadata unit tests; not real build or publication evidence.
 
+use repo_conformance::fixtures::SyntheticModel as Model;
 use repo_model::{
-    BrowserArtifactRecord, Model, ProducerReleaseConfig, ProducerReleaseEngine,
-    ProducerReleaseError, ReleaseState,
+    BrowserArtifactRecord, ProducerReleaseConfig, ProducerReleaseEngine, ProducerReleaseError,
+    ReleaseState,
 };
 use std::collections::HashMap;
 

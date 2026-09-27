@@ -160,9 +160,9 @@ pub struct PublicationSdkConfig {
 
 impl PublicationSdkConfig {
     /// Validate configuration invariants against owner inputs and org lifecycle.
-    pub fn check(
+    pub fn check<'a>(
         &self,
-        _owner_inputs: &OwnerInputs,
+        _owner_inputs: impl Into<Option<&'a OwnerInputs>>,
         _org_lifecycle: &OrganizationLifecycleConfig,
         producer_cfg: &ProducerReleaseConfig,
     ) -> Result<(), crate::ModelError> {

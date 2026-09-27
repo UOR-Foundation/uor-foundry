@@ -1,8 +1,9 @@
-//! Conformance tests for Kappa browser-service receiver and verified blob reconciliation (KB-01).
+//! Synthetic KB-01 in-memory unit tests; not browser/network acceptance.
 
+use repo_conformance::fixtures::SyntheticModel as Model;
 use repo_model::{
     compute_sha256_digest, create_inbound_channel, InMemoryObjectStore, InboundMessage,
-    InboundService, KappaError, Model, ReconciliationEngine, Tag, TransportPeer,
+    InboundService, KappaError, ReconciliationEngine, Tag, TransportPeer,
 };
 
 /// A test peer implementation for simulating network peers during reconciliation.

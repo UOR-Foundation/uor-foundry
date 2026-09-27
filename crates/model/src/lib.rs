@@ -89,7 +89,7 @@ pub use organization_sites::{
     SiteAssessmentLifecycleRecord, SiteError, SiteLifecycleConfig, SiteLifecycleRecord,
     SiteLifecycleState, SiteManager, SitePolicyConfig, TransitionSiteRequest,
 };
-pub use owner_inputs::OwnerInputs;
+pub use owner_inputs::{OwnerInputRegistry, OwnerInputs};
 pub use producer_release::{
     AcceptedReleaseRecord, BrowserArtifactRecord, CoveredAssessmentConfig, CoveredControlConfig,
     CoveredServiceConfig, DeploymentAuthorizationRecord, OutstandingDeploymentCheck,
@@ -135,8 +135,8 @@ pub struct Model {
     pub ids: Ids,
     /// `model/authorities.toml`: what this repository cites rather than proves.
     pub authorities: Authorities,
-    /// `model/owner_inputs.toml`: approved owner-controlled acceptance inputs.
-    pub owner_inputs: OwnerInputs,
+    /// `model/owner_inputs.toml`: organization input registry, initially empty.
+    pub owner_inputs: OwnerInputRegistry,
     /// `model/kappa.toml`: Kappa browser-service boundary and reconciliation specification.
     pub kappa: KappaConfig,
     /// `model/organization_lifecycle.toml`: Organization lifecycle and activation policy.
@@ -245,42 +245,55 @@ impl Model {
         self.check_ids()?;
         self.check_authorities()?;
         self.owner_inputs.check()?;
-        self.kappa.check(&self.owner_inputs)?;
-        self.organization_lifecycle.check(&self.owner_inputs)?;
-        self.authority
-            .check(&self.owner_inputs, &self.organization_lifecycle)?;
-        self.email_continuity.check(&self.owner_inputs)?;
-        self.backup_codes.check(&self.owner_inputs)?;
-        self.standards.check(&self.owner_inputs)?;
+        self.check_configuration(None)?;
+        for organization in &self.owner_inputs.organizations {
+            self.check_organization_configuration(organization)?;
+        }
+        Ok(())
+    }
+
+    /// Check a supplied organization's configuration, without authenticating its claims.
+    pub fn check_organization_configuration(
+        &self,
+        organization: &OwnerInputs,
+    ) -> Result<(), ModelError> {
+        organization.check()?;
+        self.check_configuration(Some(organization))
+    }
+
+    /// Configuration consistency is not service execution or release acceptance.
+    fn check_configuration(&self, owner: Option<&OwnerInputs>) -> Result<(), ModelError> {
+        self.kappa.check(owner)?;
+        self.organization_lifecycle.check(owner)?;
+        self.authority.check(owner, &self.organization_lifecycle)?;
+        self.email_continuity.check(owner)?;
+        self.backup_codes.check(owner)?;
+        self.standards.check(owner)?;
         self.organization_sites
-            .check(&self.owner_inputs, &self.organization_lifecycle)?;
-        self.services
-            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+            .check(owner, &self.organization_lifecycle)?;
+        self.services.check(owner, &self.organization_lifecycle)?;
         self.object_space
-            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+            .check(owner, &self.organization_lifecycle)?;
         self.network_acceptance
-            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+            .check(owner, &self.organization_lifecycle)?;
         self.producer_release.check(
-            &self.owner_inputs,
+            owner,
             &self.organization_lifecycle,
             &self.services,
             &self.standards,
         )?;
-        self.publication_sdk.check(
-            &self.owner_inputs,
-            &self.organization_lifecycle,
-            &self.producer_release,
-        )?;
+        self.publication_sdk
+            .check(owner, &self.organization_lifecycle, &self.producer_release)?;
         self.veilid_bootstrap
-            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+            .check(owner, &self.organization_lifecycle)?;
         self.holospaces_boundary
-            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+            .check(owner, &self.organization_lifecycle)?;
         self.sdk_boundary
-            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+            .check(owner, &self.organization_lifecycle)?;
         self.functional_core
-            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+            .check(owner, &self.organization_lifecycle)?;
         self.implementation_closure
-            .check(&self.owner_inputs, &self.organization_lifecycle)?;
+            .check(owner, &self.organization_lifecycle)?;
         Ok(())
     }
 

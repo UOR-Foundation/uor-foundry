@@ -9,7 +9,54 @@ use serde::Deserialize;
 
 use crate::ModelError;
 
-/// Root structure of `model/owner_inputs.toml`.
+/// Organization-specific inputs; an empty registry is the normal initial platform state.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct OwnerInputRegistry {
+    /// Registry schema.
+    pub spec: String,
+    /// Explicitly supplied organization records. Never populated from test fixtures.
+    pub organizations: Vec<OwnerInputs>,
+    /// Owner-supplied reference requirements, not a created organization or grant.
+    pub reference_requirements: ReferenceRequirements,
+}
+
+/// Requirements for the owner's eventual organization, with no authority or identity binding.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ReferenceRequirements {
+    /// Intended display name; not a reserved identifier.
+    pub organization_display_name: String,
+    /// Owner-supplied mission.
+    pub mission: String,
+    /// Owner-supplied operating model.
+    pub operating_model: String,
+    /// Requirement for the first physical site.
+    pub first_foundry_includes_headquarters: bool,
+}
+
+impl OwnerInputRegistry {
+    /// Check registry structure. This never establishes authenticated external facts.
+    pub fn check(&self) -> Result<(), ModelError> {
+        if self.spec != "foundry/owner-inputs/1" {
+            return Err(ModelError::Inconsistent(
+                "unexpected owner registry schema".into(),
+            ));
+        }
+        let mut identities = std::collections::HashSet::new();
+        for record in &self.organizations {
+            record.check()?;
+            if !identities.insert(&record.organization.id) {
+                return Err(ModelError::Inconsistent(
+                    "duplicate organization identity".into(),
+                ));
+            }
+        }
+        Ok(())
+    }
+}
+
+/// A supplied organization record, not an authenticated fact or platform seed.
 #[derive(Debug, Clone, Deserialize)]
 pub struct OwnerInputs {
     /// Schema version tag.
@@ -320,6 +367,12 @@ pub struct ResilienceBounds {
 }
 
 impl OwnerInputs {
+    /// Parse an individual configuration record; parsing does not authenticate it.
+    pub fn parse_toml(source: &str) -> Result<Self, ModelError> {
+        toml::from_str(source)
+            .map_err(|error| ModelError::Inconsistent(format!("owner input syntax: {error}")))
+    }
+
     /// Cross-check all owner-controlled acceptance inputs against platform rules.
     pub fn check(&self) -> Result<(), ModelError> {
         let bad = |m: String| ModelError::Inconsistent(m);
@@ -393,17 +446,6 @@ impl OwnerInputs {
                 self.administrators.len(),
                 self.activation_policy.minimum_active_administrators
             )));
-        }
-        // Must contain designated initial administrator mailbox
-        if !self
-            .administrators
-            .iter()
-            .any(|a| a.mailbox == "trinity@uor.foundation")
-        {
-            return Err(bad(
-                "administrators must contain designated initial mailbox trinity@uor.foundation"
-                    .to_string(),
-            ));
         }
         // Check for distinct mailboxes and keys
         let mut seen_mailboxes = Vec::new();

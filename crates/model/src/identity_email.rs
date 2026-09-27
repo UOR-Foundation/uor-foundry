@@ -80,7 +80,10 @@ pub struct EmailSecurityBoundsConfig {
 
 impl EmailContinuityConfig {
     /// Cross-check configuration against owner-inputs recovery rules.
-    pub fn check(&self, owner_inputs: &OwnerInputs) -> Result<(), ModelError> {
+    pub fn check<'a>(
+        &self,
+        owner_inputs: impl Into<Option<&'a OwnerInputs>>,
+    ) -> Result<(), ModelError> {
         let bad =
             |msg: String| ModelError::Inconsistent(format!("model/email_continuity.toml: {msg}"));
 
@@ -105,43 +108,52 @@ impl EmailContinuityConfig {
             ));
         }
 
-        if self.protocol.challenge_ttl_seconds
-            != owner_inputs.recovery_rules.email_challenge_ttl_seconds
+        if self.protocol.challenge_ttl_seconds == 0
+            || !self.protocol.replay_protection
+            || !self.protocol.session_invalidation_on_recovery
+            || !self.protocol.prohibit_revoked_grant_restoration
         {
-            return Err(bad(format!(
-                "challenge_ttl_seconds ({}) does not match owner_inputs recovery rule ({})",
-                self.protocol.challenge_ttl_seconds,
-                owner_inputs.recovery_rules.email_challenge_ttl_seconds
-            )));
+            return Err(bad("email recovery requires expiring, replay-protected challenges, session invalidation, and no revoked-grant restoration".to_string()));
         }
 
-        if self.protocol.replay_protection
-            != owner_inputs
-                .recovery_rules
-                .email_challenge_replay_protection
-        {
-            return Err(bad(
-                "replay_protection must match owner_inputs recovery rule".to_string(),
-            ));
-        }
+        if let Some(owner_inputs) = owner_inputs.into() {
+            if self.protocol.challenge_ttl_seconds
+                != owner_inputs.recovery_rules.email_challenge_ttl_seconds
+            {
+                return Err(bad(format!(
+                    "challenge_ttl_seconds ({}) does not match owner_inputs recovery rule ({})",
+                    self.protocol.challenge_ttl_seconds,
+                    owner_inputs.recovery_rules.email_challenge_ttl_seconds
+                )));
+            }
 
-        if self.protocol.session_invalidation_on_recovery
-            != owner_inputs.recovery_rules.session_invalidation_on_recovery
-        {
-            return Err(bad(
-                "session_invalidation_on_recovery must match owner_inputs recovery rule"
-                    .to_string(),
-            ));
-        }
+            if self.protocol.replay_protection
+                != owner_inputs
+                    .recovery_rules
+                    .email_challenge_replay_protection
+            {
+                return Err(bad(
+                    "replay_protection must match owner_inputs recovery rule".to_string(),
+                ));
+            }
 
-        if self.protocol.prohibit_revoked_grant_restoration
-            != owner_inputs.recovery_rules.reject_revoked_grant_recovery
-        {
-            return Err(bad(
+            if self.protocol.session_invalidation_on_recovery
+                != owner_inputs.recovery_rules.session_invalidation_on_recovery
+            {
+                return Err(bad(
+                    "session_invalidation_on_recovery must match owner_inputs recovery rule"
+                        .to_string(),
+                ));
+            }
+
+            if self.protocol.prohibit_revoked_grant_restoration
+                != owner_inputs.recovery_rules.reject_revoked_grant_recovery
+            {
+                return Err(bad(
                 "prohibit_revoked_grant_restoration must match owner_inputs reject_revoked_grant_recovery".to_string(),
             ));
+            }
         }
-
         if self.security_bounds.minimum_nonce_length_bytes < 32 {
             return Err(bad(
                 "minimum_nonce_length_bytes must be at least 32 bytes (256 bits)".to_string(),

@@ -561,7 +561,10 @@ impl OrganizationManager {
 
 impl OrganizationLifecycleConfig {
     /// Cross-check organization lifecycle rules against owner inputs.
-    pub fn check(&self, owner_inputs: &OwnerInputs) -> Result<(), ModelError> {
+    pub fn check<'a>(
+        &self,
+        owner_inputs: impl Into<Option<&'a OwnerInputs>>,
+    ) -> Result<(), ModelError> {
         let bad = |m: String| ModelError::Inconsistent(m);
 
         if self.spec != "foundry/organization-lifecycle/1" {
@@ -604,17 +607,18 @@ impl OrganizationLifecycleConfig {
             return Err(bad("enforce_cross_org_isolation must be true".to_string()));
         }
 
-        // Cross-check with OwnerInputs activation policy
-        if self.rules.activation_minimum_distinct_administrators
-            != owner_inputs.activation_policy.minimum_active_administrators
-        {
-            return Err(bad(format!(
+        // Cross-check an organization's policy only when that organization exists.
+        if let Some(owner_inputs) = owner_inputs.into() {
+            if self.rules.activation_minimum_distinct_administrators
+                != owner_inputs.activation_policy.minimum_active_administrators
+            {
+                return Err(bad(format!(
                 "activation minimum distinct administrators mismatch: config has {}, owner_inputs has {}",
                 self.rules.activation_minimum_distinct_administrators,
                 owner_inputs.activation_policy.minimum_active_administrators
             )));
+            }
         }
-
         // Verify transition rules cover provisional -> activated
         let has_activation_rule = self.allowed_transitions.iter().any(|r| {
             r.from == "provisional" && r.to == "activated" && r.minimum_distinct_administrators >= 2

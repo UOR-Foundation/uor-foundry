@@ -81,7 +81,10 @@ pub struct FaultRulesConfig {
 
 impl KappaConfig {
     /// Cross-check configuration invariants against owner-controlled bounds (OI-01).
-    pub fn check(&self, owner_inputs: &OwnerInputs) -> Result<(), ModelError> {
+    pub fn check<'a>(
+        &self,
+        owner_inputs: impl Into<Option<&'a OwnerInputs>>,
+    ) -> Result<(), ModelError> {
         let bad = |m: String| ModelError::Inconsistent(m);
 
         if self.service.namespace.trim().is_empty() {
@@ -101,21 +104,24 @@ impl KappaConfig {
             ));
         }
 
-        if self.service.max_message_bytes as u64 > owner_inputs.resilience_bounds.max_message_bytes
-        {
-            return Err(bad(format!(
-                "kappa max_message_bytes ({}) exceeds owner workload bounds ({})",
-                self.service.max_message_bytes, owner_inputs.resilience_bounds.max_message_bytes
-            )));
-        }
+        if let Some(owner_inputs) = owner_inputs.into() {
+            if self.service.max_message_bytes as u64
+                > owner_inputs.resilience_bounds.max_message_bytes
+            {
+                return Err(bad(format!(
+                    "kappa max_message_bytes ({}) exceeds owner workload bounds ({})",
+                    self.service.max_message_bytes,
+                    owner_inputs.resilience_bounds.max_message_bytes
+                )));
+            }
 
-        if self.service.max_blob_bytes as u64 > owner_inputs.resilience_bounds.max_blob_bytes {
-            return Err(bad(format!(
-                "kappa max_blob_bytes ({}) exceeds owner workload bounds ({})",
-                self.service.max_blob_bytes, owner_inputs.resilience_bounds.max_blob_bytes
-            )));
+            if self.service.max_blob_bytes as u64 > owner_inputs.resilience_bounds.max_blob_bytes {
+                return Err(bad(format!(
+                    "kappa max_blob_bytes ({}) exceeds owner workload bounds ({})",
+                    self.service.max_blob_bytes, owner_inputs.resilience_bounds.max_blob_bytes
+                )));
+            }
         }
-
         if !self.reconciliation.require_blob_content_verification {
             return Err(bad(
                 "kappa require_blob_content_verification must be true: blobs must be verified"
