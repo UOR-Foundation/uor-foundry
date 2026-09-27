@@ -18,6 +18,12 @@
 spec = "template/1"
 
 [[id]]
+id = "VI-01"
+level = "build"
+suite = "verification-integrity"
+statement = "Producer verification rejects missing, unbound or echo-only browser artifacts and distinguishes imported oracle inputs from executed product acceptance."
+
+[[id]]
 id = "FW-01"
 level = "build"
 suite = "draft-preview"

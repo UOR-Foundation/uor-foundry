@@ -6,6 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {verifyBrowserReport} from './browser-report.mjs';
 import {copyRegularTree, createReproductionDirectory, verifySameTree} from './reproduction.mjs';
 import {verifySdkEvidence} from './sdk-evidence.mjs';
+import {verifyBrowserArtifacts} from './verify-browser-wasm.mjs';
 
 process.chdir(fileURLToPath(new URL('../', import.meta.url)));
 assert.ok(readFileSync('src/Foundry.lex.tex').length, 'Foundry source is required');
@@ -24,6 +25,7 @@ const verification = JSON.parse(run('/usr/local/bin/prismpm', ['--json', 'verify
 assert.equal(build.build_id, verification.build_id);
 assert.match(build.build_id, /^[0-9a-f]{64}$/);
 assert.match(verification.attestation_id, /^[0-9a-f]{64}$/);
+await verifyBrowserArtifacts(process.cwd(), build);
 const buildRoot = `.prism/build/${build.build_id}`;
 const reproduction = createReproductionDirectory(process.cwd());
 try {
@@ -75,18 +77,9 @@ assert.equal(model.application.view_layer, 1);
 assert.equal(model.application.request_maximum, 4096);
 assert.equal(model.application.response_maximum, 8192);
 assert.equal(model.application.guest_allocation_maximum, 8192);
-const expected = [
-  {
-    request: [...Buffer.from('Hello, Foundry.')],
-    response: [...Buffer.from('Hello, Foundry.')],
-  },
-  {
-    request: [...Buffer.from('Status: Ready')],
-    response: [...Buffer.from('Status: Ready')],
-  },
-];
-assert.deepEqual(model.application.acceptance_vectors, expected,
-  'all independent browser-application acceptance vectors are required');
+// Executed and checked above against the generated module. Modeled vectors are
+// not independent product oracles; the complete browser journeys remain mandatory.
+const expected = model.application.acceptance_vectors;
 assert.equal(acceptance.application, model.application.name);
 assert.equal(acceptance.build_id, build.build_id);
 assert.equal(acceptance.artifact_closure, 'verified');

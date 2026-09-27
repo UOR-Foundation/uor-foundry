@@ -1,13 +1,8 @@
-//! Conformance test harness for authoritative external standards and validation oracles (Task 2).
+//! Imported oracle input integrity. These tests do not establish product conformity.
 //!
-//! Validates:
-//! 1. NIST SP 800-63B-4 §4.2.1.1 (Entropy, salted SHA-256, single-use, session invalidation)
-//! 2. NIST OSCAL 1.1.0 (Catalog, profile, component, ssp, assessment-results JSON schemas)
-//! 3. W3C DID Core 1.0 (JSON-LD context, did:key Ed25519, did:web test vectors)
-//! 4. W3C Verifiable Credentials Data Model 2.0 (JSON-LD context, positive & negative test vectors)
-//! 5. W3C ActivityPub / ActivityStreams 2.0 (JSON-LD context, Actor, Activity test vectors)
-//! 6. W3C WCAG 2.2 Level AA (@axe-core/playwright strict tags & runner helper)
-//! 7. standards.lock cryptographic digest and authority mapping integrity
+//! Checks locked payload digests and selected fixture/schema structures. It does
+//! not execute these specifications against generated Foundry behavior, establish
+//! mailbox control, measure entropy, or assess rendered accessibility.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -19,7 +14,7 @@ fn hash_file(path: &Path) -> String {
 }
 
 #[test]
-fn authoritative_oracles_and_test_vectors_validation_task_2() {
+fn imported_oracle_inputs_match_their_recorded_inventory() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .ancestors()
         .nth(2)

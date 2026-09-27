@@ -132,6 +132,12 @@ model does not sanction.
 | --- | --- | --- |
 | `VB-01` | `build` | The Veilid external boundary enforces authenticated secure bootstrap routing, browser transport integration, relay public-key verification, outbound-relay limitation mitigations, and network discovery under adverse conditions without feature-flag-only or unauthenticated proxy substitutes. |
 
+## verification-integrity
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `VI-01` | `build` | Producer verification rejects missing, unbound or echo-only browser artifacts and distinguishes imported oracle inputs from executed product acceptance. |
+
 ## Cited authorities
 
 Never re-derived, vendored, or gated on.

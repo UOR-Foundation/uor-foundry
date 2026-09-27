@@ -1,5 +1,5 @@
 // scripts/verify-authoritative-oracles.mjs
-// Verification of authoritative external standards, test vectors, and oracles.
+// Imported input integrity only. This does not execute product validation.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -36,7 +36,7 @@ for (const authId of requiredAuthorities) {
     throw new Error(`Required authority ${authId} missing from standards.lock`);
   }
 }
-console.log(`✓ All ${requiredAuthorities.length} authoritative standards bodies verified in standards.lock`);
+console.log(`Input inventory: ${requiredAuthorities.length} authority identifiers are present`);
 
 const oraclePayloadChecks = [
   {
@@ -82,7 +82,7 @@ for (const check of oraclePayloadChecks) {
     );
   }
 }
-console.log(`✓ All ${oraclePayloadChecks.length} oracle payload cryptographic digests verified against standards.lock`);
+console.log(`Input integrity: ${oraclePayloadChecks.length} payload digests match the local lock`);
 
 console.log('--- 2. Verifying NIST OSCAL 1.1.0 JSON schemas ---');
 const oscalSchemas = [
@@ -99,7 +99,7 @@ for (const schemaFile of oscalSchemas) {
     throw new Error(`OSCAL schema ${schemaFile} is malformed`);
   }
 }
-console.log(`✓ All ${oscalSchemas.length} NIST OSCAL 1.1.0 official JSON schemas verified`);
+console.log(`Input structure: ${oscalSchemas.length} OSCAL schemas contain expected metadata`);
 
 console.log('--- 3. Verifying W3C DID Core 1.0 test vectors ---');
 const didContext = JSON.parse(
@@ -144,7 +144,7 @@ const spruceWeb = JSON.parse(
 if (spruceWeb.didMethod !== 'did:web' || !Array.isArray(spruceWeb.executions)) {
   throw new Error('Spruce did:web test vector malformed');
 }
-console.log('✓ W3C DID Core 1.0 JSON-LD context, did:key, and did:web vectors verified');
+console.log('Input structure: DID context and selected expected-output fixtures inspected');
 
 console.log('--- 4. Verifying W3C Verifiable Credentials Data Model 2.0 ---');
 const vcContext = JSON.parse(
@@ -196,7 +196,7 @@ const noIssuer = JSON.parse(
 if (noIssuer.issuer) {
   throw new Error('Negative test vector unexpectedly contains issuer');
 }
-console.log('✓ W3C VC 2.0 context, positive validVc, and negative defect vectors verified');
+console.log('Input structure: VC context and selected positive/negative fixtures inspected');
 
 console.log('--- 5. Verifying W3C ActivityPub / ActivityStreams 2.0 ---');
 const apContext = JSON.parse(
@@ -228,7 +228,7 @@ const ex2 = JSON.parse(
 if (ex2.type !== 'Add' || ex2.actor?.type !== 'Person' || !ex2.object) {
   throw new Error('core-ex2-create malformed');
 }
-console.log('✓ W3C ActivityPub / ActivityStreams 2.0 context and test vectors verified');
+console.log('Input structure: ActivityStreams context and selected fixtures inspected');
 
 console.log('--- 6. Verifying W3C WCAG 2.2 Level AA accessibility helper ---');
 const axeHelper = fs.readFileSync(
@@ -250,6 +250,6 @@ const axeDep = pkg.devDependencies?.['@axe-core/playwright'];
 if (!axeDep || !axeDep.startsWith('4.')) {
   throw new Error(`@axe-core/playwright version invalid or missing: ${axeDep}`);
 }
-console.log('✓ W3C WCAG 2.2 Level AA accessibility helper and @axe-core/playwright dependency verified');
+console.log('Input structure: accessibility helper configuration and dependency declaration inspected');
 
-console.log('ALL AUTHORITATIVE ORACLES AND TEST VECTORS VERIFIED SUCCESSFULLY');
+console.log('Oracle input integrity only; product, standards conformance and accessibility are not established.');
