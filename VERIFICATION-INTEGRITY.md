@@ -45,3 +45,8 @@ Executed in the immutable SDK image pinned by `prismpm.lock`:
   was independently rejected for echo-only behavior and disconnected generated roots.
 
 No product acceptance, release or deployment was performed.
+
+Follow-up integrity checks reject source/artifact hardlinks and require the
+standalone command to check the locked SDK before build/verification. Mock
+process replies test ordering and refusal only, never SDK or product acceptance.
+All 27 follow-up Node regressions passed in the same exact SDK image.

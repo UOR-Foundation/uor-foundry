@@ -70,7 +70,11 @@ assert.deepEqual(model.application.library_roots, [
   'PrismFoundry.Foundry.replay'
 ]);
 assert.equal(model.application.core_contract, 'hologram:guest/core-wasm@1');
+// The core .holo capability section remains empty under the Browser profile;
+// modeled requested_effects are separate SDK-mediated requests, never grants.
 assert.equal(model.application.capabilities_empty, true);
+assert.ok(Array.isArray(model.application.requested_effects)
+  && model.application.requested_effects.length > 0, 'Foundry requires modeled effect requests');
 assert.equal(model.application.fat_archive, true);
 assert.equal(model.application.primary_layer, 0);
 assert.equal(model.application.view_layer, 1);
@@ -97,4 +101,4 @@ const browserReport = JSON.parse(execFileSync('npm', ['exec', '--offline', '--',
   maxBuffer: 16 * 1024 * 1024,
 }));
 verifyBrowserReport(browserReport, process.cwd(), browserStartedAt, Date.now());
-console.log(`FW-01 verified build ${build.build_id}`);
+console.log(`Legacy FW-01 browser checks passed for ${build.build_id}; full Foundry journey acceptance remains unaccepted.`);

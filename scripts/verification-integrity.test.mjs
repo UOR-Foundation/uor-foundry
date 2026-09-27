@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
-import {mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync} from 'node:fs';
+import {linkSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {test} from 'node:test';
-import {verifyBrowserArtifacts, verifyExecutableVectors, verifyGeneratedReachability} from './verify-browser-wasm.mjs';
+import {selectVerifiedBuild, verifyBrowserArtifacts, verifyExecutableVectors, verifyGeneratedReachability} from './verify-browser-wasm.mjs';
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -121,6 +121,47 @@ test('artifact symlinks cannot substitute outside content', async (t) => {
   rmSync(join(f.base, 'Foundry.holo'));
   symlinkSync(join(f.project, 'src/Sample.lex.tex'), join(f.base, 'Foundry.holo'));
   await assert.rejects(verifyBrowserArtifacts(f.project, build), /symlink artifact/);
+});
+
+test('artifact hardlinks are rejected even when bytes and metadata agree', async (t) => {
+  const f = fixture(t);
+  linkSync(join(f.base, 'Foundry.holo'), join(f.project, 'outside.holo'));
+  await assert.rejects(verifyBrowserArtifacts(f.project, build), /hardlinked artifact/);
+});
+
+test('source hardlinks cannot hide shared mutable input', async (t) => {
+  const f = fixture(t);
+  linkSync(join(f.project, 'src/Sample.lex.tex'), join(f.project, 'outside.lex.tex'));
+  await assert.rejects(verifyBrowserArtifacts(f.project, build), /hardlinked artifact\/source/);
+});
+
+test('lock rejection stops SDK orchestration before build and verification', () => {
+  const commands = [];
+  assert.throws(() => selectVerifiedBuild((args) => {
+    commands.push(args);
+    throw new Error('synthetic lock refusal');
+  }), /lock refusal/);
+  assert.deepEqual(commands, [['lock', 'check']]);
+});
+
+test('SDK selection checks the lock before binding exact build and verification IDs', () => {
+  const commands = [];
+  const result = selectVerifiedBuild((args) => {
+    commands.push(args);
+    if (args[0] === 'lock') return 'synthetic canonical lock result';
+    return JSON.stringify(args[1] === 'build' ? build
+      : {build_id: build.build_id, attestation_id: 'c'.repeat(64)});
+  });
+  assert.deepEqual(result, build);
+  assert.deepEqual(commands, [['lock', 'check'], ['--json', 'build'], ['--json', 'verify']]);
+});
+
+test('SDK verification of a different build is rejected', () => {
+  assert.throws(() => selectVerifiedBuild((args) => {
+    if (args[0] === 'lock') return '';
+    return JSON.stringify(args[1] === 'build' ? build
+      : {build_id: 'd'.repeat(64), attestation_id: 'c'.repeat(64)});
+  }), /verification must bind this build/);
 });
 
 test('bound echo-only metadata is rejected before executing untrusted bindings', async (t) => {

@@ -26,6 +26,7 @@ function regularFile(base, relative) {
   }
   assert.ok(realpathSync(path).startsWith(realpathSync(base) + sep), 'artifact escapes root');
   assert.ok(lstatSync(path).isFile(), 'artifact/source must be a regular file');
+  assert.equal(lstatSync(path).nlink, 1, 'hardlinked artifact/source is forbidden');
   return readFileSync(path);
 }
 
@@ -171,17 +172,24 @@ export async function verifyBrowserArtifacts(projectRoot, build) {
   return verifyExecutableVectors(model.application.acceptance_vectors, invoke);
 }
 
-export function verifyThroughLockedSdk(projectRoot = root) {
-  const run = (args) => JSON.parse(execFileSync('/usr/local/bin/prismpm', ['--json', ...args], {
-    cwd: projectRoot, encoding: 'utf8', timeout: 1_800_000, maxBuffer: 64 * 1024 * 1024,
-    stdio: ['ignore', 'pipe', 'inherit'],
-  }));
-  // Do not select a cached directory or accept a caller-supplied artifact path.
-  const build = run(['build']);
-  const verification = run(['verify']);
+// Process orchestration is separately testable; synthetic replies establish no
+// SDK or product acceptance. The public verifier below fixes the actual binary.
+export function selectVerifiedBuild(run) {
+  run(['lock', 'check']);
+  const build = JSON.parse(run(['--json', 'build']));
+  const verification = JSON.parse(run(['--json', 'verify']));
   assert.equal(build.build_id, verification.build_id, 'verification must bind this build');
   assert.match(verification.attestation_id ?? '', /^[0-9a-f]{64}$/, 'SDK verification is required');
-  return verifyBrowserArtifacts(projectRoot, build);
+  return build;
+}
+
+export function verifyThroughLockedSdk(projectRoot = root) {
+  const run = (args) => execFileSync('/usr/local/bin/prismpm', args, {
+    cwd: projectRoot, encoding: 'utf8', timeout: 1_800_000, maxBuffer: 64 * 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'inherit'],
+  });
+  // Do not select a cached directory or accept a caller-supplied artifact path.
+  return verifyBrowserArtifacts(projectRoot, selectVerifiedBuild(run));
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

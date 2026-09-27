@@ -39,6 +39,8 @@ These records must be replaced by actual assessment/build results, not promoted.
 artifacts. It strengthens the existing application gate; it is not a substitute
 for complete product acceptance. The formerly ignored application test is
 mandatory again. Imported-oracle checks explicitly report input integrity only.
+Its Playwright owner still targets the obsolete draft-preview journey; it must
+be replaced by complete generated Foundry journeys, not counted as product coverage.
 
 The complete gate is expected to reject the current implementation. Every
 unimplemented service, control, journey and fault case remains required. No
