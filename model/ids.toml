@@ -21,7 +21,7 @@ spec = "template/1"
 id = "VI-01"
 level = "build"
 suite = "verification-integrity"
-statement = "Producer verification rejects missing, unbound or echo-only browser artifacts and consumer copies of SDK modules, and distinguishes imported oracle inputs from executed product acceptance."
+statement = "Producer verification acquires locked SDK inputs before product checks, rejects missing, unbound or echo-only browser artifacts and consumer copies of SDK modules, and distinguishes imported oracle inputs from executed product acceptance."
 
 [[id]]
 id = "FW-01"

@@ -24,7 +24,11 @@ fn producer_verification_rejects_missing_stale_and_echo_artifacts_vi_01() {
         .nth(2)
         .expect("workspace root");
     let status = Command::new("node")
-        .args(["--test", "scripts/verification-integrity.test.mjs"])
+        .args([
+            "--test",
+            "scripts/verification-integrity.test.mjs",
+            "scripts/preparation.test.mjs",
+        ])
         .current_dir(root)
         .status()
         .expect("the locked SDK supplies Node");

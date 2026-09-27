@@ -1,7 +1,8 @@
 # Producer verification integrity
 
 `VI-01` is an integrity gate, not product acceptance. Its owning Rust test invokes
-the complete `scripts/verification-integrity.test.mjs` suite in the locked SDK.
+the complete `scripts/verification-integrity.test.mjs` and
+`scripts/preparation.test.mjs` suites in the locked SDK.
 
 Before correction, the browser check returned success for absent build output
 and for echo Wasm, calling echoed route names service routing and markup strings
@@ -63,3 +64,12 @@ Independent review found no source-origin bypass. The full `just vv` rerun
 passed model/template/lock checks, formatting, audits and all-target Clippy;
 VI-01 passed all 29 cases, while mandatory FW-01 again failed with the retained
 `PP2001` / `LLC0102` compiler-semantics mismatch. Full acceptance remains RED.
+
+Fresh CI exposed an earlier failure: `PP2001` / `LLR3001`, because `just vv`
+omitted SDK input acquisition. Its existing `prepare` recipe now precedes the
+product checks; universal policy bytes are unchanged. All 31 integrity tests
+pass, including actual Justfile defects omitting, unlocking and delaying fetch.
+Both a clean archive and the corrected full `just vv` now fail at locked fetch
+with `PP1101`: the committed standards lock differs from the pinned SDK catalog.
+The lock was preserved. This ordering correction does not resolve authority
+distribution, compiler locks or missing SDK/application capabilities.

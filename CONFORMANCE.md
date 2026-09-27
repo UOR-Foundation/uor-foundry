@@ -136,7 +136,7 @@ model does not sanction.
 
 | ID | Level | Statement |
 | --- | --- | --- |
-| `VI-01` | `build` | Producer verification rejects missing, unbound or echo-only browser artifacts and consumer copies of SDK modules, and distinguishes imported oracle inputs from executed product acceptance. |
+| `VI-01` | `build` | Producer verification acquires locked SDK inputs before product checks, rejects missing, unbound or echo-only browser artifacts and consumer copies of SDK modules, and distinguishes imported oracle inputs from executed product acceptance. |
 
 ## Cited authorities
 
