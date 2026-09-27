@@ -5,4 +5,5 @@ Feature: Producer verification integrity
     Given the exact source revision and SDK-selected build and verification results
     When browser artifacts are missing, substituted, stale or echo-only
     Then the owning producer gate fails rather than skipping its checks
+    And Foundry modules originate in the producer while SDK modules originate only in the locked SDK
     And oracle input integrity alone cannot establish product or accessibility acceptance

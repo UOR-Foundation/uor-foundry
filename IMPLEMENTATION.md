@@ -16,7 +16,7 @@ static files does not establish that acceptance.
 | Browser networking | Relay URLs and state flags are not authenticated connections. Implement actual Kappa/Veilid browser interoperability, discovery, replication, confidentiality, revocation and measured fault recovery using allowed public operators. |
 | Services and design | Complete every SPEC service and its modeled user journeys, coherent navigation, accessible responsive interaction and failure/recovery states. Route labels and supplied accessibility booleans are not implementations. |
 | Standards | Imported documents/fixtures are inputs, not product oracle execution. Complete normative inventories, implementation bindings, external validation and authenticated assessments; do not claim conformity from strings or digest prefixes. |
-| SDK and release | Verify the immutable SDK consumer boundary; generate twice in clean roots; authenticate complete readiness, exact artifacts, authorization and handoff. The existing literal digest/metadata simulations do not perform builds, publication or rollback. |
+| SDK and release | Replace the local `src/Foundation/Browser/Application/V1/Model.lex.tex` SDK copy through a verified immutable SDK update, then remove the copy. Verify the SDK consumer boundary; generate twice in clean roots; authenticate complete readiness, exact artifacts, authorization and handoff. Literal digest/metadata simulations do not perform builds, publication or rollback. |
 | Deployment | Verify exact published bytes and complete live stakeholder journeys for the same accepted release. Publisher delivery checks cannot replace producer acceptance. |
 
 ## Authority and evidence correction

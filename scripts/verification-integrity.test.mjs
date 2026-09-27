@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {execFileSync} from 'node:child_process';
+import {execFileSync, spawnSync} from 'node:child_process';
 import {linkSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {test} from 'node:test';
-import {selectVerifiedBuild, verifyBrowserArtifacts, verifyExecutableVectors, verifyGeneratedReachability} from './verify-browser-wasm.mjs';
+import * as integrity from './verify-browser-wasm.mjs';
+const {selectVerifiedBuild, verifyBrowserArtifacts, verifyExecutableVectors, verifyGeneratedReachability} = integrity;
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -35,7 +36,7 @@ function fixture(t) {
     ['view/browser/app.css', Buffer.from('synthetic')],
     ['view/browser/app.js', Buffer.from('synthetic')],
     ['view/browser/index.html', Buffer.from('synthetic')],
-    ['lexlean/snapshot.json', Buffer.from(JSON.stringify({source_id: build.source_id, modules: [{source: {
+    ['lexlean/snapshot.json', Buffer.from(JSON.stringify({source_id: build.source_id, modules: [{name: 'Foundry.Sample', source: {
       path: 'src/Sample.lex.tex', sha256: sha256('synthetic non-product source'),
     }}]}))],
   ]);
@@ -49,6 +50,71 @@ function fixture(t) {
   saveManifest();
   return {project, base, manifest, saveManifest, write};
 }
+
+test('SDK source ownership is checked independently of successful compiler output', () => {
+  assert.equal(typeof integrity.verifySourceOwnership, 'function');
+  const module = (name, path) => ({name, source: {path}});
+  const snapshot = {modules: [module('Foundry', 'src/Foundry.lex.tex'),
+    module('Foundry.UI.App', 'src/Foundry/UI/App.lex.tex'),
+    module('Foundation.Bytes', '.prism/sdk/inputs/stdlib/Foundation/Bytes.lex.tex')]};
+  assert.equal(integrity.verifySourceOwnership(snapshot), undefined);
+  const copied = structuredClone(snapshot);
+  copied.modules[2] = module('Foundation.Browser.Application.V1.Model',
+    'src/Foundation/Browser/Application/V1/Model.lex.tex');
+  assert.throws(() => integrity.verifySourceOwnership(copied), /SDK module must originate in the locked SDK/);
+  for (const path of ['src/Foundry/Shadow.lex.tex', 'vendor/Foundation/Bytes.lex.tex',
+    '.prism/sdk/inputs/stdlib/../stdlib/Foundation/Bytes.lex.tex',
+    '.prism/sdk/inputs/stdlib/Foundation/Other.lex.tex']) {
+    const changed = structuredClone(snapshot);
+    changed.modules[2].source.path = path;
+    assert.throws(() => integrity.verifySourceOwnership(changed), /SDK module must originate in the locked SDK/);
+  }
+  const replaced = structuredClone(snapshot);
+  replaced.modules[0].source.path = '.prism/sdk/inputs/stdlib/Foundry.lex.tex';
+  assert.throws(() => integrity.verifySourceOwnership(replaced), /Foundry module must originate in producer source/);
+  for (const name of ['', '../Foundation.Bytes', 'Foundation..Bytes', 'Foundation/Bytes']) {
+    const changed = structuredClone(snapshot);
+    changed.modules[2].name = name;
+    assert.throws(() => integrity.verifySourceOwnership(changed), /canonical module name/);
+  }
+  const duplicate = structuredClone(snapshot);
+  duplicate.modules.push(duplicate.modules[0]);
+  assert.throws(() => integrity.verifySourceOwnership(duplicate), /duplicate source module/);
+  const sameSource = structuredClone(snapshot);
+  sameSource.modules[1].source.path = sameSource.modules[0].source.path;
+  assert.throws(() => integrity.verifySourceOwnership(sameSource), /duplicate source path/);
+});
+
+test('a consumer SDK copy is rejected even with matching source and artifact digests', async (t) => {
+  const f = fixture(t);
+  const path = 'src/Foundation/Browser/Application/V1/Model.lex.tex';
+  const source = 'synthetic copied SDK declaration';
+  f.write(join(f.project, path), source);
+  const file = 'lexlean/snapshot.json';
+  const snapshot = JSON.parse(readFileSync(join(f.base, file)));
+  snapshot.modules.push({name: 'Foundation.Browser.Application.V1.Model',
+    source: {path, sha256: sha256(source)}});
+  const bytes = Buffer.from(JSON.stringify(snapshot));
+  f.write(join(f.base, file), bytes);
+  Object.assign(f.manifest.files.find((entry) => entry.path === file),
+    {byte_length: bytes.length, sha256: sha256(bytes)});
+  f.saveManifest();
+  await assert.rejects(verifyBrowserArtifacts(f.project, build), /SDK module must originate in the locked SDK/);
+  const original = readFileSync(join(root, 'scripts/verify-browser-wasm.mjs'), 'utf8');
+  const needle = '  verifySourceOwnership(snapshot);';
+  assert.equal(original.split(needle).length, 2, 'exact owning guard must exist');
+  const mutant = join(f.project, 'missing-source-origin-guard.mjs');
+  f.write(mutant, original.replace(needle, '  // Planted defect: source-origin admission omitted.'));
+  const outcome = spawnSync(process.execPath, ['--input-type=module', '-e', `
+    import assert from 'node:assert/strict';
+    const {verifyBrowserArtifacts} = await import(${JSON.stringify(mutant)});
+    await assert.rejects(verifyBrowserArtifacts(${JSON.stringify(f.project)}, ${JSON.stringify(build)}),
+      /SDK module must originate in the locked SDK/);
+  `], {encoding: 'utf8', timeout: 10_000});
+  assert.ifError(outcome.error);
+  assert.equal(outcome.status, 1, 'the owning check must kill a removed source-origin guard');
+  assert.match(outcome.stderr, /echo-only vectors/, 'mutant reached later admission instead of checking source origin');
+});
 
 test('missing generated artifacts fail rather than skip', async () => {
   const root = mkdtempSync(join(tmpdir(), 'foundry-missing-build-'));

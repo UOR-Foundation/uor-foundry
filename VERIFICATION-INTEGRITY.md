@@ -50,3 +50,16 @@ Follow-up integrity checks reject source/artifact hardlinks and require the
 standalone command to check the locked SDK before build/verification. Mock
 process replies test ordering and refusal only, never SDK or product acceptance.
 All 27 follow-up Node regressions passed in the same exact SDK image.
+
+The source-origin follow-up first failed two new regressions. All 29 now pass,
+including an executed removed-guard mutant. Snapshot module names and source
+paths must be unique: Foundry declarations come from producer `src/`, while
+standard-library declarations come from the exact locked SDK input path.
+Matching source/artifact hashes cannot legitimize a consumer SDK copy.
+The existing local Browser Application model is such a copy; it remains
+unaccepted until a real SDK update permits its removal. This check neither
+implements the missing SDK capability nor replaces SDK source authentication.
+Independent review found no source-origin bypass. The full `just vv` rerun
+passed model/template/lock checks, formatting, audits and all-target Clippy;
+VI-01 passed all 29 cases, while mandatory FW-01 again failed with the retained
+`PP2001` / `LLC0102` compiler-semantics mismatch. Full acceptance remains RED.

@@ -41,6 +41,30 @@ function sourcePaths(base, relative = 'src') {
   return paths.sort();
 }
 
+// This is consumer source-origin enforcement, not a replacement compiler or
+// SDK verifier. The locked SDK separately authenticates its materialized tree.
+export function verifySourceOwnership(snapshot) {
+  assert.ok(Array.isArray(snapshot.modules) && snapshot.modules.length > 0, 'source modules required');
+  const names = new Set(), paths = new Set();
+  for (const module of snapshot.modules) {
+    assert.equal(typeof module.name, 'string', 'canonical module name required');
+    assert.match(module.name, /^[A-Za-z][A-Za-z0-9_]*(?:\.[A-Za-z][A-Za-z0-9_]*)*$/,
+      'canonical module name required');
+    assert.ok(!names.has(module.name), 'duplicate source module');
+    names.add(module.name);
+    const path = module.source?.path;
+    assert.equal(typeof path, 'string', 'source path required');
+    assert.ok(!paths.has(path), 'duplicate source path');
+    paths.add(path);
+    if (module.name === 'Foundry' || module.name.startsWith('Foundry.')) {
+      assert.ok(path.startsWith('src/'), 'Foundry module must originate in producer source');
+    } else {
+      assert.equal(path, `.prism/sdk/inputs/stdlib/${module.name.replaceAll('.', '/')}.lex.tex`,
+        'SDK module must originate in the locked SDK');
+    }
+  }
+}
+
 function validateVectors(vectors) {
   assert.ok(Array.isArray(vectors) && vectors.length > 0, 'non-empty application vectors required');
   for (const vector of vectors) {
@@ -148,7 +172,7 @@ export async function verifyBrowserArtifacts(projectRoot, build) {
   }
   const snapshot = JSON.parse(inventory.get('lexlean/snapshot.json'));
   assert.equal(snapshot.source_id, build.source_id, 'stale source snapshot');
-  assert.ok(Array.isArray(snapshot.modules) && snapshot.modules.length > 0, 'source modules required');
+  verifySourceOwnership(snapshot);
   const declaredSources = [];
   for (const module of snapshot.modules) {
     assert.equal(sha256(regularFile(projectRoot, module.source.path)), module.source.sha256,
