@@ -11,3 +11,6 @@ Feature: Scoped multi-administrator authority model
     And concurrent proposals against a stale revision fail optimistic concurrency fencing
     And premature retirement of a founding bootstrap grant is rejected without replacement coverage
     And cross-organization authority operations are strictly prohibited
+    And approvals cannot reopen rejected, approved, or executed proposals
+    And execution recomputes distinct nonempty approvers instead of trusting stored counts
+    And inconsistent counts, missing proposers, duplicate approvers, and zero quorums are rejected

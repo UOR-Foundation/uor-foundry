@@ -35,6 +35,20 @@ These records must be replaced by actual assessment/build results, not promoted.
 
 ## Verification integrity
 
+`AM-01` now rejects reopening terminal proposals, inconsistent approval records,
+empty/duplicate approvers, absent proposers and zero quorums in the LexLean
+source. Execution rechecks the distinct approval count and threshold. New typed
+errors are `ProposalRejected`, `AlreadyApproved`, `InvalidApprovalState` and
+`InvalidQuorum`; existing executed/duplicate/unauthorized errors remain distinct.
+`node scripts/verify-authority-model.mjs` verifies the exact source in the pinned
+SDK: 20 regression theorems, 37 zero-axiom declarations and four rejected source
+mutations (terminal reopening, record trust, execution quorum, zero quorum).
+The regressions first failed `LLV7002` against the prior behavior. This is scoped
+source/kernel evidence, not generated native/Wasm or application acceptance.
+Authenticated membership, current authority revisions and runtime integration
+remain required. The consumer language lock is incompatible with the pinned
+SDK; the isolated diagnostic does not alter or replace that lock.
+
 `VI-01` rejects absent, stale, substituted and echo-only generated browser
 artifacts. It strengthens the existing application gate; it is not a substitute
 for complete product acceptance. The formerly ignored application test is

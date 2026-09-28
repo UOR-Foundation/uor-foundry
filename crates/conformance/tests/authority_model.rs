@@ -6,6 +6,134 @@ use repo_model::authority::{
 };
 use repo_model::organization::OrgAdministrator;
 use repo_model::Model;
+use serde_json::{json, Value};
+
+fn authority_expected_receipt() -> Value {
+    let root = repo_model::repo_root();
+    let source = std::fs::read(root.join("src/Foundry/Core/Authority.lex.tex")).unwrap();
+    let fixture = std::fs::read(root.join("tests/fixtures/authority-regressions.json")).unwrap();
+    let verifier = std::fs::read(root.join("scripts/verify-authority-model.mjs")).unwrap();
+    let cases: Value = serde_json::from_slice(&fixture).unwrap();
+    let ids: Vec<_> = cases["cases"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|row| row["id"].clone())
+        .collect();
+    assert_eq!(ids.len(), 20);
+    json!({
+        "scope": "authority-source-kernel",
+        "source_sha256": repo_model::sha256_hex(&source),
+        "fixture_sha256": repo_model::sha256_hex(&fixture),
+        "verifier_sha256": repo_model::sha256_hex(&verifier),
+        "regression_ids": ids,
+        "regression_theorems": 20,
+        "declarations": 37,
+        "rejected_mutations": ["reopen-executed", "trust-record",
+            "bypass-execution-quorum", "allow-zero-quorum"],
+    })
+}
+
+fn authority_receipt_valid(bytes: &[u8], expected: &Value) -> bool {
+    let Ok(Value::Object(mut receipt)) = serde_json::from_slice(bytes) else {
+        return false;
+    };
+    if serde_json::to_vec(&receipt).unwrap() != bytes.strip_suffix(b"\n").unwrap_or(bytes) {
+        return false;
+    }
+    let Some(Value::String(attestation)) = receipt.remove("attestation_id") else {
+        return false;
+    };
+    if attestation.len() != 64
+        || !attestation
+            .bytes()
+            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+    {
+        return false;
+    }
+    let Some(Value::String(evidence)) = receipt.remove("evidence") else {
+        return false;
+    };
+    let prefix = repo_model::repo_root().join("target/authority-kernel-");
+    let Some(suffix) = evidence.strip_prefix(prefix.to_str().unwrap()) else {
+        return false;
+    };
+    if suffix.len() != 6 || !suffix.bytes().all(|byte| byte.is_ascii_alphanumeric()) {
+        return false;
+    }
+    Value::Object(receipt) == *expected
+}
+
+#[test]
+fn source_kernel_gate_rejects_omitted_partial_and_wrong_subject_completion() {
+    let expected = authority_expected_receipt();
+    let mut complete = expected.clone();
+    complete["attestation_id"] = json!("a".repeat(64));
+    complete["evidence"] = json!(repo_model::repo_root()
+        .join("target/authority-kernel-a1B2c3")
+        .to_str()
+        .unwrap());
+    assert!(authority_receipt_valid(
+        &serde_json::to_vec(&complete).unwrap(),
+        &expected
+    ));
+    for bytes in [
+        b"".as_slice(),
+        b"{}",
+        b"null",
+        b"{\"scope\":\"authority-source-kernel\"}",
+    ] {
+        assert!(!authority_receipt_valid(bytes, &expected));
+    }
+    for (key, value) in [
+        ("scope", json!("accepted")),
+        ("source_sha256", json!("b".repeat(64))),
+        ("fixture_sha256", json!("b".repeat(64))),
+        ("verifier_sha256", json!("b".repeat(64))),
+        ("regression_ids", json!([])),
+        ("regression_theorems", json!(19)),
+        ("declarations", json!(36)),
+        ("rejected_mutations", json!([])),
+        ("attestation_id", json!("invalid")),
+        ("evidence", json!("/tmp/wrong-subject")),
+        ("extra", json!(true)),
+    ] {
+        let mut substituted = complete.clone();
+        substituted[key] = value;
+        assert!(
+            !authority_receipt_valid(&serde_json::to_vec(&substituted).unwrap(), &expected),
+            "{key}"
+        );
+    }
+    let early = std::process::Command::new("node")
+        .args(["-e", "process.exit(0)"])
+        .output()
+        .unwrap();
+    assert!(early.status.success());
+    assert!(!authority_receipt_valid(&early.stdout, &expected));
+}
+
+/// Source/kernel evidence complements, but cannot replace, real application journeys.
+#[test]
+fn source_approval_lifecycle_and_record_integrity_am_01() {
+    let expected = authority_expected_receipt();
+    let output = std::process::Command::new("node")
+        .arg("scripts/verify-authority-model.mjs")
+        .current_dir(repo_model::repo_root())
+        .output()
+        .expect("the locked SDK supplies Node and LexLean");
+    assert!(
+        output.status.success() && authority_receipt_valid(&output.stdout, &expected),
+        "authority source/kernel regressions failed: {} {}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        authority_expected_receipt(),
+        expected,
+        "verification inputs changed during execution"
+    );
+}
 
 fn test_setup() -> (AuthorityManager, String) {
     let model = Model::load_from_repo_root().expect("model must load and check cleanly");

@@ -1,0 +1,309 @@
+{
+  "schema": "foundry/authority-regressions/1",
+  "cases": [
+    {
+      "id": "executed_approval_rejected",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Executed",
+        "approvals": [
+          "bob",
+          "alice"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 2
+      },
+      "approver": "carol",
+      "error": "AlreadyExecuted"
+    },
+    {
+      "id": "rejected_approval_rejected",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Rejected",
+        "approvals": [
+          "alice"
+        ],
+        "approvalCount": 1,
+        "requiredQuorum": 2
+      },
+      "approver": "bob",
+      "error": "ProposalRejected"
+    },
+    {
+      "id": "approved_approval_rejected",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Approved",
+        "approvals": [
+          "bob",
+          "alice"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 2
+      },
+      "approver": "carol",
+      "error": "AlreadyApproved"
+    },
+    {
+      "id": "approval_count_mismatch_rejected",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Pending",
+        "approvals": [
+          "alice"
+        ],
+        "approvalCount": 5,
+        "requiredQuorum": 2
+      },
+      "approver": "bob",
+      "error": "InvalidApprovalState"
+    },
+    {
+      "id": "duplicate_record_approval_rejected",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Pending",
+        "approvals": [
+          "alice",
+          "alice"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 2
+      },
+      "approver": "bob",
+      "error": "InvalidApprovalState"
+    },
+    {
+      "id": "empty_record_approval_rejected",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Pending",
+        "approvals": [
+          "",
+          "alice"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 2
+      },
+      "approver": "bob",
+      "error": "InvalidApprovalState"
+    },
+    {
+      "id": "missing_proposer_approval_rejected",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Pending",
+        "approvals": [
+          "bob"
+        ],
+        "approvalCount": 1,
+        "requiredQuorum": 2
+      },
+      "approver": "carol",
+      "error": "InvalidApprovalState"
+    },
+    {
+      "id": "zero_quorum_approval_rejected",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Pending",
+        "approvals": [
+          "alice"
+        ],
+        "approvalCount": 1,
+        "requiredQuorum": 0
+      },
+      "approver": "bob",
+      "error": "InvalidQuorum"
+    },
+    {
+      "id": "empty_approver_rejected",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Pending",
+        "approvals": [
+          "alice"
+        ],
+        "approvalCount": 1,
+        "requiredQuorum": 2
+      },
+      "approver": "",
+      "error": "UnauthorizedUser"
+    },
+    {
+      "id": "duplicate_approver_rejected",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Pending",
+        "approvals": [
+          "alice"
+        ],
+        "approvalCount": 1,
+        "requiredQuorum": 2
+      },
+      "approver": "alice",
+      "error": "DuplicateApproval"
+    },
+    {
+      "id": "valid_approval_advances",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Pending",
+        "approvals": [
+          "alice"
+        ],
+        "approvalCount": 1,
+        "requiredQuorum": 2
+      },
+      "approver": "bob",
+      "expected": {
+        "status": "Approved",
+        "approvals": [
+          "bob",
+          "alice"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 2
+      }
+    },
+    {
+      "id": "insufficient_approval_remains_pending",
+      "operation": "castApproval",
+      "proposal": {
+        "status": "Pending",
+        "approvals": [
+          "alice"
+        ],
+        "approvalCount": 1,
+        "requiredQuorum": 3
+      },
+      "approver": "bob",
+      "expected": {
+        "status": "Pending",
+        "approvals": [
+          "bob",
+          "alice"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 3
+      }
+    },
+    {
+      "id": "execute_count_mismatch_rejected",
+      "operation": "executeProposal",
+      "proposal": {
+        "status": "Approved",
+        "approvals": [
+          "alice"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 2
+      },
+      "error": "InvalidApprovalState"
+    },
+    {
+      "id": "execute_duplicate_record_rejected",
+      "operation": "executeProposal",
+      "proposal": {
+        "status": "Approved",
+        "approvals": [
+          "alice",
+          "alice"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 2
+      },
+      "error": "InvalidApprovalState"
+    },
+    {
+      "id": "execute_zero_quorum_rejected",
+      "operation": "executeProposal",
+      "proposal": {
+        "status": "Approved",
+        "approvals": [
+          "alice"
+        ],
+        "approvalCount": 1,
+        "requiredQuorum": 0
+      },
+      "error": "InvalidQuorum"
+    },
+    {
+      "id": "execute_insufficient_approvals_rejected",
+      "operation": "executeProposal",
+      "proposal": {
+        "status": "Approved",
+        "approvals": [
+          "alice"
+        ],
+        "approvalCount": 1,
+        "requiredQuorum": 2
+      },
+      "error": "InsufficientApprovals"
+    },
+    {
+      "id": "execute_pending_rejected",
+      "operation": "executeProposal",
+      "proposal": {
+        "status": "Pending",
+        "approvals": [
+          "alice",
+          "bob"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 2
+      },
+      "error": "InsufficientApprovals"
+    },
+    {
+      "id": "execute_executed_rejected",
+      "operation": "executeProposal",
+      "proposal": {
+        "status": "Executed",
+        "approvals": [
+          "alice",
+          "bob"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 2
+      },
+      "error": "AlreadyExecuted"
+    },
+    {
+      "id": "execute_rejected_rejected",
+      "operation": "executeProposal",
+      "proposal": {
+        "status": "Rejected",
+        "approvals": [
+          "alice"
+        ],
+        "approvalCount": 1,
+        "requiredQuorum": 2
+      },
+      "error": "ProposalRejected"
+    },
+    {
+      "id": "valid_proposal_executes",
+      "operation": "executeProposal",
+      "proposal": {
+        "status": "Approved",
+        "approvals": [
+          "alice",
+          "bob"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 2
+      },
+      "expected": {
+        "status": "Executed",
+        "approvals": [
+          "alice",
+          "bob"
+        ],
+        "approvalCount": 2,
+        "requiredQuorum": 2
+      }
+    }
+  ]
+}
