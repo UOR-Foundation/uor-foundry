@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {designCorpus, encode, expectedFrame, expectedSemanticFrame, labels, navigationCorpus,
+import {designCorpus, encode, entryActions, expectedFrame, expectedSemanticFrame, labels, navigationCorpus,
+  navigationPresentationCorpus, recoveryActions,
   presentationCorpus, selector, selectorCorpus, UINT32_MAX} from './corpus.mjs';
 
 test('fixture encoder has independent exact RFC 8949 boundary bytes', () => {
@@ -18,23 +19,47 @@ test('fixture encoder has independent exact RFC 8949 boundary bytes', () => {
 });
 
 test('frame expectations cover closed, pending, replay, labeled fields and disabled unavailable services', () => {
-  assert.equal(labels.length, 28);
+  assert.equal(labels.length, 29);
   assert.deepEqual(labels.map(row => row[0]), labels.map(row => row[0]).sort());
-  assert.deepEqual(expectedFrame(selector(8, 3, 4, 9)), [1, 8, 3, 22, 0, 0, []]);
+  assert.deepEqual(expectedFrame(selector(8, 3, 4, 9)), [1, 8, 3, 23, 0, 0, []]);
   for (let phase = 0; phase < 3; phase++) for (let screen = 0; screen < 5; screen++) {
     const frame = expectedFrame(selector(8, phase, screen, 9));
-    assert.equal(frame[6].length, screen === 0 ? 13 : 15);
-    assert.equal(frame[6].filter(node => node[1][0] === 8 && node[1][3]).length, phase === 0 ? 4 : 0);
-    assert.deepEqual(frame[6].at(-1), [10, [4, labels[25][1]]]);
-    if (screen !== 0) assert.equal(frame[6][13][1][2], false, 'no enrollment/recovery submission');
+    assert.equal(frame[6].length, [10, 12, 15, 14, 14][screen]);
+    assert.equal(frame[6].filter(node => node[1][0] === 8 && node[1][3]).length,
+      phase === 0 ? entryActions[screen].length + recoveryActions[screen].length : 0);
+    assert.deepEqual(frame[6].at(-1), [7, [4, labels[26][1]]]);
+    if (screen !== 0) assert.equal(frame[6][10][1][2], false, 'no enrollment/recovery submission');
     const semantic = expectedSemanticFrame(selector(8, phase, screen, 9));
-    assert.equal(semantic[4], 21);
-    assert.equal(semantic[5].length, screen === 0 ? 4 : 6);
+    assert.equal(semantic[4], 22);
+    assert.equal(semantic[5].length, [4, 6, 7, 7, 7][screen]);
   }
   for (const semantic of [false, true]) assert.equal(presentationCorpus(semantic).length, 1318);
   assert.equal(designCorpus().length, 2);
   assert.equal(designCorpus()[0].response.length, 114);
   assert.equal(designCorpus()[0].response.subarray(0, 8).toString('hex'), '8182901a00ffffff');
+});
+
+test('entry navigation separates recovery and accepted transitions alone request heading focus', () => {
+  for (let screen = 0; screen < 5; screen++) {
+    const frame = expectedFrame(selector(8, 0, screen, 9));
+    assert.equal(frame[5], 0, 'initial and restored selectors do not force focus');
+    assert.equal(frame[6].filter(node => node[0] === 4 && node[1][0] === 8).length, 2);
+    assert.ok(!entryActions[screen].includes(screen + 1), 'no disabled current-screen navigation');
+    for (const action of recoveryActions[screen])
+      assert.ok(frame[6].some(node => node[0] === 12 && node[1][2] === action));
+    const formNames = frame[6].filter(node => node[1][0] === 2).map(node => labels[node[1][1]][1]);
+    assert.equal(new Set(formNames).size, formNames.length, 'all form landmarks have distinct accessible names');
+    if (recoveryActions[screen].length) assert.ok(formNames.includes('Account recovery options'));
+  }
+  const base = navigationCorpus(), focused = navigationPresentationCorpus();
+  assert.equal(focused.length, base.length);
+  for (let index = 0; index < base.length; index++) {
+    assert.deepEqual(focused[index].request, base[index].request);
+    if (base[index].response[0] === 0x83) assert.deepEqual(focused[index].response, base[index].response);
+    else assert.equal(focused[index].response[0], 0x86);
+  }
+  assert.equal(base.find(row => row.id === 'Navigate-0-0-0-3').response.toString('hex'), '83010103');
+  assert.equal(base.find(row => row.id === 'Navigate-0-0-2-3').response.toString('hex'), '850101000301');
 });
 
 test('navigation corpus binds revision, enabled screen, lifecycle and both overflow boundaries', () => {

@@ -20,7 +20,8 @@ run('/usr/local/bin/prismpm', ['template', 'check']);
 run('/usr/local/bin/prismpm', ['lock', 'check']);
 run(process.execPath, ['--test', 'scripts/browser-report.test.mjs', 'scripts/reproduction.test.mjs',
   'scripts/sdk-evidence.test.mjs', 'tests/anonymous-ui/corpus.test.mjs',
-  'tests/anonymous-ui/root-link.test.mjs']);
+  'tests/anonymous-ui/root-link.test.mjs', 'tests/anonymous-ui/journey.test.mjs',
+  'tests/anonymous-ui/mutations.test.mjs']);
 const build = JSON.parse(run('/usr/local/bin/prismpm', ['--json', 'build']));
 const verification = JSON.parse(run('/usr/local/bin/prismpm', ['--json', 'verify']));
 assert.equal(build.build_id, verification.build_id);

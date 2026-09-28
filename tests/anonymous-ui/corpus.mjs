@@ -32,6 +32,11 @@ export function selector(revision = 0, phase = 0, screen = 0, epoch = 0) {
 
 export const failure = code => encode([1, 1, code]);
 
+export const entryActions = Object.freeze([[2, 3], [1, 3], [1, 2], [1, 3], [1, 3]]
+  .map(row => Object.freeze(row)));
+export const recoveryActions = Object.freeze([[], [], [4, 5], [5], [4]]
+  .map(row => Object.freeze(row)));
+
 export function selectorCorpus() {
   const rows = [];
   const valid = (id, value) => {
@@ -92,6 +97,7 @@ export const labels = Object.freeze([
   ['recovery_code_intro', 'A saved recovery code restores access only after the account recovery checks succeed.'],
   ['recovery_email_heading', 'Recover with email'],
   ['recovery_email_intro', 'Verify control of your email before recovering access to your Foundry identity.'],
+  ['recovery_options', 'Account recovery options'],
   ['saved_code_label', 'Saved recovery code'],
   ['skip_main', 'Skip to account access'],
   ['status_closed', 'Account view closed'],
@@ -105,30 +111,34 @@ export const labels = Object.freeze([
 
 export function expectedFrame(value) {
   const [, revision, phase, screen, epoch] = value;
-  const frame = [1, revision, phase, [24, 23, 25, 22][phase], phase === 3 ? 0 : 1, 0, []];
+  const frame = [1, revision, phase, [25, 24, 26, 23][phase], phase === 3 ? 0 : 1, 0, []];
   if (phase === 3) return frame;
-  const heading = [26, 4, 6, 17, 15][screen];
-  const intro = [27, 5, 7, 18, 16][screen];
+  const heading = [27, 4, 6, 17, 15][screen];
+  const intro = [28, 5, 7, 18, 16][screen];
   frame[6] = [
     [0, [0, 0]], [1, [3, 1, 0]], [0, [1, 14]], [3, [2, 14]],
-    ...[10, 9, 11, 13, 12].map((label, target) =>
-      [4, [8, label, target + 1, phase === 0 && target !== screen, false, []]]),
-    [0, [0, 8]], [10, [3, 2, heading]], [10, [4, labels[intro][1]]],
+    ...entryActions[screen].map(action =>
+      [4, [8, [10, 9, 11, 13, 12][action - 1], action, phase === 0, false, []]]),
+    [0, [0, 8]], [7, [3, 2, heading]], [7, [4, labels[intro][1]]],
   ];
-  if (screen !== 0) frame[6].push([10, [2, heading]],
-    [13, screen === 4 ? [10, 19, false, true, 128, epoch] : [5, 3, false, true, 254, '', epoch]]);
-  frame[6].push([10, [4, labels[25][1]]]);
+  if (screen !== 0) frame[6].push([7, [2, heading]],
+    [10, screen === 4 ? [10, 20, false, true, 128, epoch] : [5, 3, false, true, 254, '', epoch]]);
+  if (recoveryActions[screen].length) frame[6].push([7, [2, 19]],
+    ...recoveryActions[screen].map(action =>
+      [12, [8, [10, 9, 11, 13, 12][action - 1], action, phase === 0, false, []]]));
+  frame[6].push([7, [4, labels[26][1]]]);
   return frame;
 }
 
 export function expectedSemanticFrame(value) {
   const [, , phase, screen] = value;
   const annotations = phase === 3 ? [] : [
-    [1, 0, 0, 0, 2, 1], [3, 0, 0, 0, 0, 1], [4, 0, 0, 0, 0, 1], [10, 0, 0, 0, 1, 1],
+    [1, 0, 0, 0, 2, 1], [3, 0, 0, 0, 0, 1], [4, 0, 0, 0, 0, 1], [7, 0, 0, 0, 1, 1],
   ];
-  if (phase !== 3 && screen !== 0) annotations.push([13, 0, 0, 0, 0, 1],
-    [14, screen === 4 ? 8 : 4, screen === 4 ? 2 : 3, 0, 0, 0]);
-  return [1, expectedFrame(value), 0, 0, phase === 3 ? 0 : 21, annotations];
+  if (phase !== 3 && screen !== 0) annotations.push([10, 0, 0, 0, 0, 1],
+    [11, screen === 4 ? 8 : 4, screen === 4 ? 2 : 3, 0, 0, 0]);
+  if (phase !== 3 && recoveryActions[screen].length) annotations.push([12, 0, 0, 0, 0, 1]);
+  return [1, expectedFrame(value), 0, 0, phase === 3 ? 0 : 22, annotations];
 }
 
 export function presentationCorpus(semantic = false) {
@@ -150,7 +160,8 @@ export function navigationCorpus() {
   for (const revision of boundaries) for (const epoch of boundaries)
     for (let screen = 0; screen < 5; screen++) for (let target = 0; target < 5; target++) {
       const exhausted = revision === UINT32_MAX || epoch === UINT32_MAX;
-      const code = screen === target ? 3 : exhausted ? 6 : undefined;
+      const visible = [...entryActions[screen], ...recoveryActions[screen]].includes(target + 1);
+      const code = !visible ? 3 : exhausted ? 6 : undefined;
       add(`Navigate-${revision}-${epoch}-${screen}-${target}`, selector(revision, 0, screen, epoch),
         [1, revision, target + 1, []], code);
     }
@@ -183,6 +194,16 @@ export function navigationCorpus() {
       response: failure(5)});
   assert.equal(new Set(rows.map(row => row.id)).size, rows.length);
   return rows;
+}
+
+export function navigationPresentationCorpus() {
+  return navigationCorpus().map(row => {
+    if (row.response[0] !== 0x85) return row;
+    const [, revision, epoch, , target] = row.id.split('-').map((value, index) => index ? Number(value) : value);
+    const response = expectedSemanticFrame(selector(revision + 1, 0, target, epoch + 1));
+    response[1][5] = 8;
+    return {...row, response: encode(response)};
+  });
 }
 
 export function designCorpus() {
