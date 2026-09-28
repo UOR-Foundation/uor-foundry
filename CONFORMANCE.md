@@ -132,6 +132,12 @@ model does not sanction.
 | --- | --- | --- |
 | `ST-01` | `build` | The standards boundary implements complete OSCAL catalogs, profile resolution, component and system implementation records, inheritance tracking, and authenticated assessment coverage across all adopted standards. |
 
+## ui-command
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `UC-01` | `build` | The source-owned UI command component binds closed field/action routes and complete application context to an actual SDK SHA-256 effect, preserves typed continuation outcomes, and distinguishes pure replayable data from SDK-owned effect and application-session custody. |
+
 ## veilid-bootstrap
 
 | ID | Level | Statement |
