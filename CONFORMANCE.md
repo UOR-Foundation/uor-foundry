@@ -18,6 +18,12 @@ The three honesty levels (R2):
 `cargo xtask audit-limits` fails if any code path returns an error the
 model does not sanction.
 
+## application-context
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `AC-01` | `build` | The source-owned application context has bounded canonical state, command and UOR-reference codecs, rejects malformed and substituted bindings, and keeps decoded records distinct from authenticated authority and executed effects. |
+
 ## authority-model
 
 | ID | Level | Statement |
