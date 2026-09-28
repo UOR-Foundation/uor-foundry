@@ -187,8 +187,10 @@ export function navigationCorpus() {
 
 export function designCorpus() {
   const tokens = colors => [...colors, 0, 1000, 1500, 1000, 500, 72, 18, 48, 44];
-  const pair = [tokens(['#ffffff', '#17212f', '#526071', '#1649a2', '#ffffff', '#a31616', '#6b21a8']),
-    tokens(['#111827', '#f8fafc', '#a7b4c5', '#99bfff', '#111827', '#ff9c9c', '#fcd34d'])];
-  return [{id: 'Catalogue', request: Buffer.alloc(0), response: encode([1, [pair]])},
+  // SDK DesignWire uses uint24 colors and a bare catalogue array. CSS strings
+  // belong to the renderer, not this binary protocol; there is no version tag.
+  const pair = [tokens([0xffffff, 0x17212f, 0x526071, 0x1649a2, 0xffffff, 0xa31616, 0x6b21a8]),
+    tokens([0x111827, 0xf8fafc, 0xa7b4c5, 0x99bfff, 0x111827, 0xff9c9c, 0xfcd34d])];
+  return [{id: 'Catalogue', request: Buffer.alloc(0), response: encode([pair])},
     {id: 'NonemptyRequest', request: Buffer.from([0]), response: failure(3)}];
 }

@@ -33,6 +33,8 @@ test('frame expectations cover closed, pending, replay, labeled fields and disab
   }
   for (const semantic of [false, true]) assert.equal(presentationCorpus(semantic).length, 1318);
   assert.equal(designCorpus().length, 2);
+  assert.equal(designCorpus()[0].response.length, 114);
+  assert.equal(designCorpus()[0].response.subarray(0, 8).toString('hex'), '8182901a00ffffff');
 });
 
 test('navigation corpus binds revision, enabled screen, lifecycle and both overflow boundaries', () => {
