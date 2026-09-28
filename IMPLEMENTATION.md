@@ -9,7 +9,7 @@ static files does not establish that acceptance.
 
 | Boundary | Actual status and remaining acceptance |
 | --- | --- |
-| Executable model | `Foundry.dispatch`, `present`, and `replay` echo their input. Wire the complete generated application state, effects and Views to reachable service implementations. |
+| Executable model | `Foundry.present` links the bounded anonymous projection and its source-owned labels. `dispatch` and `replay` still echo input. Complete generated application state, effects and reachable services remain required; the anonymous component is not functional-core acceptance. |
 | Identity and recovery | Current records and nonce comparisons do not establish mailbox control. Implement actual browser mail interoperability, credential custody, saved-code generation, atomic recovery, revocation and distributed replay protection. |
 | Organizations and authority | Implement ordinary arbitrary-organization onboarding, provisional creation, authenticated scoped approvals, distinct-user quorum, complete ownership coverage and safe handover. Rust simulations do not establish these boundaries. |
 | Workspaces and messaging | Replace in-memory clone/relabel simulations with authenticated shared storage, independently delivered messages, durable recovery and real multi-user browser journeys. |
@@ -34,6 +34,19 @@ content, and producer-release records supply two identical literal digests.
 These records must be replaced by actual assessment/build results, not promoted.
 
 ## Verification integrity
+
+`SV-01` now models anonymous selection, exact-intent navigation, typed presentation
+and light/dark design without fabricating identity or recovery. Its source contract
+is [Anonymous.md](src/Foundry/UI/Anonymous.md). The actual root-link regression
+first rejected the old input echo, then passed after linkage; it checks source
+structure only. An exact upstream closure conditionally verifies the component's
+12 modules and 348 declarations, then the actual complete root (33 modules,
+546 declarations). The selector alone passes 1,318 independent vectors twice in
+native `std`/`no_std` and Wasm. Presentation/navigation code generation rejects
+shared `Decidable` values; design generation rejects a constant-list initializer.
+The installed SDK still rejects the generated upstream model. These conditional
+diagnostics neither update consumer locks nor establish complete native/Wasm,
+browser, journey, standards or release acceptance.
 
 `AM-01` now rejects reopening terminal proposals, inconsistent approval records,
 empty/duplicate approvers, absent proposers and zero quorums in the LexLean
