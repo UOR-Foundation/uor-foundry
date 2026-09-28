@@ -18,6 +18,12 @@
 spec = "template/1"
 
 [[id]]
+id = "SC-01"
+level = "build"
+suite = "application-selection"
+statement = "The source-owned private selection reducer binds exact commands and typed lookup observations, clears subordinate context, preserves state on failure or cancellation, and distinguishes selected data from authenticated permission."
+
+[[id]]
 id = "UC-01"
 level = "build"
 suite = "ui-command"

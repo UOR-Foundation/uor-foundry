@@ -24,6 +24,12 @@ model does not sanction.
 | --- | --- | --- |
 | `AC-01` | `build` | The source-owned application context has bounded canonical state, command and UOR-reference codecs, rejects malformed and substituted bindings, and keeps decoded records distinct from authenticated authority and executed effects. |
 
+## application-selection
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `SC-01` | `build` | The source-owned private selection reducer binds exact commands and typed lookup observations, clears subordinate context, preserves state on failure or cancellation, and distinguishes selected data from authenticated permission. |
+
 ## authority-model
 
 | ID | Level | Statement |
