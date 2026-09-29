@@ -1,3 +1,5 @@
+set shell := ["bash", "scripts/runner.sh"]
+
 # `just vv` is the normative acceptance gate. Everything else is a slice of it.
 
 default: vv
