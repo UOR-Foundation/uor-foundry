@@ -5,6 +5,7 @@ set -euo pipefail
 export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 export CARGO_HTTP_MULTIPLEXING=false
 export CARGO_HTTP_TIMEOUT=120
+export npm_config_cache="${TMPDIR:-/tmp}/npm-cache"
 
 # Extract the full command string whether invoked as:
 # runner.sh "cmd" OR runner.sh -c "cmd" OR runner.sh cmd arg1 arg2
@@ -17,7 +18,7 @@ cmd="$*"
 if [[ "$cmd" =~ ^[[:space:]]*prismpm[[:space:]]+fetch[[:space:]]+--locked[[:space:]]*$ ]]; then
   echo "runner: performing deterministic locked preparation"
   mkdir -p .prism/sdk/inputs
-  rm -rf test-results playwright-report
+  rm -rf test-results playwright-report 2>/dev/null || true
 
   tar_path="/opt/prismpm/share/stdlib-sources.tar"
   if [[ ! -f "$tar_path" && -n "${PRISMPM_SDK_STDLIB_TAR:-}" && -f "${PRISMPM_SDK_STDLIB_TAR}" ]]; then
@@ -27,7 +28,8 @@ if [[ "$cmd" =~ ^[[:space:]]*prismpm[[:space:]]+fetch[[:space:]]+--locked[[:spac
   fi
 
   if [[ -f "$tar_path" ]]; then
-    tar -xf "$tar_path" -C .prism/sdk/inputs
+    chmod -R u+w .prism/sdk/inputs 2>/dev/null || true
+    tar --overwrite -xf "$tar_path" -C .prism/sdk/inputs
     node scripts/generate-manifest.mjs "$tar_path" .prism/sdk/inputs .prism/sdk/stdlib-manifest.json
   elif [[ -d .prism/sdk/inputs ]]; then
     node scripts/generate-manifest.mjs "" .prism/sdk/inputs .prism/sdk/stdlib-manifest.json
@@ -41,7 +43,7 @@ if [[ "$cmd" =~ ^[[:space:]]*prismpm[[:space:]]+fetch[[:space:]]+--locked[[:spac
   fi
 
   if [[ -f package.json && -f package-lock.json ]]; then
-    npm ci --ignore-scripts --no-audit --no-fund
+    npm ci --cache "${TMPDIR:-/tmp}/npm-cache" --ignore-scripts --no-audit --no-fund
   fi
 
   # Hologram oracle offline harness prefetch
