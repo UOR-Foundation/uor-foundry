@@ -625,12 +625,13 @@ impl SiteManager {
 
 impl SiteLifecycleConfig {
     /// Cross-check site configuration against owner inputs and organization lifecycle.
-    pub fn check(
+    pub fn check<'a>(
         &self,
-        owner_inputs: &OwnerInputs,
+        owner_inputs: impl Into<Option<&'a OwnerInputs>>,
         org_lifecycle: &OrganizationLifecycleConfig,
     ) -> Result<(), ModelError> {
         let bad = |m: String| ModelError::Inconsistent(m);
+        let owner_inputs = owner_inputs.into();
 
         if self.policy.activation_minimum_distinct_administrators < 2 {
             return Err(bad(
@@ -657,26 +658,27 @@ impl SiteLifecycleConfig {
         }
 
         // Validate that owner inputs sites have corresponding lifecycle definitions
-        for input_site in &owner_inputs.sites {
-            let site = self
-                .sites
-                .iter()
-                .find(|s| s.id == input_site.id || s.name == input_site.name)
-                .ok_or_else(|| {
-                    bad(format!(
-                        "owner_inputs site '{}' has no matching organization site record",
-                        input_site.name
-                    ))
-                })?;
+        if let Some(owner_inputs) = owner_inputs {
+            for input_site in &owner_inputs.sites {
+                let site = self
+                    .sites
+                    .iter()
+                    .find(|s| s.id == input_site.id || s.name == input_site.name)
+                    .ok_or_else(|| {
+                        bad(format!(
+                            "owner_inputs site '{}' has no matching organization site record",
+                            input_site.name
+                        ))
+                    })?;
 
-            if site.organization_id != owner_inputs.organization.id {
-                return Err(bad(format!(
-                    "site {} organization_id mismatch: expected {}, got {}",
-                    site.id, owner_inputs.organization.id, site.organization_id
-                )));
+                if site.organization_id != owner_inputs.organization.id {
+                    return Err(bad(format!(
+                        "site {} organization_id mismatch: expected {}, got {}",
+                        site.id, owner_inputs.organization.id, site.organization_id
+                    )));
+                }
             }
         }
-
         // Validate all assessments
         for a in &self.assessments {
             if !a.evidence_digest.starts_with("sha256:") {
@@ -695,7 +697,7 @@ impl SiteLifecycleConfig {
 
         // Initialize and verify manager
         let mgr = SiteManager::new(self);
-        if mgr.active_site_count() == 0 {
+        if owner_inputs.is_some() && mgr.active_site_count() == 0 {
             return Err(bad(
                 "organization must have at least one active site".to_string()
             ));

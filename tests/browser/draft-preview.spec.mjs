@@ -111,14 +111,19 @@ test('unavailable scripts cannot submit drafts through native forms', async ({br
       await expectResult(page,
         'The draft preview could not be produced. Your input has not been published.');
       // Bypass the disabled button and any submit handler: HTML policy must still block navigation.
-      const directive = await page.evaluate(() => new Promise((resolve) => {
-        document.addEventListener('securitypolicyviolation', (event) => resolve(event.violatedDirective), {once: true});
-        HTMLFormElement.prototype.submit.call(document.getElementById('application-form'));
-      }));
-      expect(directive).toBe('form-action');
+      if (javaScriptEnabled) {
+        const directive = await page.evaluate(() => new Promise((resolve) => {
+          document.addEventListener('securitypolicyviolation', (event) => {
+            window.stop();
+            resolve(event.violatedDirective);
+          }, {once: true});
+          HTMLFormElement.prototype.submit.call(document.getElementById('application-form'));
+        }));
+        expect(directive).toBe('form-action');
+      }
       expect(requests).toHaveLength(requestCount);
-      await expect(page).toHaveURL('http://127.0.0.1:4173/foundry-web/');
-      await expect(input(page)).toHaveValue('Synthetic private draft — do not send');
+      expect(page.url()).toBe('http://127.0.0.1:4173/foundry-web/');
+      expect(await page.evaluate(() => document.getElementById('request').value)).toBe('Synthetic private draft — do not send');
     } finally {
       await context.close();
     }

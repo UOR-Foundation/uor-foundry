@@ -66,9 +66,9 @@ pub struct ScopeRuleConfig {
 
 impl AuthorityConfig {
     /// Cross-check the authority configuration against owner-inputs and organization lifecycle.
-    pub fn check(
+    pub fn check<'a>(
         &self,
-        owner_inputs: &OwnerInputs,
+        owner_inputs: impl Into<Option<&'a OwnerInputs>>,
         org_config: &OrganizationLifecycleConfig,
     ) -> Result<(), ModelError> {
         let bad = |msg: String| ModelError::Inconsistent(format!("model/authority.toml: {msg}"));
@@ -133,22 +133,23 @@ impl AuthorityConfig {
             }
         }
 
-        // Cross-check with OwnerInputs activation policy
-        if owner_inputs.activation_policy.minimum_active_administrators
-            < self.policy.minimum_administrators_per_scope
-        {
-            return Err(bad(
+        // Cross-check an organization's policy only when that organization exists.
+        if let Some(owner_inputs) = owner_inputs.into() {
+            if owner_inputs.activation_policy.minimum_active_administrators
+                < self.policy.minimum_administrators_per_scope
+            {
+                return Err(bad(
                 "owner_inputs activation minimum active administrators is less than authority minimum"
                     .to_string(),
             ));
-        }
+            }
 
-        if !owner_inputs.activation_policy.prohibit_single_owner_bypass {
-            return Err(bad(
-                "owner_inputs must prohibit single owner bypass".to_string()
-            ));
+            if !owner_inputs.activation_policy.prohibit_single_owner_bypass {
+                return Err(bad(
+                    "owner_inputs must prohibit single owner bypass".to_string()
+                ));
+            }
         }
-
         // Cross-check with OrganizationLifecycleConfig
         if org_config.rules.activation_minimum_distinct_administrators
             < self.policy.minimum_administrators_per_scope

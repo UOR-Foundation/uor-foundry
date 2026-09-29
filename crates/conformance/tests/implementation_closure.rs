@@ -1,9 +1,8 @@
 //! Conformance tests for Implementation Closure: complete uor-foundry producer
 //! model and acceptance evidence (IC-01).
 
-use repo_model::{
-    AcceptedBoundaryRecord, ImplementationClosureEngine, ImplementationClosureError, Model,
-};
+use repo_conformance::fixtures::SyntheticModel as Model;
+use repo_model::{AcceptedBoundaryRecord, ImplementationClosureEngine, ImplementationClosureError};
 
 /// IC-01: The implementation closure model verifies complete remaining-work closure
 /// across all product requirements and boundaries, zero deferred or narrowed scope,
@@ -74,7 +73,7 @@ fn missing_boundary_fails_closure_verification() {
 }
 
 #[test]
-fn unaccepted_boundary_fails_config_check() {
+fn unaccepted_boundary_is_valid_configuration_but_cannot_pass_acceptance() {
     let root = repo_model::repo_root();
     let model = Model::load(&root.join("model")).expect("model loads");
     let mut cfg = model.implementation_closure.clone();
@@ -85,8 +84,12 @@ fn unaccepted_boundary_fails_config_check() {
         status: "unaccepted".to_string(),
     });
 
-    let res = cfg.check(&model.owner_inputs, &model.organization_lifecycle);
-    assert!(res.is_err());
+    cfg.check(&model.owner_inputs, &model.organization_lifecycle)
+        .expect("unaccepted work must remain representable");
+    assert!(matches!(
+        ImplementationClosureEngine::verify_complete_closure(&cfg, &["TEST-01"]),
+        Err(ImplementationClosureError::UnacceptedBoundary(_))
+    ));
 }
 
 #[test]

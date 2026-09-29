@@ -74,7 +74,10 @@ pub struct BackupCodeNotificationConfig {
 
 impl BackupCodeConfig {
     /// Cross-check configuration against owner-inputs recovery rules.
-    pub fn check(&self, owner_inputs: &OwnerInputs) -> Result<(), ModelError> {
+    pub fn check<'a>(
+        &self,
+        owner_inputs: impl Into<Option<&'a OwnerInputs>>,
+    ) -> Result<(), ModelError> {
         let bad = |msg: String| ModelError::Inconsistent(format!("model/backup_codes.toml: {msg}"));
 
         if self.spec != "foundry/backup-codes/1" {
@@ -84,50 +87,62 @@ impl BackupCodeConfig {
             )));
         }
 
-        if self.standards.standard != owner_inputs.recovery_rules.backup_code_standard {
-            return Err(bad(format!(
-                "backup code standard '{}' does not match owner_inputs '{}'",
-                self.standards.standard, owner_inputs.recovery_rules.backup_code_standard
-            )));
-        }
-
-        if self.standards.minimum_entropy_bits
-            < owner_inputs.recovery_rules.backup_code_entropy_bits as usize
+        if self.standards.minimum_entropy_bits < 128
+            || self.standards.storage_scheme != "salted-sha256"
+            || !self.lifecycle.single_use
+            || !self.lifecycle.session_invalidation_on_recovery
+            || !self.lifecycle.prohibit_revoked_grant_restoration
         {
-            return Err(bad(
-                "minimum_entropy_bits is less than owner_inputs recovery rule".to_string(),
-            ));
+            return Err(bad("backup recovery requires the platform entropy, storage, single-use, session invalidation, and revoked-grant safeguards".to_string()));
         }
 
-        if self.standards.storage_scheme != owner_inputs.recovery_rules.backup_code_storage_scheme {
-            return Err(bad(
-                "storage_scheme must match owner_inputs recovery rule".to_string()
-            ));
-        }
+        if let Some(owner_inputs) = owner_inputs.into() {
+            if self.standards.standard != owner_inputs.recovery_rules.backup_code_standard {
+                return Err(bad(format!(
+                    "backup code standard '{}' does not match owner_inputs '{}'",
+                    self.standards.standard, owner_inputs.recovery_rules.backup_code_standard
+                )));
+            }
 
-        if self.lifecycle.single_use != owner_inputs.recovery_rules.backup_code_single_use {
-            return Err(bad(
-                "single_use must match owner_inputs recovery rule".to_string()
-            ));
-        }
+            if self.standards.minimum_entropy_bits
+                < owner_inputs.recovery_rules.backup_code_entropy_bits as usize
+            {
+                return Err(bad(
+                    "minimum_entropy_bits is less than owner_inputs recovery rule".to_string(),
+                ));
+            }
 
-        if self.lifecycle.session_invalidation_on_recovery
-            != owner_inputs.recovery_rules.session_invalidation_on_recovery
-        {
-            return Err(bad(
-                "session_invalidation_on_recovery must match owner_inputs recovery rule"
-                    .to_string(),
-            ));
-        }
+            if self.standards.storage_scheme
+                != owner_inputs.recovery_rules.backup_code_storage_scheme
+            {
+                return Err(bad(
+                    "storage_scheme must match owner_inputs recovery rule".to_string()
+                ));
+            }
 
-        if self.lifecycle.prohibit_revoked_grant_restoration
-            != owner_inputs.recovery_rules.reject_revoked_grant_recovery
-        {
-            return Err(bad(
+            if self.lifecycle.single_use != owner_inputs.recovery_rules.backup_code_single_use {
+                return Err(bad(
+                    "single_use must match owner_inputs recovery rule".to_string()
+                ));
+            }
+
+            if self.lifecycle.session_invalidation_on_recovery
+                != owner_inputs.recovery_rules.session_invalidation_on_recovery
+            {
+                return Err(bad(
+                    "session_invalidation_on_recovery must match owner_inputs recovery rule"
+                        .to_string(),
+                ));
+            }
+
+            if self.lifecycle.prohibit_revoked_grant_restoration
+                != owner_inputs.recovery_rules.reject_revoked_grant_recovery
+            {
+                return Err(bad(
                 "prohibit_revoked_grant_restoration must match owner_inputs reject_revoked_grant_recovery".to_string(),
             ));
+            }
         }
-
         if !self.lifecycle.require_mutual_non_substitution {
             return Err(bad(
                 "require_mutual_non_substitution must be true".to_string()

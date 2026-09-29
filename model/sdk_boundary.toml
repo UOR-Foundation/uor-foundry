@@ -8,7 +8,7 @@ stage = "staged-core"
 sdk_image = "ghcr.io/uor-foundation/prismpm-sdk-candidate@sha256:60226bc791d4c0e5613402a6be7e63f4963d3faf7f327befcf56fc0e41d0ce21"
 sdk_version = "0.3.0"
 standards_lock_digest = "sha256:4396feba2f6ef28ed69bfccecba29398fd30c22861d30a6a2a9cde3d00b34426"
-cargo_lock_digest = "sha256:21112a843436d09369282bbc8407025dd794d175bdec81d9d9ccb47733332987"
+cargo_lock_digest = "sha256:0003cec9ac463a7b7daa361cee1ae27663fbd9ee61fc986c4445742392c6d9c2"
 
 [policy]
 require_multi_arch_manifest = true

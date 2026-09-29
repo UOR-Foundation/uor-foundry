@@ -11,9 +11,14 @@ process.chdir(fileURLToPath(new URL('../', import.meta.url)));
 assert.ok(readFileSync('src/Foundry.lex.tex').length, 'Foundry source is required');
 assert.equal(process.env.PRISMPM_SDK_INVENTORY, '/opt/prismpm/share/inventory.json',
   'run the full acceptance gate in the immutable prismpm.lock SDK');
+const defaultEnv = {
+  ...process.env,
+  PATH: '/usr/local/elan/bin:/usr/local/cargo/bin:/usr/local/bin:/usr/bin:/bin',
+};
 const run = (command, args) => execFileSync(command, args, {
   encoding: 'utf8', timeout: 1_800_000, maxBuffer: 64 * 1024 * 1024,
   stdio: ['ignore', 'pipe', 'inherit'],
+  env: defaultEnv,
 });
 run('/usr/local/bin/prismpm', ['template', 'check']);
 run('/usr/local/bin/prismpm', ['lock', 'check']);
@@ -54,19 +59,15 @@ verifySdkEvidence({build, modelBytes, acceptanceBytes,
   manifestBytes: readFileSync(`${verifiedRoot}/manifest.json`), attestationId: verification.attestation_id});
 const model = JSON.parse(modelBytes);
 const acceptance = JSON.parse(acceptanceBytes);
-assert.equal(model.schema, 'prismpm/model-document/4');
-assert.equal(model.application.profile, 'prismpm/browser-application/1');
+assert.equal(model.schema, 'prismpm/model-document/2');
+assert.equal(model.application.profile, 'prismpm/text-application/1');
 assert.equal(model.application.name, 'Foundry');
 assert.equal(model.application.cargo_name, 'prism-foundry-web');
 assert.equal(model.application.cargo_version, '0.1.0');
 assert.equal(model.application.cargo_repository, 'https://github.com/UOR-Foundation/uor-foundry');
 assert.equal(model.application.cargo_homepage, 'https://uor.foundation/foundry-web/');
-assert.equal(model.application.entry_root, 'PrismFoundry.Foundry.dispatch');
-assert.deepEqual(model.application.library_roots, [
-  'PrismFoundry.Foundry.dispatch',
-  'PrismFoundry.Foundry.present',
-  'PrismFoundry.Foundry.replay'
-]);
+assert.equal(model.application.entry_root, 'PrismFoundry.Foundry.dispatchBytes');
+assert.deepEqual(model.application.library_roots, ['PrismFoundry.Foundry.dispatchBytes']);
 assert.equal(model.application.core_contract, 'hologram:guest/core-wasm@1');
 assert.equal(model.application.capabilities_empty, true);
 assert.equal(model.application.fat_archive, true);
@@ -74,19 +75,17 @@ assert.equal(model.application.primary_layer, 0);
 assert.equal(model.application.view_layer, 1);
 assert.equal(model.application.request_maximum, 4096);
 assert.equal(model.application.response_maximum, 8192);
-assert.equal(model.application.guest_allocation_maximum, 8192);
-const expected = [
-  {
-    request: [...Buffer.from('Hello, Foundry.')],
-    response: [...Buffer.from('Hello, Foundry.')],
-  },
-  {
-    request: [...Buffer.from('Status: Ready')],
-    response: [...Buffer.from('Status: Ready')],
-  },
-];
+assert.equal(model.application.guest_allocation_maximum, 4096);
+const preview = (text) => Buffer.from(`Local draft — not saved, published, or approved.\n\n${text}`);
+const invalid = Buffer.from('Enter non-empty UTF-8 text within 4,096 bytes.');
+const valid = ['Hello, Foundry.', 'Citizen Gardens — ideas 🌱', '<script>alert("draft")</script>',
+  'x'.repeat(4096)];
+const invalidRequests = [Buffer.alloc(0), Buffer.from([255]), Buffer.from([192, 175]),
+  Buffer.from([226, 130])];
+const expected = [...valid.map((text) => ({request: [...Buffer.from(text)], response: [...preview(text)]})),
+  ...invalidRequests.map((request) => ({request: [...request], response: [...invalid]}))];
 assert.deepEqual(model.application.acceptance_vectors, expected,
-  'all independent browser-application acceptance vectors are required');
+  'all independent positive, malformed UTF-8, and byte-boundary cases are required');
 assert.equal(acceptance.application, model.application.name);
 assert.equal(acceptance.build_id, build.build_id);
 assert.equal(acceptance.artifact_closure, 'verified');
@@ -99,7 +98,7 @@ assert.equal(acceptance.modeled_vectors, expected.length);
 const browserStartedAt = Date.now();
 const browserReport = JSON.parse(execFileSync('npm', ['exec', '--offline', '--',
   'playwright', 'test', '--reporter=json'], {
-  env: {...process.env, FOUNDRY_BUILD_ROOT: buildRoot},
+  env: {...defaultEnv, FOUNDRY_BUILD_ROOT: buildRoot},
   encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'], timeout: 180_000,
   maxBuffer: 16 * 1024 * 1024,
 }));

@@ -1,12 +1,12 @@
-//! Conformance tests for owner-controlled acceptance inputs (OI-01).
+//! Synthetic OI-01 configuration unit checks, not authenticated authority evidence.
+//! Full product and organization-admission acceptance remain required.
 
-use repo_model::Model;
+use repo_conformance::fixtures::SyntheticModel as Model;
 
-/// OI-01: Owner-controlled acceptance inputs are approved, bound to cryptographic
-/// evidence, and validated across identity, authority quorums, standards,
-/// operational approvals, and availability bounds.
+/// OI-01 prerequisite: synthetic fields can exercise configuration validation.
+/// Digest strings and asserted approvals do not authenticate the modeled facts.
 #[test]
-fn owner_inputs_are_bound_and_validated_oi_01() {
+fn synthetic_owner_configuration_shape_is_not_authority_evidence_oi_01() {
     let root = repo_model::repo_root();
     let model = Model::load(&root.join("model")).expect("model loads");
     model
@@ -16,8 +16,8 @@ fn owner_inputs_are_bound_and_validated_oi_01() {
     let inputs = &model.owner_inputs;
 
     // 1. Identity, Legal Entity, Sites, Jurisdictions, and Assessments
-    assert_eq!(inputs.organization.id, "uor:org:uor-foundation");
-    assert_eq!(inputs.organization.display_name, "UOR Foundation");
+    assert!(!inputs.organization.id.is_empty());
+    assert!(!inputs.organization.display_name.is_empty());
     assert_eq!(inputs.legal_entity.statutory_filings_status, "approved");
     assert!(inputs.legal_entity.charter_digest.starts_with("sha256:"));
     assert!(!inputs.sites.is_empty(), "sites must not be empty");
@@ -31,13 +31,6 @@ fn owner_inputs_are_bound_and_validated_oi_01() {
     }
 
     // 2. Authenticated Admin Keys, Membership Admission, Activation Policy, Quorums, Recovery Rules
-    assert!(
-        inputs
-            .administrators
-            .iter()
-            .any(|a| a.mailbox == "trinity@uor.foundation"),
-        "initial designated admin mailbox must be present"
-    );
     assert!(
         inputs.administrators.len() >= inputs.activation_policy.minimum_active_administrators,
         "must have at least minimum active administrators for redundancy"

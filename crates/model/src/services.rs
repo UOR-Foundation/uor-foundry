@@ -222,9 +222,9 @@ pub struct ServicesConfig {
 
 impl ServicesConfig {
     /// Validate services configuration against owner inputs and org lifecycle.
-    pub fn check(
+    pub fn check<'a>(
         &self,
-        _owner_inputs: &OwnerInputs,
+        _owner_inputs: impl Into<Option<&'a OwnerInputs>>,
         _org_lifecycle: &OrganizationLifecycleConfig,
     ) -> Result<(), crate::ModelError> {
         if self.spec != "foundry/services/1" {

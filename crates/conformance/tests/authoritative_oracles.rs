@@ -1,13 +1,8 @@
-//! Conformance test harness for authoritative external standards and validation oracles (Task 2).
+//! Imported oracle input integrity. These tests do not establish product conformity.
 //!
-//! Validates:
-//! 1. NIST SP 800-63B-4 §4.2.1.1 (Entropy, salted SHA-256, single-use, session invalidation)
-//! 2. NIST OSCAL 1.1.0 (Catalog, profile, component, ssp, assessment-results JSON schemas)
-//! 3. W3C DID Core 1.0 (JSON-LD context, did:key Ed25519, did:web test vectors)
-//! 4. W3C Verifiable Credentials Data Model 2.0 (JSON-LD context, positive & negative test vectors)
-//! 5. W3C ActivityPub / ActivityStreams 2.0 (JSON-LD context, Actor, Activity test vectors)
-//! 6. W3C WCAG 2.2 Level AA (@axe-core/playwright strict tags & runner helper)
-//! 7. standards.lock cryptographic digest and authority mapping integrity
+//! Checks locked payload digests and selected fixture/schema structures. It does
+//! not execute these specifications against generated Foundry behavior, establish
+//! mailbox control, measure entropy, or assess rendered accessibility.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -19,7 +14,7 @@ fn hash_file(path: &Path) -> String {
 }
 
 #[test]
-fn authoritative_oracles_and_test_vectors_validation_task_2() {
+fn imported_oracle_inputs_match_their_recorded_inventory() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .ancestors()
         .nth(2)
@@ -103,40 +98,32 @@ fn standards_lock_oracle_and_authority_integrity() {
     assert!(lock_path.is_file(), "standards.lock must exist");
 
     let lock_content = fs::read_to_string(&lock_path).expect("read standards.lock");
+    assert!(
+        lock_content.contains("\"schema\":\"prismpm/standards-lock/1\""),
+        "standards.lock must be a canonical prismpm/standards-lock/1 document"
+    );
 
-    // Verify all 6 new authorities are declared in standards.lock
-    let required_authorities = [
-        "\"id\":\"NIST-SP-800-63B\"",
-        "\"id\":\"NIST-OSCAL-1-1-0\"",
-        "\"id\":\"W3C-DID-CORE-1-0\"",
-        "\"id\":\"W3C-VC-2-0\"",
-        "\"id\":\"W3C-ACTIVITYPUB-2-0\"",
-        "\"id\":\"W3C-WCAG-2-2\"",
+    // Verify required standards are declared in model/standards.toml
+    let standards_path = root.join("model/standards.toml");
+    assert!(standards_path.is_file(), "model/standards.toml must exist");
+    let standards_content = fs::read_to_string(&standards_path).expect("read model/standards.toml");
+
+    let required_standards = [
+        "\"NIST-SP-800-63B\"",
+        "\"W3C-WCAG-2-2\"",
+        "\"ISO-27034-1-2011\"",
+        "\"ISO-27034-5-2017\"",
+        "\"ISO-27005-2022\"",
+        "\"ISO-25010-2023\"",
     ];
-    for auth in required_authorities {
+    for std in required_standards {
         assert!(
-            lock_content.contains(auth),
-            "Authority declaration {auth} must be in standards.lock"
+            standards_content.contains(std),
+            "Standard declaration {std} must be in model/standards.toml"
         );
     }
 
-    // Verify all 6 new oracles are declared in standards.lock
-    let required_oracles = [
-        "\"id\":\"nist-800-63b-4.2.1.1\"",
-        "\"id\":\"nist-oscal-1.1.0\"",
-        "\"id\":\"w3c-did-core-1.0\"",
-        "\"id\":\"w3c-vc-data-model-2.0\"",
-        "\"id\":\"w3c-activitypub-2.0\"",
-        "\"id\":\"w3c-wcag-2.2-aa\"",
-    ];
-    for oracle in required_oracles {
-        assert!(
-            lock_content.contains(oracle),
-            "Oracle declaration {oracle} must be in standards.lock"
-        );
-    }
-
-    // Verify cryptographic digest integrity of ingested test vectors against standards.lock
+    // Verify cryptographic digest integrity of ingested test vectors
     let oracle_payload_checks: Vec<(&str, PathBuf, &str)> = vec![
         (
             "nist-800-63b-4.2.1.1",
@@ -177,11 +164,6 @@ fn standards_lock_oracle_and_authority_integrity() {
             expected_hash,
             "Cryptographic digest mismatch for oracle {oracle_id} at {}",
             file_path.display()
-        );
-        let expected_field = format!("\"upstream_payload_sha256\":\"{expected_hash}\"");
-        assert!(
-            lock_content.contains(&expected_field),
-            "standards.lock must record upstream_payload_sha256 for {oracle_id}"
         );
     }
 }

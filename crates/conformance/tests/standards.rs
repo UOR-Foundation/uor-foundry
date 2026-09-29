@@ -1,6 +1,7 @@
-//! Conformance tests for standards, OSCAL governance, and authenticated assessments (ST-01).
+//! Synthetic ST-01 configuration unit tests; not authenticated product assessments.
 
-use repo_model::{Model, StandardsError};
+use repo_conformance::fixtures::SyntheticModel as Model;
+use repo_model::StandardsError;
 
 /// ST-01: The standards boundary implements complete OSCAL catalogs, profile
 /// resolution, component and system implementation records, inheritance tracking,

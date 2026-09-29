@@ -13,3 +13,16 @@ Feature: Services and Views stakeholder journeys and boundary enforcement
     And brand kits enforce WCAG 2.2 AA text and UI contrast ratios prior to publication
     And direct raw requests enforce permissions at the boundary independently of views
     And view projections redact private keys and credentials while preserving authorized data
+
+  @SV-01 @build
+  Scenario: Project and navigate the anonymous account entry without granting authority
+    Given a canonical bounded anonymous selector with no account or organization authority
+    When its generated presentation or navigation root executes
+    Then each welcome, enrollment, sign-in, email-recovery, and saved-code-recovery screen has the modeled labels, landmarks, input purposes, and design tokens
+    And only current-revision Ready navigation with an exact empty-field action binding advances the selector
+    And navigation rejects queued, replay-required, closed, stale, malformed, oversized, and exhausted requests without effects
+    And projection rejects invalid selectors while preserving valid non-Ready lifecycle states
+    And unavailable enrollment, sign-in, and recovery cannot submit or report success
+    And generated native and Wasm results agree with the independent complete-frame corpus
+    And the imported browser oracle assesses the actual generated semantic presentation
+    And anonymous display state cannot establish identity, membership, permissions, or functional-core acceptance

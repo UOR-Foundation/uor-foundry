@@ -705,30 +705,35 @@ impl StandardsConfig {
     }
 
     /// Cross-check standards boundary against owner inputs and policy.
-    pub fn check(&self, owner_inputs: &OwnerInputs) -> Result<(), ModelError> {
+    pub fn check<'a>(
+        &self,
+        owner_inputs: impl Into<Option<&'a OwnerInputs>>,
+    ) -> Result<(), ModelError> {
         let bad = |m: String| ModelError::Inconsistent(m);
+        let owner_inputs = owner_inputs.into();
 
         // 1. Verify every adopted standard is cataloged with matching edition
-        for adopted in &owner_inputs.standards {
-            let cat = self
-                .catalogs
-                .iter()
-                .find(|c| c.standard_id == adopted.standard_id)
-                .ok_or_else(|| {
-                    bad(format!(
-                        "adopted standard {} is missing an OSCAL catalog",
-                        adopted.standard_id
-                    ))
-                })?;
+        if let Some(owner_inputs) = owner_inputs {
+            for adopted in &owner_inputs.standards {
+                let cat = self
+                    .catalogs
+                    .iter()
+                    .find(|c| c.standard_id == adopted.standard_id)
+                    .ok_or_else(|| {
+                        bad(format!(
+                            "adopted standard {} is missing an OSCAL catalog",
+                            adopted.standard_id
+                        ))
+                    })?;
 
-            if cat.edition != adopted.edition {
-                return Err(bad(format!(
-                    "catalog {} edition mismatch: owner inputs specifies {}, catalog has {}",
-                    cat.catalog_id, adopted.edition, cat.edition
-                )));
+                if cat.edition != adopted.edition {
+                    return Err(bad(format!(
+                        "catalog {} edition mismatch: owner inputs specifies {}, catalog has {}",
+                        cat.catalog_id, adopted.edition, cat.edition
+                    )));
+                }
             }
         }
-
         // 2. Resolve production profile
         let profile = self
             .resolve_profile("PROF-FOUNDRY-PRODUCTION")
@@ -739,13 +744,15 @@ impl StandardsConfig {
             .map_err(|e| bad(format!("validating system implementation: {e}")))?;
 
         // 4. Verify authenticated assessments
-        self.verify_assessments(
-            &profile,
-            &owner_inputs.assessment_authorities,
-            &owner_inputs.standards,
-            &owner_inputs.organization.id,
-        )
-        .map_err(|e| bad(format!("verifying authenticated assessments: {e}")))?;
+        if let Some(owner_inputs) = owner_inputs {
+            self.verify_assessments(
+                &profile,
+                &owner_inputs.assessment_authorities,
+                &owner_inputs.standards,
+                &owner_inputs.organization.id,
+            )
+            .map_err(|e| bad(format!("verifying authenticated assessments: {e}")))?;
+        }
 
         Ok(())
     }

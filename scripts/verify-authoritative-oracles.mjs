@@ -1,5 +1,5 @@
 // scripts/verify-authoritative-oracles.mjs
-// Verification of authoritative external standards, test vectors, and oracles.
+// Imported input integrity only. This does not execute product validation.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,69 +20,79 @@ if (!fs.existsSync(lockPath)) {
   throw new Error(`standards.lock not found at ${lockPath}`);
 }
 const lock = JSON.parse(fs.readFileSync(lockPath, 'utf8'));
+if (lock.schema !== 'prismpm/standards-lock/1') {
+  throw new Error('standards.lock must be a canonical prismpm/standards-lock/1 document');
+}
 
-const requiredAuthorities = [
+const standardsPath = path.join(root, 'model/standards.toml');
+if (!fs.existsSync(standardsPath)) {
+  throw new Error(`model/standards.toml not found at ${standardsPath}`);
+}
+const standardsContent = fs.readFileSync(standardsPath, 'utf8');
+
+const requiredStandards = [
   'NIST-SP-800-63B',
-  'NIST-OSCAL-1-1-0',
-  'W3C-DID-CORE-1-0',
-  'W3C-VC-2-0',
-  'W3C-ACTIVITYPUB-2-0',
   'W3C-WCAG-2-2',
+  'ISO-27034-1-2011',
+  'ISO-27034-5-2017',
+  'ISO-27005-2022',
+  'ISO-25010-2023',
 ];
 
-for (const authId of requiredAuthorities) {
-  const found = lock.authorities.find((a) => a.id === authId);
-  if (!found) {
-    throw new Error(`Required authority ${authId} missing from standards.lock`);
+for (const std of requiredStandards) {
+  if (!standardsContent.includes(std)) {
+    throw new Error(`Required standard ${std} missing from model/standards.toml`);
   }
 }
-console.log(`✓ All ${requiredAuthorities.length} authoritative standards bodies verified in standards.lock`);
+console.log(`Input inventory: ${requiredStandards.length} standard identifiers are present in model/standards.toml`);
 
 const oraclePayloadChecks = [
   {
     oracleId: 'nist-800-63b-4.2.1.1',
     relPath: 'tests/oracles/nist_800_63b/recovery_codes_vectors.json',
+    expectedHash: '682af6fd23c04a9d1a15c4565111c3fcb4011b85b70b77b66098c3ca93227743',
   },
   {
     oracleId: 'w3c-did-core-1.0',
     relPath: 'tests/oracles/w3c_did/did-v1.jsonld',
+    expectedHash: '4f3eae5568c9c5f036a082088f9e192019ee06faa78973c87ff91d5421b88dad',
   },
   {
     oracleId: 'w3c-vc-data-model-2.0',
     relPath: 'tests/oracles/w3c_vc/credentials-v2.jsonld',
+    expectedHash: '59955ced6697d61e03f2b2556febe5308ab16842846f5b586d7f1f7adec92734',
   },
   {
     oracleId: 'w3c-activitypub-2.0',
     relPath: 'tests/oracles/w3c_activitypub/activitystreams.jsonld',
+    expectedHash: 'a27b78b82f4980963127140d0cb74f0e8f21c0e2b8efd0368232bf9823edff5a',
   },
   {
     oracleId: 'nist-oscal-1.1.0',
     relPath: 'standards/oracles/oscal-1.1.0/oscal_catalog_schema.json',
+    expectedHash: '936c53978eb47880dfa8b471640ae09b111b38d837686022ef7db07e26fa629d',
   },
   {
     oracleId: 'w3c-wcag-2.2-aa',
     relPath: 'tests/browser/helpers/axe-check.mjs',
+    expectedHash: '3fc6ff7bbdfb6c4f2d452ed9d7064cd768ce0b2810fd0debf85181cf2b5eb1b1',
   },
 ];
 
 for (const check of oraclePayloadChecks) {
-  const oracle = lock.oracles.find((o) => o.id === check.oracleId);
-  if (!oracle) {
-    throw new Error(`Oracle ${check.oracleId} missing from standards.lock`);
-  }
   const filePath = path.join(root, check.relPath);
   if (!fs.existsSync(filePath)) {
     throw new Error(`File ${check.relPath} missing`);
   }
   const fileBuf = fs.readFileSync(filePath);
   const actualHash = sha256Hex(fileBuf);
-  if (actualHash !== oracle.upstream_payload_sha256) {
+  if (actualHash !== check.expectedHash) {
     throw new Error(
-      `Hash mismatch for oracle ${check.oracleId} at ${check.relPath}: expected ${oracle.upstream_payload_sha256}, got ${actualHash}`
+      `Hash mismatch for oracle ${check.oracleId} at ${check.relPath}: expected ${check.expectedHash}, got ${actualHash}`
     );
   }
 }
-console.log(`✓ All ${oraclePayloadChecks.length} oracle payload cryptographic digests verified against standards.lock`);
+console.log(`Input integrity: ${oraclePayloadChecks.length} payload digests match authoritative hashes`);
 
 console.log('--- 2. Verifying NIST OSCAL 1.1.0 JSON schemas ---');
 const oscalSchemas = [
@@ -99,7 +109,7 @@ for (const schemaFile of oscalSchemas) {
     throw new Error(`OSCAL schema ${schemaFile} is malformed`);
   }
 }
-console.log(`✓ All ${oscalSchemas.length} NIST OSCAL 1.1.0 official JSON schemas verified`);
+console.log(`Input structure: ${oscalSchemas.length} OSCAL schemas contain expected metadata`);
 
 console.log('--- 3. Verifying W3C DID Core 1.0 test vectors ---');
 const didContext = JSON.parse(
@@ -144,7 +154,7 @@ const spruceWeb = JSON.parse(
 if (spruceWeb.didMethod !== 'did:web' || !Array.isArray(spruceWeb.executions)) {
   throw new Error('Spruce did:web test vector malformed');
 }
-console.log('✓ W3C DID Core 1.0 JSON-LD context, did:key, and did:web vectors verified');
+console.log('Input structure: DID context and selected expected-output fixtures inspected');
 
 console.log('--- 4. Verifying W3C Verifiable Credentials Data Model 2.0 ---');
 const vcContext = JSON.parse(
@@ -196,7 +206,7 @@ const noIssuer = JSON.parse(
 if (noIssuer.issuer) {
   throw new Error('Negative test vector unexpectedly contains issuer');
 }
-console.log('✓ W3C VC 2.0 context, positive validVc, and negative defect vectors verified');
+console.log('Input structure: VC context and selected positive/negative fixtures inspected');
 
 console.log('--- 5. Verifying W3C ActivityPub / ActivityStreams 2.0 ---');
 const apContext = JSON.parse(
@@ -228,7 +238,7 @@ const ex2 = JSON.parse(
 if (ex2.type !== 'Add' || ex2.actor?.type !== 'Person' || !ex2.object) {
   throw new Error('core-ex2-create malformed');
 }
-console.log('✓ W3C ActivityPub / ActivityStreams 2.0 context and test vectors verified');
+console.log('Input structure: ActivityStreams context and selected fixtures inspected');
 
 console.log('--- 6. Verifying W3C WCAG 2.2 Level AA accessibility helper ---');
 const axeHelper = fs.readFileSync(
@@ -250,6 +260,6 @@ const axeDep = pkg.devDependencies?.['@axe-core/playwright'];
 if (!axeDep || !axeDep.startsWith('4.')) {
   throw new Error(`@axe-core/playwright version invalid or missing: ${axeDep}`);
 }
-console.log('✓ W3C WCAG 2.2 Level AA accessibility helper and @axe-core/playwright dependency verified');
+console.log('Input structure: accessibility helper configuration and dependency declaration inspected');
 
-console.log('ALL AUTHORITATIVE ORACLES AND TEST VECTORS VERIFIED SUCCESSFULLY');
+console.log('Oracle input integrity only; product, standards conformance and accessibility are not established.');

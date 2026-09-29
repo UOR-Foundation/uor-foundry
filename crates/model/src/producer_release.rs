@@ -267,9 +267,9 @@ pub struct ProducerReleaseConfig {
 
 impl ProducerReleaseConfig {
     /// Validate producer release invariants against model dependencies.
-    pub fn check(
+    pub fn check<'a>(
         &self,
-        _owner_inputs: &OwnerInputs,
+        _owner_inputs: impl Into<Option<&'a OwnerInputs>>,
         _org_lifecycle: &OrganizationLifecycleConfig,
         services_cfg: &ServicesConfig,
         standards_cfg: &StandardsConfig,

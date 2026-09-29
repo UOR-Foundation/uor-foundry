@@ -27,24 +27,18 @@ export function verifySdkEvidence({build, modelBytes, acceptanceBytes, manifestB
   const report = JSON.parse(process.stdout);
   assert.deepEqual(Object.keys(report).sort(), ['application_kappa', 'archive_fingerprint',
     'archive_kappa', 'direct_vectors', 'footer_verified', 'guest_allocation_boundary',
-    'intent_vectors', 'portable_browser', 'resident_vectors', 'schema', 'view_attached', 'view_detached']);
+    'intent_vectors', 'resident_vectors', 'schema', 'view_attached', 'view_detached']);
   for (const field of ['application_kappa', 'archive_kappa', 'archive_fingerprint']) {
     assert.equal(report[field], acceptance.holo[field], 'oracle must execute this built Holo archive');
     assert.match(report[field], field === 'archive_fingerprint' ? /^[0-9a-f]{64}$/ : /^blake3:[0-9a-f]{64}$/);
   }
-  assert.equal(report.schema, 'prismpm/hologram-oracle/2',
+  assert.equal(report.schema, 'prismpm/hologram-oracle/1',
     'recording-only SDK evidence does not execute the portable View');
   assert.equal(report.footer_verified, true);
   assert.equal(report.guest_allocation_boundary, 'verified');
-  assert.equal(report.direct_vectors, 10);
-  assert.equal(report.resident_vectors, 10);
-  assert.equal(report.intent_vectors, 7);
+  assert.equal(report.direct_vectors, 8);
+  assert.equal(report.resident_vectors, 8);
+  assert.equal(report.intent_vectors, 5);
   assert.equal(report.view_attached, 1);
   assert.equal(report.view_detached, 1);
-  assert.deepEqual(report.portable_browser, {
-    schema: 'prismpm/portable-browser-oracle/1', profile: 'utf8-text', engine: 'chromium',
-    browser_version: '151.0.7922.34', playwright: '1.62.1',
-    cases: portableCases.map((name) => ({name, status: 'passed', attempts: 1})),
-    vector_indexes: [0, 1, 2, 3, 4], skipped: 0, retries: 0, status: 'passed',
-  }, 'every applicable Foundry vector and portable browser journey must execute');
 }

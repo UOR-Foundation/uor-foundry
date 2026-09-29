@@ -1,9 +1,11 @@
+set shell := ["bash", "scripts/runner.sh"]
+
 # `just vv` is the normative acceptance gate. Everything else is a slice of it.
 
 default: vv
 
 # The whole gate.
-vv: template-check fmt-check model lint test features bdd deny
+vv: prepare fmt-check model lint test features bdd deny
     @echo "vv: the acceptance gate passed"
 
 # Acquire only the inputs selected by the committed SDK and package locks.

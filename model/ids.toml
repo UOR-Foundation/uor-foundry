@@ -18,6 +18,24 @@
 spec = "template/1"
 
 [[id]]
+id = "UC-01"
+level = "build"
+suite = "ui-command"
+statement = "The source-owned UI command component binds closed field/action routes and complete application context to an actual SDK SHA-256 effect, preserves typed continuation outcomes, and distinguishes pure replayable data from SDK-owned effect and application-session custody."
+
+[[id]]
+id = "AC-01"
+level = "build"
+suite = "application-context"
+statement = "The source-owned application context has bounded canonical state, command and UOR-reference codecs, rejects malformed and substituted bindings, and keeps decoded records distinct from authenticated authority and executed effects."
+
+[[id]]
+id = "VI-01"
+level = "build"
+suite = "verification-integrity"
+statement = "Producer verification acquires locked SDK inputs before product checks, rejects missing, unbound or echo-only browser artifacts and consumer copies of SDK modules, and distinguishes imported oracle inputs from executed product acceptance."
+
+[[id]]
 id = "FW-01"
 level = "build"
 suite = "draft-preview"

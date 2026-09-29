@@ -19,6 +19,7 @@
 
 #![deny(missing_docs)]
 
+pub mod fixtures;
 pub mod meta;
 pub mod runner;
 

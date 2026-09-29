@@ -18,6 +18,12 @@ The three honesty levels (R2):
 `cargo xtask audit-limits` fails if any code path returns an error the
 model does not sanction.
 
+## application-context
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `AC-01` | `build` | The source-owned application context has bounded canonical state, command and UOR-reference codecs, rejects malformed and substituted bindings, and keeps decoded records distinct from authenticated authority and executed effects. |
+
 ## authority-model
 
 | ID | Level | Statement |
@@ -126,11 +132,23 @@ model does not sanction.
 | --- | --- | --- |
 | `ST-01` | `build` | The standards boundary implements complete OSCAL catalogs, profile resolution, component and system implementation records, inheritance tracking, and authenticated assessment coverage across all adopted standards. |
 
+## ui-command
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `UC-01` | `build` | The source-owned UI command component binds closed field/action routes and complete application context to an actual SDK SHA-256 effect, preserves typed continuation outcomes, and distinguishes pure replayable data from SDK-owned effect and application-session custody. |
+
 ## veilid-bootstrap
 
 | ID | Level | Statement |
 | --- | --- | --- |
 | `VB-01` | `build` | The Veilid external boundary enforces authenticated secure bootstrap routing, browser transport integration, relay public-key verification, outbound-relay limitation mitigations, and network discovery under adverse conditions without feature-flag-only or unauthenticated proxy substitutes. |
+
+## verification-integrity
+
+| ID | Level | Statement |
+| --- | --- | --- |
+| `VI-01` | `build` | Producer verification acquires locked SDK inputs before product checks, rejects missing, unbound or echo-only browser artifacts and consumer copies of SDK modules, and distinguishes imported oracle inputs from executed product acceptance. |
 
 ## Cited authorities
 

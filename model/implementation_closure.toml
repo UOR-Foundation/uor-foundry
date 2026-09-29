@@ -1,5 +1,5 @@
-# model/implementation_closure.toml --- Complete uor-foundry producer model
-# and implementation closure across all product requirements and remaining-work rows.
+# Required producer boundaries. No production acceptance evidence is established.
+# Historical release identities below are unaccepted prototype data, not a release.
 #
 # Conformance ID: IC-01 (suite: implementation-closure)
 
@@ -24,74 +24,74 @@ pre_publication_binding = "sha256:91bf34020a5664bead868fbfa89196b6e41bf1684fa6e3
 [[accepted_boundaries]]
 id = "SB-01"
 name = "SDK and dependencies"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "ST-01"
 name = "Standards"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "OL-01"
 name = "Organization lifecycle"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "OS-01"
 name = "Organization sites"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "SV-01"
 name = "Services and Views"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "AM-01"
 name = "Authority model"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "EC-01"
 name = "Email continuity"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "BC-01"
 name = "Backup codes"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "BO-01"
 name = "Browser object space"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "NA-01"
 name = "Network acceptance"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "PR-01"
 name = "Producer release"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "PS-01"
 name = "Publication SDK"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "VB-01"
 name = "Veilid bootstrap"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "HB-01"
 name = "Holospaces boundary"
-status = "accepted"
+status = "unaccepted"
 
 [[accepted_boundaries]]
 id = "FC-01"
 name = "Functional core"
-status = "accepted"
+status = "unaccepted"

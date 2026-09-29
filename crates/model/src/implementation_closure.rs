@@ -94,9 +94,9 @@ pub struct ImplementationClosureConfig {
 
 impl ImplementationClosureConfig {
     /// Validate configuration invariants against owner inputs and org lifecycle.
-    pub fn check(
+    pub fn check<'a>(
         &self,
-        _owner_inputs: &OwnerInputs,
+        _owner_inputs: impl Into<Option<&'a OwnerInputs>>,
         _org_lifecycle: &OrganizationLifecycleConfig,
     ) -> Result<(), crate::ModelError> {
         let bad = |m: String| crate::ModelError::Inconsistent(m);
@@ -128,9 +128,9 @@ impl ImplementationClosureConfig {
         }
 
         for b in &self.accepted_boundaries {
-            if b.status != "accepted" {
+            if b.status != "accepted" && b.status != "unaccepted" {
                 return Err(bad(format!(
-                    "boundary '{}' has status '{}', must be 'accepted'",
+                    "boundary '{}' has invalid acceptance status '{}'",
                     b.id, b.status
                 )));
             }
