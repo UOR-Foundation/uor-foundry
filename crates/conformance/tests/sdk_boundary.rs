@@ -152,7 +152,7 @@ fn cargo_lock_tampering_or_mismatch_is_rejected() {
     let tampered_bytes = b"# Tampered lockfile\n[[package]]\nname = \"insecure\"\n";
     let res = SdkBoundaryEngine::verify_dependency_closure(
         tampered_bytes,
-        "sha256:21112a843436d09369282bbc8407025dd794d175bdec81d9d9ccb47733332987",
+        "sha256:0003cec9ac463a7b7daa361cee1ae27663fbd9ee61fc986c4445742392c6d9c2",
     );
     assert!(matches!(res, Err(SdkBoundaryError::Validation(_))));
 }

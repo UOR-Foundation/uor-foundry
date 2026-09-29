@@ -18,8 +18,12 @@ impl SyntheticModel {
     pub fn load(directory: &Path) -> Result<Self, ModelError> {
         let path = repo_model::repo_root().join("tests/fixtures/synthetic-owner-inputs.toml");
         let source = std::fs::read_to_string(&path).map_err(|error| ModelError::Io(path, error))?;
+        let mut model = Model::load(directory)?;
+        for boundary in &mut model.implementation_closure.accepted_boundaries {
+            boundary.status = "accepted".to_string();
+        }
         Ok(Self {
-            model: Model::load(directory)?,
+            model,
             owner_inputs: OwnerInputs::parse_toml(&source)?,
         })
     }

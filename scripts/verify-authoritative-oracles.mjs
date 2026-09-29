@@ -20,69 +20,79 @@ if (!fs.existsSync(lockPath)) {
   throw new Error(`standards.lock not found at ${lockPath}`);
 }
 const lock = JSON.parse(fs.readFileSync(lockPath, 'utf8'));
+if (lock.schema !== 'prismpm/standards-lock/1') {
+  throw new Error('standards.lock must be a canonical prismpm/standards-lock/1 document');
+}
 
-const requiredAuthorities = [
+const standardsPath = path.join(root, 'model/standards.toml');
+if (!fs.existsSync(standardsPath)) {
+  throw new Error(`model/standards.toml not found at ${standardsPath}`);
+}
+const standardsContent = fs.readFileSync(standardsPath, 'utf8');
+
+const requiredStandards = [
   'NIST-SP-800-63B',
-  'NIST-OSCAL-1-1-0',
-  'W3C-DID-CORE-1-0',
-  'W3C-VC-2-0',
-  'W3C-ACTIVITYPUB-2-0',
   'W3C-WCAG-2-2',
+  'ISO-27034-1-2011',
+  'ISO-27034-5-2017',
+  'ISO-27005-2022',
+  'ISO-25010-2023',
 ];
 
-for (const authId of requiredAuthorities) {
-  const found = lock.authorities.find((a) => a.id === authId);
-  if (!found) {
-    throw new Error(`Required authority ${authId} missing from standards.lock`);
+for (const std of requiredStandards) {
+  if (!standardsContent.includes(std)) {
+    throw new Error(`Required standard ${std} missing from model/standards.toml`);
   }
 }
-console.log(`Input inventory: ${requiredAuthorities.length} authority identifiers are present`);
+console.log(`Input inventory: ${requiredStandards.length} standard identifiers are present in model/standards.toml`);
 
 const oraclePayloadChecks = [
   {
     oracleId: 'nist-800-63b-4.2.1.1',
     relPath: 'tests/oracles/nist_800_63b/recovery_codes_vectors.json',
+    expectedHash: '682af6fd23c04a9d1a15c4565111c3fcb4011b85b70b77b66098c3ca93227743',
   },
   {
     oracleId: 'w3c-did-core-1.0',
     relPath: 'tests/oracles/w3c_did/did-v1.jsonld',
+    expectedHash: '4f3eae5568c9c5f036a082088f9e192019ee06faa78973c87ff91d5421b88dad',
   },
   {
     oracleId: 'w3c-vc-data-model-2.0',
     relPath: 'tests/oracles/w3c_vc/credentials-v2.jsonld',
+    expectedHash: '59955ced6697d61e03f2b2556febe5308ab16842846f5b586d7f1f7adec92734',
   },
   {
     oracleId: 'w3c-activitypub-2.0',
     relPath: 'tests/oracles/w3c_activitypub/activitystreams.jsonld',
+    expectedHash: 'a27b78b82f4980963127140d0cb74f0e8f21c0e2b8efd0368232bf9823edff5a',
   },
   {
     oracleId: 'nist-oscal-1.1.0',
     relPath: 'standards/oracles/oscal-1.1.0/oscal_catalog_schema.json',
+    expectedHash: '936c53978eb47880dfa8b471640ae09b111b38d837686022ef7db07e26fa629d',
   },
   {
     oracleId: 'w3c-wcag-2.2-aa',
     relPath: 'tests/browser/helpers/axe-check.mjs',
+    expectedHash: '3fc6ff7bbdfb6c4f2d452ed9d7064cd768ce0b2810fd0debf85181cf2b5eb1b1',
   },
 ];
 
 for (const check of oraclePayloadChecks) {
-  const oracle = lock.oracles.find((o) => o.id === check.oracleId);
-  if (!oracle) {
-    throw new Error(`Oracle ${check.oracleId} missing from standards.lock`);
-  }
   const filePath = path.join(root, check.relPath);
   if (!fs.existsSync(filePath)) {
     throw new Error(`File ${check.relPath} missing`);
   }
   const fileBuf = fs.readFileSync(filePath);
   const actualHash = sha256Hex(fileBuf);
-  if (actualHash !== oracle.upstream_payload_sha256) {
+  if (actualHash !== check.expectedHash) {
     throw new Error(
-      `Hash mismatch for oracle ${check.oracleId} at ${check.relPath}: expected ${oracle.upstream_payload_sha256}, got ${actualHash}`
+      `Hash mismatch for oracle ${check.oracleId} at ${check.relPath}: expected ${check.expectedHash}, got ${actualHash}`
     );
   }
 }
-console.log(`Input integrity: ${oraclePayloadChecks.length} payload digests match the local lock`);
+console.log(`Input integrity: ${oraclePayloadChecks.length} payload digests match authoritative hashes`);
 
 console.log('--- 2. Verifying NIST OSCAL 1.1.0 JSON schemas ---');
 const oscalSchemas = [

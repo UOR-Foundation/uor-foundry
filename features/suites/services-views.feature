@@ -20,7 +20,7 @@ Feature: Services and Views stakeholder journeys and boundary enforcement
     When its generated presentation or navigation root executes
     Then each welcome, enrollment, sign-in, email-recovery, and saved-code-recovery screen has the modeled labels, landmarks, input purposes, and design tokens
     And only current-revision Ready navigation with an exact empty-field action binding advances the selector
-    And navigation rejects pending, replay-required, closed, stale, malformed, oversized, and exhausted requests without effects
+    And navigation rejects queued, replay-required, closed, stale, malformed, oversized, and exhausted requests without effects
     And projection rejects invalid selectors while preserving valid non-Ready lifecycle states
     And unavailable enrollment, sign-in, and recovery cannot submit or report success
     And generated native and Wasm results agree with the independent complete-frame corpus

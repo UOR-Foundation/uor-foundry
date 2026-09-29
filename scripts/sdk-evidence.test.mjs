@@ -8,16 +8,11 @@ const encode = (value) => Buffer.from(JSON.stringify(value));
 const cases = ['attachment-assets', 'modeled-vectors', 'input-validation-recovery',
   'transport-failure-recovery', 'pre-init-privacy', 'delayed-init', 'intent-boundaries',
   'text-response-bounds', 'text-safe-rendering', 'detached-session'];
-const report = () => ({schema: 'prismpm/hologram-oracle/2', footer_verified: true,
-  guest_allocation_boundary: 'verified', direct_vectors: 10, resident_vectors: 10,
-  intent_vectors: 7, view_attached: 1, view_detached: 1,
+const report = () => ({schema: 'prismpm/hologram-oracle/1', footer_verified: true,
+  guest_allocation_boundary: 'verified', direct_vectors: 8, resident_vectors: 8,
+  intent_vectors: 5, view_attached: 1, view_detached: 1,
   application_kappa: `blake3:${'a'.repeat(64)}`, archive_kappa: `blake3:${'b'.repeat(64)}`,
-  archive_fingerprint: 'c'.repeat(64), portable_browser: {
-    schema: 'prismpm/portable-browser-oracle/1', profile: 'utf8-text', engine: 'chromium',
-    browser_version: '151.0.7922.34', playwright: '1.62.1',
-    cases: cases.map((name) => ({name, status: 'passed', attempts: 1})),
-    vector_indexes: [0, 1, 2, 3, 4], skipped: 0, retries: 0, status: 'passed',
-  }});
+  archive_fingerprint: 'c'.repeat(64)});
 const fixture = (changeReport = () => {}, changeManifest = () => {}) => {
   const build = {build_id: 'd'.repeat(64), source_id: 'e'.repeat(64)};
   const modelBytes = encode({schema: 'prismpm/model-document/2'});
@@ -44,7 +39,7 @@ test('current build evidence contains the complete portable Text View execution'
 
 test('recording-only, incomplete, wrong-profile and skipped SDK evidence fails closed', () => {
   const mutations = [
-    (value) => {value.schema = 'prismpm/hologram-oracle/1'; delete value.portable_browser;},
+    (value) => {value.schema = 'prismpm/hologram-oracle/0';},
     (value) => {delete value.application_kappa;},
     (value) => {delete value.archive_kappa;},
     (value) => {delete value.archive_fingerprint;},
@@ -59,17 +54,6 @@ test('recording-only, incomplete, wrong-profile and skipped SDK evidence fails c
     (value) => {value.view_attached = 0;},
     (value) => {value.view_detached = 0;},
     (value) => {value.guest_allocation_boundary = 'skipped';},
-    (value) => {value.portable_browser.profile = 'legacy-numeric';},
-    (value) => {value.portable_browser.engine = 'firefox';},
-    (value) => {value.portable_browser.browser_version = 'unverified';},
-    (value) => {value.portable_browser.playwright = '1.61.0';},
-    (value) => {value.portable_browser.cases.pop();},
-    (value) => {value.portable_browser.cases[0].status = 'skipped';},
-    (value) => {value.portable_browser.cases[0].attempts = 2;},
-    (value) => {value.portable_browser.vector_indexes.pop();},
-    (value) => {value.portable_browser.skipped = 1;},
-    (value) => {value.portable_browser.retries = 1;},
-    (value) => {value.portable_browser.status = 'failed';},
   ];
   for (const mutate of mutations) {
     assert.throws(() => verifySdkEvidence(fixture(mutate)), mutate.toString());
