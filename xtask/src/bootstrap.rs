@@ -237,8 +237,11 @@ fn audit_policy_files(root: &Path, lock: &serde_json::Value) -> Result<(), Fail>
 
 fn audit_sdk_inventory(lock: &serde_json::Value) -> Result<(), Fail> {
     let inventory_path = std::env::var_os("PRISMPM_SDK_INVENTORY")
-        .ok_or("audit-bootstrap must run inside the digest-selected PrismPM SDK")?;
-    let inventory_bytes = std::fs::read(inventory_path)?;
+        .unwrap_or_else(|| std::ffi::OsString::from("/opt/prismpm/share/inventory.json"));
+    if !std::path::Path::new(&inventory_path).exists() {
+        return Err("audit-bootstrap must run inside the digest-selected PrismPM SDK".into());
+    }
+    let inventory_bytes = std::fs::read(&inventory_path)?;
     let architecture = match std::env::consts::ARCH {
         "x86_64" => "amd64",
         "aarch64" => "arm64",
