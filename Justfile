@@ -52,7 +52,7 @@ features:
 # R3: every capability begins as a Gherkin scenario, and every scenario has a
 # test whose name ends in its ID.
 bdd:
-    cargo test -p repo-conformance
+    cargo test -p repo-conformance --test bdd
 
 # R6: nothing shipped depends on a dev-only crate, no wildcard version
 # requirement, no advisory against anything in the tree. `cargo-deny` is
