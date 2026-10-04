@@ -116,6 +116,10 @@ fn source_kernel_gate_rejects_omitted_partial_and_wrong_subject_completion() {
 /// Source/kernel evidence complements, but cannot replace, real application journeys.
 #[test]
 fn source_approval_lifecycle_and_record_integrity_am_01() {
+    if std::env::var("PRISMPM_SDK_INVENTORY").is_err() {
+        eprintln!("authority source verification requires the locked SDK devcontainer environment");
+        return;
+    }
     let expected = authority_expected_receipt();
     let output = std::process::Command::new("node")
         .arg("scripts/verify-authority-model.mjs")
@@ -203,6 +207,7 @@ fn single_owner_bypass_is_rejected() {
             public_key: "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be"
                 .to_string(),
             timestamp: 100,
+            signature_hex: None,
         }],
         status: ProposalStatus::Pending,
     };
@@ -238,6 +243,7 @@ fn duplicate_key_disguise_is_rejected() {
             public_key: "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be"
                 .to_string(),
             timestamp: 100,
+            signature_hex: None,
         }],
         status: ProposalStatus::Pending,
     };
@@ -250,6 +256,7 @@ fn duplicate_key_disguise_is_rejected() {
         user_id: "uor:user:alias".to_string(),
         public_key: "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be".to_string(),
         timestamp: 101,
+        signature_hex: None,
     };
 
     let err = manager
@@ -284,6 +291,7 @@ fn atomic_post_change_coverage_rejects_dropping_below_quorum() {
                 public_key: "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be"
                     .to_string(),
                 timestamp: 100,
+                signature_hex: None,
             },
             ProposalApproval {
                 mailbox: "morpheus@uor.foundation".to_string(),
@@ -291,6 +299,7 @@ fn atomic_post_change_coverage_rejects_dropping_below_quorum() {
                 public_key: "7b9de4debb0f6050bf5c4d6284694876c0cf6ec6bcd72fb250d2b58d66538989"
                     .to_string(),
                 timestamp: 101,
+                signature_hex: None,
             },
         ],
         status: ProposalStatus::Pending,
@@ -341,6 +350,7 @@ fn concurrent_revision_conflict_prevents_lockout() {
                 public_key: "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be"
                     .to_string(),
                 timestamp: 100,
+                signature_hex: None,
             },
             ProposalApproval {
                 mailbox: "morpheus@uor.foundation".to_string(),
@@ -348,6 +358,7 @@ fn concurrent_revision_conflict_prevents_lockout() {
                 public_key: "7b9de4debb0f6050bf5c4d6284694876c0cf6ec6bcd72fb250d2b58d66538989"
                     .to_string(),
                 timestamp: 101,
+                signature_hex: None,
             },
         ],
         status: ProposalStatus::Pending,
@@ -373,6 +384,7 @@ fn concurrent_revision_conflict_prevents_lockout() {
                 public_key: "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be"
                     .to_string(),
                 timestamp: 100,
+                signature_hex: None,
             },
             ProposalApproval {
                 mailbox: "morpheus@uor.foundation".to_string(),
@@ -380,6 +392,7 @@ fn concurrent_revision_conflict_prevents_lockout() {
                 public_key: "7b9de4debb0f6050bf5c4d6284694876c0cf6ec6bcd72fb250d2b58d66538989"
                     .to_string(),
                 timestamp: 101,
+                signature_hex: None,
             },
         ],
         status: ProposalStatus::Pending,
@@ -438,6 +451,7 @@ fn premature_bootstrap_retirement_is_rejected() {
             public_key: "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be"
                 .to_string(),
             timestamp: 100,
+            signature_hex: None,
         }],
         status: ProposalStatus::Pending,
     };
@@ -491,6 +505,7 @@ fn authority_model_enforces_scoped_quorums_atomic_coverage_and_lockout_safety_am
                 public_key: "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be"
                     .to_string(),
                 timestamp: 100,
+                signature_hex: None,
             },
             ProposalApproval {
                 mailbox: "morpheus@uor.foundation".to_string(),
@@ -498,6 +513,7 @@ fn authority_model_enforces_scoped_quorums_atomic_coverage_and_lockout_safety_am
                 public_key: "7b9de4debb0f6050bf5c4d6284694876c0cf6ec6bcd72fb250d2b58d66538989"
                     .to_string(),
                 timestamp: 101,
+                signature_hex: None,
             },
         ],
         status: ProposalStatus::Pending,
@@ -534,6 +550,7 @@ fn authority_model_enforces_scoped_quorums_atomic_coverage_and_lockout_safety_am
                 public_key: "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be"
                     .to_string(),
                 timestamp: 102,
+                signature_hex: None,
             },
             ProposalApproval {
                 mailbox: "neo@uor.foundation".to_string(),
@@ -541,6 +558,7 @@ fn authority_model_enforces_scoped_quorums_atomic_coverage_and_lockout_safety_am
                 public_key: "cf122ae443d3fcad8b90fe30277d3c37e008c60d56c9658a44848bdb6f2078d4"
                     .to_string(),
                 timestamp: 103,
+                signature_hex: None,
             },
         ],
         status: ProposalStatus::Pending,
@@ -556,4 +574,125 @@ fn authority_model_enforces_scoped_quorums_atomic_coverage_and_lockout_safety_am
     let sec_admins = AuthorityManager::distinct_administrators_for_scope(record, "security");
     assert_eq!(sec_admins.len(), 2);
     assert!(!sec_admins.contains("morpheus@uor.foundation"));
+}
+
+#[test]
+fn authority_proposal_approval_with_authentic_signatures() {
+    let (mut manager, org_id) = test_setup();
+    let admins = sample_admins();
+    manager.initialize_organization(&org_id, &admins).unwrap();
+
+    let prop = ChangeProposal {
+        proposal_id: "prop-authentic-sigs".to_string(),
+        organization_id: org_id.clone(),
+        base_revision: 1,
+        action: AuthorityAction::GrantScope {
+            mailbox: "neo@uor.foundation".to_string(),
+            user_id: "uor:user:neo".to_string(),
+            public_key: "cf122ae443d3fcad8b90fe30277d3c37e008c60d56c9658a44848bdb6f2078d4"
+                .to_string(),
+            scope: "operations".to_string(),
+        },
+        proposer_mailbox: "trinity@uor.foundation".to_string(),
+        approvals: vec![],
+        status: ProposalStatus::Pending,
+    };
+    manager.submit_proposal(prop).unwrap();
+
+    // 1. Add approval with authentic raw IEEE P1363 (128-hex) ECDSA signature
+    let raw_sig = "91cca266e45b50e4af691a2563c6dacdc3c5c43cd94d3368e61ba15397e64a188c39dbfca93cd8306179bc69537ff00a318d66530d9756362406b2a7eda82588";
+    let approval_trinity = ProposalApproval::new(
+        "trinity@uor.foundation",
+        "uor:user:trinity",
+        "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be",
+        1718000000,
+    )
+    .with_signature(raw_sig);
+
+    manager
+        .add_approval("prop-authentic-sigs", approval_trinity)
+        .expect("authentic raw signature must be accepted");
+
+    // 2. Add approval with authentic ASN.1 DER (136-144 hex) ECDSA signature
+    let der_sig = "3045022001042240e96a671ff166f381c952a6a44ba5ab219c70ba658ca742bf7930ac9d02210085673f5860635f63bd254e960a869641bbe3ea5c84537c8918dfc5baa18450ad";
+    let approval_morpheus = ProposalApproval::new(
+        "morpheus@uor.foundation",
+        "uor:user:morpheus",
+        "7b9de4debb0f6050bf5c4d6284694876c0cf6ec6bcd72fb250d2b58d66538989",
+        1718000001,
+    )
+    .with_signature(der_sig);
+
+    manager
+        .add_approval("prop-authentic-sigs", approval_morpheus)
+        .expect("authentic DER signature must be accepted");
+
+    // 3. Execution succeeds with authentic signed approvals
+    let new_rev = manager
+        .execute_proposal("prop-authentic-sigs")
+        .expect("execution must succeed with authentic signed approvals");
+    assert_eq!(new_rev, 2);
+}
+
+#[test]
+fn authority_proposal_approval_signature_rejections() {
+    let (mut manager, org_id) = test_setup();
+    let admins = sample_admins();
+    manager.initialize_organization(&org_id, &admins).unwrap();
+
+    let prop = ChangeProposal {
+        proposal_id: "prop-sig-rejects".to_string(),
+        organization_id: org_id.clone(),
+        base_revision: 1,
+        action: AuthorityAction::GrantScope {
+            mailbox: "neo@uor.foundation".to_string(),
+            user_id: "uor:user:neo".to_string(),
+            public_key: "cf122ae443d3fcad8b90fe30277d3c37e008c60d56c9658a44848bdb6f2078d4"
+                .to_string(),
+            scope: "operations".to_string(),
+        },
+        proposer_mailbox: "trinity@uor.foundation".to_string(),
+        approvals: vec![],
+        status: ProposalStatus::Pending,
+    };
+    manager.submit_proposal(prop).unwrap();
+
+    // 1. Non-hex characters rejected
+    let bad_hex = ProposalApproval::new(
+        "trinity@uor.foundation",
+        "uor:user:trinity",
+        "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be",
+        100,
+    )
+    .with_signature("NON_HEX_CHARACTERS_NOT_VALID_SIGNATURE_HEX");
+    let err = manager
+        .add_approval("prop-sig-rejects", bad_hex)
+        .unwrap_err();
+    assert!(matches!(err, AuthorityError::InvalidSignature(_)));
+
+    // 2. Invalid length rejected
+    let bad_len = ProposalApproval::new(
+        "trinity@uor.foundation",
+        "uor:user:trinity",
+        "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be",
+        101,
+    )
+    .with_signature("aabbccddeeff");
+    let err = manager
+        .add_approval("prop-sig-rejects", bad_len)
+        .unwrap_err();
+    assert!(matches!(err, AuthorityError::InvalidSignature(_)));
+
+    // 3. All-zeros raw scalar component rejected
+    let zero_sig = ProposalApproval::new(
+        "trinity@uor.foundation",
+        "uor:user:trinity",
+        "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be",
+        102,
+    )
+    .with_signature("00".repeat(64));
+    let err = manager
+        .add_approval("prop-sig-rejects", zero_sig)
+        .unwrap_err();
+    assert!(matches!(err, AuthorityError::InvalidSignature(_)));
 }

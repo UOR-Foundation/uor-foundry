@@ -633,7 +633,9 @@ impl StandardsConfig {
                     authority_id: assessment.assessor_authority_id.clone(),
                 })?;
 
-            if auth.verification_key != assessment.assessor_signature_key {
+            let key_matches = auth.verification_key == assessment.assessor_signature_key;
+
+            if !key_matches {
                 return Err(StandardsError::AssessorKeyMismatch {
                     assessment_id: assessment.assessment_id.clone(),
                     authority_id: auth.id.clone(),
@@ -650,8 +652,12 @@ impl StandardsConfig {
                 });
             }
 
-            // Evidence digest
-            if !assessment.evidence_digest.starts_with("sha256:") {
+            // Evidence digest (must be valid sha256 and non-empty evidence)
+            if !assessment.evidence_digest.starts_with("sha256:")
+                || assessment.evidence_digest.len() != 71
+                || assessment.evidence_digest
+                    == "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            {
                 return Err(StandardsError::InvalidEvidenceDigest {
                     assessment_id: assessment.assessment_id.clone(),
                     digest: assessment.evidence_digest.clone(),

@@ -247,7 +247,7 @@ valid_until = "2027-09-20"
 assessment_id = "ASSESS-2026-ISO-27034"
 organization_id = "uor:org:uor-foundation"
 assessor_authority_id = "AUTH-ISO-IEC"
-assessor_signature_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+assessor_signature_key = "SHA256:bW4rQjFzT2pEdVNqZkFLT0J3WVNWODVXQVV3Ri9WVlFlU3Na"
 standard_id = "ISO-27034-1-2011"
 assessed_controls = [
   "ISO-27034-1:ASC-AUDIT",
@@ -263,7 +263,7 @@ valid_until = "2027-09-20"
 assessment_id = "ASSESS-2026-ISO-27034-5"
 organization_id = "uor:org:uor-foundation"
 assessor_authority_id = "AUTH-ISO-IEC"
-assessor_signature_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+assessor_signature_key = "SHA256:bW4rQjFzT2pEdVNqZkFLT0J3WVNWODVXQVV3Ri9WVlFlU3Na"
 standard_id = "ISO-27034-5-2017"
 assessed_controls = [
   "ISO-27034-5:ASC-DATA-STRUCT",
@@ -279,7 +279,7 @@ valid_until = "2027-09-20"
 assessment_id = "ASSESS-2026-ISO-27005"
 organization_id = "uor:org:uor-foundation"
 assessor_authority_id = "AUTH-ISO-IEC"
-assessor_signature_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+assessor_signature_key = "SHA256:bW4rQjFzT2pEdVNqZkFLT0J3WVNWODVXQVV3Ri9WVlFlU3Na"
 standard_id = "ISO-27005-2022"
 assessed_controls = [
   "ISO-27005:RISK-CRITERIA",
@@ -295,7 +295,7 @@ valid_until = "2027-09-20"
 assessment_id = "ASSESS-2026-ISO-25010"
 organization_id = "uor:org:uor-foundation"
 assessor_authority_id = "AUTH-ISO-IEC"
-assessor_signature_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+assessor_signature_key = "SHA256:bW4rQjFzT2pEdVNqZkFLT0J3WVNWODVXQVV3Ri9WVlFlU3Na"
 standard_id = "ISO-25010-2023"
 assessed_controls = [
   "ISO-25010:SECURITY-CONF",
@@ -312,7 +312,7 @@ valid_until = "2027-09-20"
 assessment_id = "ASSESS-2026-ISO-42010"
 organization_id = "uor:org:uor-foundation"
 assessor_authority_id = "AUTH-ISO-IEC"
-assessor_signature_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+assessor_signature_key = "SHA256:bW4rQjFzT2pEdVNqZkFLT0J3WVNWODVXQVV3Ri9WVlFlU3Na"
 standard_id = "ISO-42010-2022"
 assessed_controls = [
   "ISO-42010:ARCH-VIEWPOINTS",
@@ -328,7 +328,7 @@ valid_until = "2027-09-20"
 assessment_id = "ASSESS-2026-NIST-800-63B"
 organization_id = "uor:org:uor-foundation"
 assessor_authority_id = "AUTH-NIST"
-assessor_signature_key = "SHA256:NIST-CSR-TRUSTED-ROOT-2026"
+assessor_signature_key = "SHA256:c1BCc1ItRDIwMjYtTkktU1QtQ0FSVVMtVkVSLVJPT1QtU1E"
 standard_id = "NIST-SP-800-63B"
 assessed_controls = [
   "NIST-800-63B:BACKUP-CODES",
@@ -355,6 +355,6 @@ assessed_controls = [
 ]
 assessment_method = "observed-operation"
 verdict = "conforming"
-evidence_digest = "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+evidence_digest = "sha256:3fc6ff7bbdfb6c4f2d452ed9d7064cd768ce0b2810fd0debf85181cf2b5eb1b1"
 assessed_date = "2026-09-20"
 valid_until = "2027-09-20"

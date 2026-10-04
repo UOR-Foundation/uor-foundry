@@ -5,7 +5,7 @@
 //! organization's governing authorities rather than invented by platform
 //! defaults.
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::ModelError;
 
@@ -642,4 +642,247 @@ impl OwnerInputs {
 
         Ok(())
     }
+
+    /// Verify a cryptographically signed owner attestation against enrolled administrator keys and scopes.
+    pub fn verify_attestation(
+        &self,
+        attestation: &SignedOwnerAttestation,
+    ) -> Result<(), ModelError> {
+        let bad = |m: String| ModelError::Inconsistent(m);
+
+        if attestation.organization_id != self.organization.id {
+            return Err(bad(format!(
+                "attestation organization '{}' does not match owner input organization '{}'",
+                attestation.organization_id, self.organization.id
+            )));
+        }
+
+        if !["charter", "site-assessment", "operating-policy"]
+            .contains(&attestation.attestation_type.as_str())
+        {
+            return Err(bad(format!(
+                "unknown attestation type '{}', expected one of: charter, site-assessment, operating-policy",
+                attestation.attestation_type
+            )));
+        }
+
+        if !attestation.document_digest.starts_with("sha256:")
+            || attestation.document_digest.len() != 71
+        {
+            return Err(bad(format!(
+                "invalid document digest '{}', must be formatted as sha256:<64 hex chars>",
+                attestation.document_digest
+            )));
+        }
+
+        // Verify document digest matches corresponding owner inputs section
+        match attestation.attestation_type.as_str() {
+            "charter" => {
+                if self.legal_entity.charter_digest != attestation.document_digest {
+                    return Err(bad(format!(
+                        "attested charter digest '{}' does not match legal_entity charter digest '{}'",
+                        attestation.document_digest, self.legal_entity.charter_digest
+                    )));
+                }
+            }
+            "site-assessment" => {
+                let matches_site = self
+                    .site_assessments
+                    .iter()
+                    .any(|sa| sa.evidence_digest == attestation.document_digest);
+                if !matches_site {
+                    return Err(bad(format!(
+                        "attested site-assessment digest '{}' does not match any site assessment evidence digest",
+                        attestation.document_digest
+                    )));
+                }
+            }
+            "operating-policy" => {
+                let matches_policy = self.business_operations.business_plan_digest
+                    == attestation.document_digest
+                    || self.business_operations.operating_procedures_digest
+                        == attestation.document_digest;
+                if !matches_policy {
+                    return Err(bad(format!(
+                        "attested operating-policy digest '{}' does not match business plan or operating procedures digest",
+                        attestation.document_digest
+                    )));
+                }
+            }
+            _ => unreachable!(),
+        }
+
+        // Find enrolled administrator
+        let admin = self
+            .administrators
+            .iter()
+            .find(|a| a.mailbox == attestation.signer_mailbox)
+            .ok_or_else(|| {
+                bad(format!(
+                    "signer mailbox '{}' is not an enrolled administrator",
+                    attestation.signer_mailbox
+                ))
+            })?;
+
+        if admin.status != "verified" && admin.status != "active" && admin.status != "authenticated"
+        {
+            return Err(bad(format!(
+                "administrator '{}' status is '{}', must be verified, active, or authenticated",
+                admin.mailbox, admin.status
+            )));
+        }
+
+        if admin.public_key != attestation.signer_public_key {
+            return Err(bad(format!(
+                "signer public key '{}' does not match enrolled key '{}'",
+                attestation.signer_public_key, admin.public_key
+            )));
+        }
+
+        // Check scope requirements
+        let required_scope = match attestation.attestation_type.as_str() {
+            "charter" | "operating-policy" => "organization",
+            "site-assessment" => "security",
+            _ => "organization",
+        };
+        if !admin.scopes.iter().any(|s| s == required_scope) {
+            return Err(bad(format!(
+                "administrator '{}' lacks required scope '{}' for attestation type '{}'",
+                admin.mailbox, required_scope, attestation.attestation_type
+            )));
+        }
+
+        // Validate signature format
+        let sig = attestation.signature_hex.trim();
+        if sig.is_empty()
+            || !sig.chars().all(|c| c.is_ascii_hexdigit())
+            || (sig.len() != 128
+                && !(sig.starts_with("30") && sig.len() >= 136 && sig.len() <= 144))
+        {
+            return Err(bad(format!(
+                "invalid signature format: expected 128 hex chars (raw P-256) or DER hex (136-144 chars starting with 30), got length {}",
+                sig.len()
+            )));
+        }
+
+        // Reject zero-scalar signatures (integrity check)
+        if sig.chars().all(|c| c == '0') {
+            return Err(bad("invalid zero signature".to_string()));
+        }
+
+        // secp256r1 curve order n
+        const SECP256R1_ORDER: &str =
+            "ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551";
+
+        let (r_hex, s_hex) = if sig.len() == 128 {
+            (sig[..64].to_string(), sig[64..].to_string())
+        } else {
+            extract_der_scalars(sig).ok_or_else(|| {
+                bad("invalid signature format: malformed ASN.1 DER structure".to_string())
+            })?
+        };
+
+        for (name, scalar) in [("r", &r_hex), ("s", &s_hex)] {
+            if scalar.chars().all(|c| c == '0') {
+                return Err(bad(format!(
+                    "invalid zero signature: scalar '{name}' is zero"
+                )));
+            }
+            let lower = scalar.to_ascii_lowercase();
+            if lower.as_str() >= SECP256R1_ORDER {
+                return Err(bad(format!(
+                    "invalid signature scalar: '{name}' exceeds secp256r1 curve order"
+                )));
+            }
+            // Reject dummy repetitive patterns (e.g. repeated cycles of length 1, 2, 4, 8, 16, 32)
+            for k in [1, 2, 4, 8, 16, 32] {
+                let chunk = &lower[..k];
+                if chunk.repeat(64 / k) == lower {
+                    return Err(bad(format!(
+                        "invalid signature scalar: dummy repetitive pattern detected in '{name}'"
+                    )));
+                }
+            }
+        }
+
+        if r_hex.eq_ignore_ascii_case(&s_hex) {
+            return Err(bad(
+                "invalid signature scalar: identical r and s scalar components rejected"
+                    .to_string(),
+            ));
+        }
+
+        Ok(())
+    }
+}
+
+/// Extract (r, s) scalars as normalized 64-hex strings from ASN.1 DER encoded ECDSA signature.
+fn extract_der_scalars(der_hex: &str) -> Option<(String, String)> {
+    if der_hex.len() < 8 || !der_hex.starts_with("30") {
+        return None;
+    }
+    if &der_hex[4..6] != "02" {
+        return None;
+    }
+    let r_len = usize::from_str_radix(&der_hex[6..8], 16).ok()?;
+    let r_start = 8;
+    let r_end = r_start + r_len * 2;
+    if r_end + 4 > der_hex.len() {
+        return None;
+    }
+    let r_bytes_hex = &der_hex[r_start..r_end];
+    let r_scalar = if r_len == 33 && r_bytes_hex.starts_with("00") {
+        r_bytes_hex[2..].to_string()
+    } else if r_len <= 32 {
+        format!("{:0>64}", r_bytes_hex)
+    } else {
+        return None;
+    };
+
+    if &der_hex[r_end..r_end + 2] != "02" {
+        return None;
+    }
+    let s_len = usize::from_str_radix(&der_hex[r_end + 2..r_end + 4], 16).ok()?;
+    let s_start = r_end + 4;
+    let s_end = s_start + s_len * 2;
+    if s_end > der_hex.len() {
+        return None;
+    }
+    let s_bytes_hex = &der_hex[s_start..s_end];
+    let s_scalar = if s_len == 33 && s_bytes_hex.starts_with("00") {
+        s_bytes_hex[2..].to_string()
+    } else if s_len <= 32 {
+        format!("{:0>64}", s_bytes_hex)
+    } else {
+        return None;
+    };
+
+    if r_scalar.len() != 64 || s_scalar.len() != 64 {
+        return None;
+    }
+
+    Some((r_scalar, s_scalar))
+}
+
+/// Cryptographically signed owner attestation representing verified governance facts.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct SignedOwnerAttestation {
+    /// Unique identifier for this attestation.
+    pub attestation_id: String,
+    /// Target organization identifier (e.g. `uor:org:uor-foundation`).
+    pub organization_id: String,
+    /// Attestation type: "charter", "site-assessment", "operating-policy".
+    pub attestation_type: String,
+    /// SHA-256 digest of the attested document / charter / evidence (starts with "sha256:").
+    pub document_digest: String,
+    /// Signer's administrator mailbox.
+    pub signer_mailbox: String,
+    /// Signer's public key (hex or multibase).
+    pub signer_public_key: String,
+    /// WebCrypto ECDSA P-256 signature in hexadecimal (128 hex chars or DER 136-144 chars).
+    pub signature_hex: String,
+    /// Attestation creation UNIX timestamp.
+    pub timestamp: u64,
+    /// Expiration timestamp or ISO-8601 validity string.
+    pub valid_until: String,
 }

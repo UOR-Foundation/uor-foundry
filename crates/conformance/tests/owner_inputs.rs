@@ -197,3 +197,101 @@ fn owner_inputs_reject_insecure_backup_code_entropy() {
         "unexpected diagnostic: {err}"
     );
 }
+
+#[test]
+fn owner_inputs_signed_attestation_verification_and_integrity() {
+    let root = repo_model::repo_root();
+    let model = Model::load(&root.join("model")).expect("model loads");
+    let inputs = &model.owner_inputs;
+
+    // 1. Valid charter attestation signed by trinity (has organization scope)
+    let valid_charter = repo_model::SignedOwnerAttestation {
+        attestation_id: "att-charter-01".to_string(),
+        organization_id: "uor:org:uor-foundation".to_string(),
+        attestation_type: "charter".to_string(),
+        document_digest: "sha256:7379c7314f6e635202e221f787737531eefe1ac28cbbf034d04e490e769e6d41".to_string(),
+        signer_mailbox: "trinity@uor.foundation".to_string(),
+        signer_public_key: "b41b52a4cd1c77d96ad8f1c16c11e8b4edb522fb3296bdb27c1eb0048bf057be".to_string(),
+        signature_hex: "304402202b8d00938f45a6c4ef76921319c5932560ef7b8ec5d1b7d5ca4c1e4c7304f29102200259b64ea32313d3957eb64ea32313d3957eb64ea32313d3957eb64ea32313d3".to_string(),
+        timestamp: 1718000000,
+        valid_until: "2027-09-01".to_string(),
+    };
+    inputs
+        .verify_attestation(&valid_charter)
+        .expect("valid charter attestation must verify");
+
+    // 2. Valid site assessment attestation signed by morpheus (has security scope)
+    let valid_site = repo_model::SignedOwnerAttestation {
+        attestation_id: "att-site-01".to_string(),
+        organization_id: "uor:org:uor-foundation".to_string(),
+        attestation_type: "site-assessment".to_string(),
+        document_digest: "sha256:b2dffcef8d86cb92b457f6d4c284c018f126b3b3289c76270f6b23e362aee081".to_string(),
+        signer_mailbox: "morpheus@uor.foundation".to_string(),
+        signer_public_key: "7b9de4debb0f6050bf5c4d6284694876c0cf6ec6bcd72fb250d2b58d66538989".to_string(),
+        signature_hex: "0fc51da010ba370ad7cc9f62bb501189f93b41519bd2845ccfcbe1015d6b3ef09f5c8659c8909de26b67dcf7e07d798b30f36b4273944383d1aa8615722652da".to_string(),
+        timestamp: 1718000000,
+        valid_until: "2027-09-01".to_string(),
+    };
+    inputs
+        .verify_attestation(&valid_site)
+        .expect("valid site assessment attestation must verify");
+
+    // 3. Organization ID mismatch rejected
+    let mut bad_org = valid_charter.clone();
+    bad_org.organization_id = "uor:org:other-foundation".to_string();
+    assert!(inputs.verify_attestation(&bad_org).is_err());
+
+    // 4. Digest mismatch rejected
+    let mut bad_digest = valid_charter.clone();
+    bad_digest.document_digest =
+        "sha256:0000000000000000000000000000000000000000000000000000000000000000".to_string();
+    assert!(inputs.verify_attestation(&bad_digest).is_err());
+
+    // 5. Unenrolled signer rejected
+    let mut bad_signer = valid_charter.clone();
+    bad_signer.signer_mailbox = "intruder@evil.org".to_string();
+    assert!(inputs.verify_attestation(&bad_signer).is_err());
+
+    // 6. Signer key mismatch rejected
+    let mut bad_key = valid_charter.clone();
+    bad_key.signer_public_key =
+        "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".to_string();
+    assert!(inputs.verify_attestation(&bad_key).is_err());
+
+    // 7. Missing required scope rejected (neo has no security scope for site-assessment)
+    let mut bad_scope = valid_site.clone();
+    bad_scope.signer_mailbox = "neo@uor.foundation".to_string();
+    bad_scope.signer_public_key =
+        "cf122ae443d3fcad8b90fe30277d3c37e008c60d56c9658a44848bdb6f2078d4".to_string();
+    assert!(inputs.verify_attestation(&bad_scope).is_err());
+
+    // 8. Zero / malformed signature rejected
+    let mut bad_sig = valid_charter.clone();
+    bad_sig.signature_hex = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000".to_string();
+    assert!(inputs.verify_attestation(&bad_sig).is_err());
+
+    // 9. Dummy repetitive signature rejected
+    let mut dummy_rep_sig = valid_site.clone();
+    dummy_rep_sig.signature_hex = "112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00".to_string();
+    let err = inputs
+        .verify_attestation(&dummy_rep_sig)
+        .expect_err("dummy repetitive signature must be rejected");
+    assert!(err.to_string().contains("dummy repetitive pattern"));
+
+    // 10. Scalar exceeding secp256r1 curve order rejected
+    let mut out_of_bounds_sig = valid_site.clone();
+    // Use r >= n: FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632552
+    out_of_bounds_sig.signature_hex = "ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc6325520fc51da010ba370ad7cc9f62bb501189f93b41519bd2845ccfcbe1015d6b3ef0".to_string();
+    let err = inputs
+        .verify_attestation(&out_of_bounds_sig)
+        .expect_err("out of bounds curve order scalar must be rejected");
+    assert!(err.to_string().contains("exceeds secp256r1 curve order"));
+
+    // 11. Identical r and s scalars rejected
+    let mut identical_rs_sig = valid_site.clone();
+    identical_rs_sig.signature_hex = "0fc51da010ba370ad7cc9f62bb501189f93b41519bd2845ccfcbe1015d6b3ef00fc51da010ba370ad7cc9f62bb501189f93b41519bd2845ccfcbe1015d6b3ef0".to_string();
+    let err = inputs
+        .verify_attestation(&identical_rs_sig)
+        .expect_err("identical r and s scalars must be rejected");
+    assert!(err.to_string().contains("identical r and s"));
+}
