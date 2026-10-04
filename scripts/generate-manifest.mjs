@@ -27,18 +27,10 @@ export function generateManifest(archivePath, inputsDir, manifestPath) {
   const resolvedManifest = resolve(manifestPath);
   const defaultManifest = resolve('.prism/sdk/stdlib-manifest.json');
 
-  let archiveSha256 = null;
-  if (archivePath && existsSync(archivePath)) {
-    archiveSha256 = createHash('sha256').update(readFileSync(archivePath)).digest('hex');
-  } else if (existsSync(resolvedManifest)) {
-    const existing = JSON.parse(readFileSync(resolvedManifest, 'utf8'));
-    archiveSha256 = existing.archive_sha256;
-  } else if (existsSync(defaultManifest)) {
-    const existing = JSON.parse(readFileSync(defaultManifest, 'utf8'));
-    archiveSha256 = existing.archive_sha256;
-  } else {
-    throw new Error(`archive not found at ${archivePath} and existing manifest not found at ${resolvedManifest}`);
+  if (!archivePath || !existsSync(archivePath)) {
+    throw new Error(`archive not found at ${archivePath}; fail-closed on missing stdlib archive`);
   }
+  const archiveSha256 = createHash('sha256').update(readFileSync(archivePath)).digest('hex');
 
   const sortedFiles = getFiles(resolvedInputs).sort();
   const fileEntries = sortedFiles.map((path) => ({
