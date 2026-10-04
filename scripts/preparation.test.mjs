@@ -24,7 +24,7 @@ function preparationOrder(justfile) {
       'SDK and template admission precede acquisition');
   }
   for (const after of ['cargo clippy --workspace --all-targets -- -D warnings',
-    'cargo test --workspace', 'cargo test -p repo-conformance']) {
+    'cargo test --workspace', 'cargo test -p repo-conformance --test bdd']) {
     assert.ok(commands.indexOf(after) > fetch, 'locked inputs precede every product gate');
   }
 }
