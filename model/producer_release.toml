@@ -181,44 +181,44 @@ standard_id = "W3C-WCAG-2-2"
 verdict = "conforming"
 
 [[browser_artifacts]]
+path = "app.css"
+mime_type = "text/css"
+size_bytes = 804
+sha256 = "sha256:93a8e4a6a873f55f56a7adb3a55a49912bdcddd740b1af52f9a27f1403ea0279"
+
+[[browser_artifacts]]
+path = "app.js"
+mime_type = "application/javascript"
+size_bytes = 3637
+sha256 = "sha256:2a5749531966b54fc67e41bcd781d375a42349c392145e85882fb97d3b12c8f8"
+
+[[browser_artifacts]]
 path = "index.html"
 mime_type = "text/html"
-size_bytes = 4096
-sha256 = "sha256:7b52662c140dfaa60eefbc603cd7a7f457ffad04543ff32a5ec2c6a084c7a659"
+size_bytes = 913
+sha256 = "sha256:a001ac1fb183b2158ec773c8436f409e80cfe4b788cf7deb16f48d7309d11dca"
 
 [[browser_artifacts]]
-path = "foundry.js"
+path = "prism_foundry_web.js"
 mime_type = "application/javascript"
-size_bytes = 81920
-sha256 = "sha256:a4b513bc759d57a9cfda598b049d5a6c38234dbb9b5fef729a4bb3c61304526d"
+size_bytes = 6300
+sha256 = "sha256:934556d47c4e35be39a73ea5c3e5a0d6159fc8455a4867bedfea595ee7d10ac4"
 
 [[browser_artifacts]]
-path = "foundry_bg.wasm"
+path = "prism_foundry_web_bg.wasm"
 mime_type = "application/wasm"
-size_bytes = 524288
-sha256 = "sha256:e834608c0efee76a9117cf489e02e1b12b557b7f16f56e9c470a2f5bc289128d"
+size_bytes = 34948
+sha256 = "sha256:33f7ca6c8ff1bbf9832984210cc6b3b8965a823d2505e4a959bb21e18989dac7"
 
 [[browser_artifacts]]
-path = "foundry.css"
-mime_type = "text/css"
-size_bytes = 16384
-sha256 = "sha256:1a84f3df91753c1537e24bcf84ec758ffaa8b5cb3335bc45ecab076fa2e7f8cb"
-
-[[browser_artifacts]]
-path = "manifest.json"
-mime_type = "application/manifest+json"
-size_bytes = 1024
-sha256 = "sha256:4d603a1154c16a8d67ec1d90a5015b678ebaf29e313768b31a896cfab1844b20"
-
-[[browser_artifacts]]
-path = "holo_runtime.holo"
-mime_type = "application/octet-stream"
-size_bytes = 262144
-sha256 = "sha256:c986161476d05ca91d6c8230eeef2356c9d7494f1b49e1a90c0ef69c2ebf91b7"
+path = "provenance.json"
+mime_type = "application/json"
+size_bytes = 656
+sha256 = "sha256:7e7fb485b375763961e212c95295ac1ebb02b93a2ca79d42da7eba883bfa05f8"
 
 [reproducible_build]
-run_1_tree_digest = "sha256:d8c6b75aeae8c4974fbc173b2c12217c4e5ff09ab683b5444fae9eb10a2bb194"
-run_2_tree_digest = "sha256:d8c6b75aeae8c4974fbc173b2c12217c4e5ff09ab683b5444fae9eb10a2bb194"
+run_1_tree_digest = "sha256:7b32237988c5c0831a374a795d00fae31c0e93871fd99a22f227c64ac96dd7db"
+run_2_tree_digest = "sha256:7b32237988c5c0831a374a795d00fae31c0e93871fd99a22f227c64ac96dd7db"
 equality_status = "BIT_FOR_BIT_IDENTICAL"
 build_container_digest = "sha256:c2e0e50437e13d9b2e382d3af4ae7a962b469721b9b80f14f215d9254e8ed78f"
 

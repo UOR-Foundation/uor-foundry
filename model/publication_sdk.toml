@@ -27,12 +27,12 @@ producer_binding_digest = "sha256:91bf34020a5664bead868fbfa89196b6e41bf1684fa6e3
 export_api = "export-browser"
 output_dir = "dist/"
 required_assets = [
+  "app.css",
+  "app.js",
   "index.html",
-  "foundry.js",
-  "foundry_bg.wasm",
-  "foundry.css",
-  "manifest.json",
-  "holo_runtime.holo"
+  "prism_foundry_web.js",
+  "prism_foundry_web_bg.wasm",
+  "provenance.json"
 ]
 preserve_unchanged_bytes = true
 
