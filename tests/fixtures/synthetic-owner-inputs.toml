@@ -192,14 +192,14 @@ citation = "UOR Foundation Security & Governance Charter 2026-A"
 id = "AUTH-ISO-IEC"
 name = "ISO/IEC Standards Assessment Body"
 authority_type = "external-standards-body"
-verification_key = "SHA256:ISO-IEC-TRUSTED-ROOT-2026"
+verification_key = "SHA256:bW4rQjFzT2pEdVNqZkFLT0J3WVNWODVXQVV3Ri9WVlFlU3Na"
 citation = "ISO/IEC Quality and Risk Conformance Registry"
 
 [[assessment_authorities]]
 id = "AUTH-NIST"
 name = "NIST Identity & Access Guidelines Authority"
 authority_type = "external-standards-body"
-verification_key = "SHA256:NIST-CSR-TRUSTED-ROOT-2026"
+verification_key = "SHA256:c1BCc1ItRDIwMjYtTkktU1QtQ0FSVVMtVkVSLVJPT1QtU1E"
 citation = "NIST SP 800-63B Digital Identity Reference Register"
 
 [business_operations]

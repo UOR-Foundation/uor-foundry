@@ -14,6 +14,7 @@
 pub mod authority;
 pub mod backup_codes;
 pub mod codegen;
+pub mod comms;
 pub mod functional_core;
 pub mod holospaces_boundary;
 pub mod identity_email;
@@ -25,6 +26,7 @@ pub mod organization;
 pub mod organization_sites;
 pub mod owner_inputs;
 pub mod producer_release;
+pub mod projects;
 pub mod publication_sdk;
 pub mod registry;
 pub mod sdk_boundary;
@@ -41,6 +43,12 @@ pub use backup_codes::{
     BackupCodeBatch, BackupCodeConfig, BackupCodeError, BackupCodeLifecycleConfig,
     BackupCodeManager, BackupCodeNotificationConfig, BackupCodeStandardsConfig, CodeStatus,
     RedeemBackupCodeRequest, RedemptionReport, StoredBackupCode,
+};
+pub use comms::{
+    AttachmentMetadata, ChannelMember, ChannelRecord, ChannelRole, ChannelType, CommsError,
+    CommsManager, CommsMessageRecord, DispatchNotificationRequest, NotificationEvent,
+    NotificationReadState, NotificationRecord, NotificationSeverity, MAX_ATTACHMENT_BYTES,
+    MAX_MESSAGE_PAYLOAD_BYTES, MIME_WHITELIST,
 };
 pub use functional_core::{
     CoreMessageRecord, CoreWorkspaceRecord, FunctionalCoreConfig, FunctionalCoreCoordinator,
@@ -79,22 +87,28 @@ pub use object_space::{
     ReplicationCoordinator,
 };
 pub use organization::{
-    ActivateOrganizationRequest, CreateOrganizationRequest, CrossOrgAccessRequest,
-    LifecycleTransitionRule, OrgAdministrator, OrganizationError, OrganizationLifecycleConfig,
+    ActivateOrganizationRequest, CreateInvitationRequest, CreateOrganizationRequest,
+    CrossOrgAccessRequest, InvitationStatus, LifecycleTransitionRule, OrgAdministrator,
+    OrgInvitationRecord, OrganizationError, OrganizationLifecycleConfig,
     OrganizationLifecycleState, OrganizationManager, OrganizationRecord, OrganizationRules,
-    RetireFoundingGrantRequest,
+    RetireFoundingGrantRequest, UpdateOrganizationRequest,
 };
 pub use organization_sites::{
     AccessSiteRequest, ActivateSiteRequest, ActiveSiteState, CreateSiteRequest,
     SiteAssessmentLifecycleRecord, SiteError, SiteLifecycleConfig, SiteLifecycleRecord,
     SiteLifecycleState, SiteManager, SitePolicyConfig, TransitionSiteRequest,
 };
-pub use owner_inputs::{OwnerInputRegistry, OwnerInputs};
+pub use owner_inputs::{OwnerInputRegistry, OwnerInputs, SignedOwnerAttestation};
 pub use producer_release::{
     AcceptedReleaseRecord, BrowserArtifactRecord, CoveredAssessmentConfig, CoveredControlConfig,
     CoveredServiceConfig, DeploymentAuthorizationRecord, OutstandingDeploymentCheck,
     PrePublicationEvidence, ProducerIdentityConfig, ProducerPolicyConfig, ProducerReleaseConfig,
     ProducerReleaseEngine, ProducerReleaseError, ReleaseState, ReproducibleBuildEvidence,
+};
+pub use projects::{
+    CreateProjectReleaseRequest, DeliverableRecord, DeliverableStatus, MilestoneRecord,
+    MilestoneStatus, ProjectActivityEntry, ProjectError, ProjectLifecycleState, ProjectManager,
+    ProjectMember, ProjectRecord, ProjectReleaseRecord, ProjectRole, ProjectSettings,
 };
 pub use publication_sdk::{
     AtomicExportConfig, ExportedAssetRecord, ProducerHandoffConfig, PublicationError,
@@ -378,13 +392,36 @@ fn read<T: serde::de::DeserializeOwned>(dir: &Path, name: &str) -> Result<T, Mod
     toml::from_str(&text).map_err(|e| ModelError::Parse(path, e))
 }
 
-/// The repository root, resolved from this crate's manifest directory.
+/// The repository root, resolved robustly across host and container environments.
 pub fn repo_root() -> PathBuf {
+    // 1. Search upward from current working directory for repository root markers
+    if let Ok(cwd) = std::env::current_dir() {
+        for ancestor in cwd.ancestors() {
+            if ancestor.join("CONFORMANCE.md").is_file() && ancestor.join("Cargo.toml").is_file() {
+                return ancestor.to_path_buf();
+            }
+        }
+    }
+
+    // 2. Check if CARGO_MANIFEST_DIR ancestor exists and contains CONFORMANCE.md
+    if let Some(candidate) = Path::new(env!("CARGO_MANIFEST_DIR")).ancestors().nth(2) {
+        if candidate.join("CONFORMANCE.md").is_file() {
+            return candidate.to_path_buf();
+        }
+    }
+
+    // 3. Fallback to container workspace mount if present
+    let workspace = Path::new("/workspace");
+    if workspace.join("CONFORMANCE.md").is_file() {
+        return workspace.to_path_buf();
+    }
+
+    // 4. Default fallback to compile-time manifest dir ancestor
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .ancestors()
         .nth(2)
-        .expect("crates/model is two levels below the repository root")
-        .to_path_buf()
+        .map(Path::to_path_buf)
+        .unwrap_or_else(|| PathBuf::from("."))
 }
 
 /// Compute lowercase hexadecimal SHA-256 digest of input bytes.

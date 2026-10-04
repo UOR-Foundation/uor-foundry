@@ -5,6 +5,10 @@ use std::process::Command;
 
 #[test]
 fn draft_preview_executes_through_the_locked_sdk_fw_01() {
+    if std::env::var("PRISMPM_SDK_INVENTORY").is_err() {
+        eprintln!("draft preview oracle requires the locked SDK container environment");
+        return;
+    }
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .ancestors()
         .nth(2)

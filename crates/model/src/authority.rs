@@ -208,6 +208,33 @@ pub struct ProposalApproval {
     pub public_key: String,
     /// Timestamp of approval.
     pub timestamp: u64,
+    /// Hex-encoded WebCrypto ECDSA P-256 signature over proposal action and revision binding.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub signature_hex: Option<String>,
+}
+
+impl ProposalApproval {
+    /// Create a new proposal approval with no signature.
+    pub fn new(
+        mailbox: impl Into<String>,
+        user_id: impl Into<String>,
+        public_key: impl Into<String>,
+        timestamp: u64,
+    ) -> Self {
+        Self {
+            mailbox: mailbox.into(),
+            user_id: user_id.into(),
+            public_key: public_key.into(),
+            timestamp,
+            signature_hex: None,
+        }
+    }
+
+    /// Attach a signature to the approval record.
+    pub fn with_signature(mut self, signature_hex: impl Into<String>) -> Self {
+        self.signature_hex = Some(signature_hex.into());
+        self
+    }
 }
 
 /// Action to be performed by an authority change proposal.
@@ -355,6 +382,8 @@ pub enum AuthorityError {
     ProposalAlreadyFinalized(String),
     /// Approver lacks the necessary authority scope.
     UnauthorizedApprover(String),
+    /// Cryptographic signature on approval is invalid or malformed.
+    InvalidSignature(String),
 }
 
 impl std::fmt::Display for AuthorityError {
@@ -403,6 +432,7 @@ impl std::fmt::Display for AuthorityError {
             Self::ProposalNotFound(id) => write!(f, "proposal not found: {id}"),
             Self::ProposalAlreadyFinalized(id) => write!(f, "proposal '{id}' already finalized"),
             Self::UnauthorizedApprover(msg) => write!(f, "unauthorized approver: {msg}"),
+            Self::InvalidSignature(msg) => write!(f, "invalid signature: {msg}"),
         }
     }
 }
@@ -609,6 +639,35 @@ impl AuthorityManager {
             )));
         }
 
+        // Validate signature format if signature_hex is present
+        if let Some(ref sig_hex) = approval.signature_hex {
+            let sig_trimmed = sig_hex.trim();
+            if sig_trimmed.is_empty()
+                || !sig_trimmed.chars().all(|c| c.is_ascii_hexdigit())
+                || (sig_trimmed.len() != 128
+                    && !(sig_trimmed.starts_with("30")
+                        && sig_trimmed.len() >= 136
+                        && sig_trimmed.len() <= 144))
+            {
+                return Err(AuthorityError::InvalidSignature(format!(
+                    "invalid WebCrypto ECDSA P-256 signature format for approver '{}'",
+                    approval.mailbox
+                )));
+            }
+
+            // Check non-zero scalar components in IEEE P1363 format (64 bytes = 128 hex chars)
+            if sig_trimmed.len() == 128 {
+                let r_part = &sig_trimmed[..64];
+                let s_part = &sig_trimmed[64..];
+                if r_part.chars().all(|c| c == '0') || s_part.chars().all(|c| c == '0') {
+                    return Err(AuthorityError::InvalidSignature(format!(
+                        "invalid scalar components in signature for approver '{}'",
+                        approval.mailbox
+                    )));
+                }
+            }
+        }
+
         proposal.approvals.push(approval);
         Ok(())
     }
@@ -791,6 +850,29 @@ impl AuthorityManager {
                         scope: scope_rule.scope.clone(),
                         remaining: effective_distinct,
                         required: scope_rule.minimum_distinct_administrators,
+                    });
+                }
+            }
+
+            // Enforce atomic continuity: ensure critical scopes ("organization" and "security") retain quorum >= 2
+            let critical_scopes = ["organization", "security"];
+            for &crit_scope in &critical_scopes {
+                let active_distinct_admins: HashSet<String> = simulated_grants
+                    .iter()
+                    .filter(|g| g.status == GrantStatus::Active && g.scope == crit_scope)
+                    .map(|g| g.mailbox.clone())
+                    .collect();
+                let active_distinct_keys: HashSet<String> = simulated_grants
+                    .iter()
+                    .filter(|g| g.status == GrantStatus::Active && g.scope == crit_scope)
+                    .map(|g| g.public_key.clone())
+                    .collect();
+                let effective = active_distinct_admins.len().min(active_distinct_keys.len());
+                if effective < 2 {
+                    return Err(AuthorityError::PostChangeCoverageDeficit {
+                        scope: crit_scope.to_string(),
+                        remaining: effective,
+                        required: 2,
                     });
                 }
             }
