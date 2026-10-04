@@ -150,11 +150,11 @@ fn byte_substitution_in_exported_artifact_is_detected_and_rejected() {
     )
     .expect("target authorization succeeds");
 
-    // Tamper with foundry_bg.wasm digest in package
+    // Tamper with prism_foundry_web_bg.wasm digest in package
     if let Some(art) = pkg
         .exported_assets
         .iter_mut()
-        .find(|a| a.path == "foundry_bg.wasm")
+        .find(|a| a.path == "prism_foundry_web_bg.wasm")
     {
         art.sha256 =
             "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".to_string();
@@ -167,9 +167,11 @@ fn byte_substitution_in_exported_artifact_is_detected_and_rejected() {
     );
     match res {
         Err(PublicationError::ByteSubstitutionDetected { file, .. }) => {
-            assert_eq!(file, "foundry_bg.wasm");
+            assert_eq!(file, "prism_foundry_web_bg.wasm");
         }
-        other => panic!("expected ByteSubstitutionDetected for foundry_bg.wasm, got {other:?}"),
+        other => {
+            panic!("expected ByteSubstitutionDetected for prism_foundry_web_bg.wasm, got {other:?}")
+        }
     }
 }
 
@@ -189,9 +191,8 @@ fn partial_export_missing_required_asset_is_rejected() {
     )
     .expect("target authorization succeeds");
 
-    // Remove holo_runtime.holo from package
-    pkg.exported_assets
-        .retain(|a| a.path != "holo_runtime.holo");
+    // Remove provenance.json from package
+    pkg.exported_assets.retain(|a| a.path != "provenance.json");
 
     let res = PublicationSdkEngine::export_atomic_browser(
         &mut pkg,
@@ -228,7 +229,7 @@ fn live_deployment_verification_failure_triggers_automatic_rollback() {
 
     // Corrupt one live deployed asset
     let mut corrupted_live = exported;
-    if let Some(art) = corrupted_live.iter_mut().find(|a| a.path == "foundry.js") {
+    if let Some(art) = corrupted_live.iter_mut().find(|a| a.path == "app.js") {
         art.sha256 =
             "sha256:0000000000000000000000000000000000000000000000000000000000000000".to_string();
     }
@@ -245,7 +246,7 @@ fn live_deployment_verification_failure_triggers_automatic_rollback() {
             reason,
             restored_digest,
         }) => {
-            assert!(reason.contains("foundry.js"));
+            assert!(reason.contains("app.js"));
             assert_eq!(restored_digest, prev_digest);
             assert_eq!(pkg.state, PublicationState::RolledBack);
         }

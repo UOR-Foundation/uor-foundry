@@ -308,12 +308,33 @@ impl ProducerReleaseConfig {
         // 2. Validate Service Coverage
         let covered_service_ids: HashSet<&str> =
             self.services.iter().map(|s| s.id.as_str()).collect();
-        for svc in &services_cfg.services {
-            if !covered_service_ids.contains(svc.id.as_str()) {
-                return Err(bad(format!(
-                    "service '{}' defined in services.toml is missing from producer release coverage",
-                    svc.id
-                )));
+        if self.policy.require_full_service_coverage {
+            for svc in &services_cfg.services {
+                if !covered_service_ids.contains(svc.id.as_str()) {
+                    return Err(bad(format!(
+                        "service '{}' defined in services.toml is missing from producer release coverage",
+                        svc.id
+                    )));
+                }
+            }
+        } else {
+            if self.services.is_empty() {
+                return Err(bad(
+                    "producer release services register cannot be empty".to_string()
+                ));
+            }
+            let valid_service_ids: HashSet<&str> = services_cfg
+                .services
+                .iter()
+                .map(|s| s.id.as_str())
+                .collect();
+            for svc in &self.services {
+                if !valid_service_ids.contains(svc.id.as_str()) {
+                    return Err(bad(format!(
+                        "service '{}' in producer release is not defined in services.toml",
+                        svc.id
+                    )));
+                }
             }
         }
 
