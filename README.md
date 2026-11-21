@@ -1,4 +1,14 @@
+![uor-foundry: provisional UOR Foundation PNG, not approved project artwork](assets/readme-banner-PLACEHOLDER.png)
+
+*Illustrative placeholder pending brand review.*
+
 # UOR Foundry
+
+**A modeled organizational platform, distinct from the separate portal publication repository.** The model and requirements exist, but the functional platform is not accepted as complete.
+
+[Current status](#status) · [Product contract](SPEC.md) · [Implementation gaps](IMPLEMENTATION.md) · [Application evidence](APPLICATION-VERIFICATION.md) · [Portal publisher](https://github.com/UOR-Foundation/foundry-web) · [Repository policy](AGENTS.md)
+
+[![Product status: not yet accepted](https://img.shields.io/badge/product-not%20yet%20accepted-718096)](#status) [![License: MIT OR Apache-2.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-718096)](LICENSE-MIT)
 
 Foundry is a generic organization-management platform modeled with PrismPM.
 Organizations and their physical sites are created through normal workflows;
